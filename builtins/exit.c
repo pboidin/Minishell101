@@ -43,7 +43,7 @@ void	ft_putendl_fd(char *s, int fd)
 	write(fd, &nline, 1);
 }
 
-int32_t	ft_exit(int argc, char **argv)
+int32_t	ft_exit(t_info *info, char *exit_code)
 {
 	(void)argc;
 	ft_putendl_fd("exit", STDERR_FILENO);
