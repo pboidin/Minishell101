@@ -1,39 +1,4 @@
-//#include "minishell.c"
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void	ft_putstr(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		write(1, &str[i], 1);
-		i++;
-	}
-}
-
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while ((unsigned char)s1[i] == (unsigned char)s2[i]
-		&& s1[i] != '\0' && s2[i] != '\0' && i < n - 1)
-		i++;
-	if (n > 0)
-		return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-	else
-		return (0);
-}
+#include "../includes/minishell.h"
 
 static void	ft_print_args(int32_t argc, char **argv, bool newline)
 {

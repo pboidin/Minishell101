@@ -1,5 +1,4 @@
-#include <stdlib.h>
-#include <unistd.h>
+#include "minishell.h"
 
 int	ft_atoi(const char *str)
 {
@@ -32,27 +31,4 @@ size_t	ft_strlen(const char *s)
 	if (*s == '\0')
 		return (0);
 	return (ft_strlen(s + 1) + 1);
-}
-
-void	ft_putendl_fd(char *str, int fd)
-{
-	char	nline;
-
-	nline = '\n';
-	write(fd, str, ft_strlen(str));
-	write(fd, &nline, 1);
-}
-
-int32_t	ft_exit(t_info *info, char *exit_code)
-{
-	(void)argc;
-	ft_putendl_fd("exit", STDERR_FILENO);
-	if (!argv[1])
-		exit(0);
-	exit(ft_atoi(argv[1]));
-}
-
-int	main(int argc, char **argv)
-{
-	ft_exit(argc, argv);
 }

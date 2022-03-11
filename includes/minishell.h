@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/09 17:18:40 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/11 09:56:29 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
@@ -58,5 +60,13 @@ typedef struct s_info
 	int		last_ret;
 	t_cmd	**cmd;
 }	t_info;
+
+//int	ft_strncmp(const char *s1, const char *s2, size_t n);
+
+//size_t	ft_strlen(const char *s);
+
+//void	ft_putchar(char c);
+//void	ft_putendl_fd(char *str, int fd);
+//void	ft_putstr(char *str);
 
 #endif
