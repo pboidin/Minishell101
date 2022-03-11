@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/11 09:56:29 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/11 19:38:41 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@
 # include <sys/types.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+
+# ifndef TRUE
+#  define TRUE 1
+# endif
+# ifndef FALSE
+#  define FALSE 0
+# endif
 
 typedef struct s_cmd
 {
@@ -51,19 +58,25 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef int t_bool;
+
 typedef struct s_info
 {
+	int		status; // last exit status  
 	char	*prog_name;
-	t_env	*env;
+	t_env	**env; //environment vars
 	t_var	*local_var;
 	t_pid	*running_processes;
 	int		last_ret;
 	t_cmd	**cmd;
+	t_bool	is_child; // if a process is a child
 }	t_info;
 
-//int	ft_strncmp(const char *s1, const char *s2, size_t n);
+extern t_info	g_info;
 
-//size_t	ft_strlen(const char *s);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
+
+size_t	ft_strlen(const char *s);
 
 //void	ft_putchar(char c);
 //void	ft_putendl_fd(char *str, int fd);

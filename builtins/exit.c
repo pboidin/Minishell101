@@ -1,3 +1,4 @@
+#include "../includes/minishell.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -27,32 +28,52 @@ int	ft_atoi(const char *str)
 	return (rslt * neg);
 }
 
-size_t	ft_strlen(const char *s)
+static int	ft_exit_code(const char *tab, int i)
 {
-	if (*s == '\0')
+	if (tab && tab[0] && tab[1] && tab[2])
+	{
+		if (g_info.is_child == FALSE)
+			write(STDERR_FILENO, "exit\n", 5);
+		write(STDERR_FILENO, "exit: too many arguments\n", 25);
+		return (1);
+	}
+	while (tab[1] && tab[1][i])
+	{
+		if (!ft_isdigit(tab[1][i++]))
+		{
+			if (g_info.is_child == FALSE)
+				write(STDERR_FILENO, "exit\n", 5);
+			write(STDERR_FILENO, "exit: ", 6);
+			write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
+			write(STDERR_FILENO, ": numeric argument required\n", 28);
+			g_info.status = 2;
+			ft_lstclear(g_info.env, free);
+			free(g_info.env);
+			exit(2);
+		}
+	}
+	return (0);
+}
+
+int	ft_exit(char **tab)
+{
+	int	exit_code;
+	int	i;
+
+	i = 0;
+	if (tab[1] && (tab[1][i] == '+' || tab[1][i] == '-'))
+		i++;
+	if (ft_exit_code(tab, i) == 1)
+		return (1);
+	if (tab[1])
+	{
+		exit_code = ft_atoi(tab[1]);
+		g_info.status = (unsigned char)exit_code;
+		ft_lstclear(g_info.env, free);
+		free(g_info.env);
+		if (g_info.is_child == FALSE)
+			write(STDERR_FILENO, "exit\n", 5);
+		exit(g_info.status);
 		return (0);
-	return (ft_strlen(s + 1) + 1);
-}
-
-void	ft_putendl_fd(char *str, int fd)
-{
-	char	nline;
-
-	nline = '\n';
-	write(fd, str, ft_strlen(str));
-	write(fd, &nline, 1);
-}
-
-int32_t	ft_exit(t_info *info, char *exit_code)
-{
-	(void)argc;
-	ft_putendl_fd("exit", STDERR_FILENO);
-	if (!argv[1])
-		exit(0);
-	exit(ft_atoi(argv[1]));
-}
-
-int	main(int argc, char **argv)
-{
-	ft_exit(argc, argv);
+	}
 }
