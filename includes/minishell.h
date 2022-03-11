@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/11 09:56:29 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/11 15:23:07 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,12 @@
 
 typedef struct s_cmd
 {
-	int		prev_delim;
-	char	*cmd;
-	int		next_delim;
+	int				prev_delim;
+	int				fork;
+	char			*cmd;
+	struct s_cmd	**pipe;
+	struct s_cmd	**sub_cmd;
+	int				next_delim;
 } t_cmd;
 
 typedef struct s_pid

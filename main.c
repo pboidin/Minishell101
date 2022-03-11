@@ -207,41 +207,34 @@ long long	count_cmds(char *cmd)
 	i = 0;
 	while (cmd[i])
 	{
-		if (cmd[i] == '"')
+		if (cmd[i] == '"' && simple_qu == 0)
 		{
 			double_qu ^= 1;
 			i++;
 		}
-		else if (cmd[i] == 39)
+		else if (cmd[i] == 39 && double_qu == 0)
 		{
 			simple_qu ^= 1;
 			i++;
 		}
-		else if (cmd[i] == '(' || (cmd[i] == '$' && cmd[i + 1] == '('))
+		else if (cmd[i] == '(' && simple_qu == 0 && double_qu == 0)
 		{
 			parenth++;
-			if (cmd[i] == '$')
-				i += 2;
-			else
-				i++;
+			i++;
 		}
-		else if (cmd[i] == ')')
+		else if (cmd[i] == ')' && simple_qu == 0 && double_qu == 0)
 		{
 			if (!parenth)
 				return (-1);
 			parenth--;
 			i++;	
 		}
-		else if ((cmd[i] == '&' || cmd[i] == '|') && !parenth && !double_qu && !simple_qu)
+		else if (((cmd[i] == '&' && cmd[i + 1] == '&')
+				|| (cmd[i] == '|' && cmd[i + 1] == '|'))
+				&& !parenth && !double_qu && !simple_qu)
 		{
 			nb_cmds++;
-			if ((cmd[i] == '|' && cmd[i + 1] == '|')
-				|| (cmd[i] == '&' && cmd[i + 1] == '&'))
-				i += 2;
-			else if (cmd[i] == '&' && cmd[i + 1] != '&')
-				return (-1);
-			else
-				i++;
+			i += 2;
 		}
 		else
 			i++;
@@ -271,37 +264,34 @@ t_cmd	*add_cmd(char *cmd, size_t *i)
 	double_qu = 0;
 	while (cmd[*i + j])
 	{
-		if (cmd[*i + j] == '"')
+		if (cmd[*i + j] == '"' && simple_qu == 0)
 		{
 			double_qu ^= 1;
 			j++;
 		}
-		else if (cmd[*i + j] == 39)
+		else if (cmd[*i + j] == 39 && double_qu == 0)
 		{
 			simple_qu ^= 1;
 			j++;
 		}
-		else if (cmd[*i + j] == '(' || (cmd[*i + j] == '$' && cmd[*i + j + 1] == '('))
+		else if (cmd[*i + j] == '(' && simple_qu == 0 && double_qu == 0)
 		{
 			parenth++;
-			if (cmd[*i + j] == '$')
-				j += 2;
-			else
-				j++;
+			j++;
 		}
-		else if (cmd[*i + j] == ')')
+		else if (cmd[*i + j] == ')' && simple_qu == 0 && double_qu == 0)
 		{
 			parenth--;
 			j++;	
 		}
-		else if ((cmd[*i + j] == '&' || cmd[*i + j] == '|') && !parenth && !double_qu && !simple_qu)
+		else if (((cmd[*i + j] == '&' && cmd[*i + j + 1] == '&')
+				|| (cmd[*i + j] == '|' && cmd[*i + j + 1] == '|'))
+				&& !parenth && !double_qu && !simple_qu)
 		{
-			if (cmd[*i + j] == '|' && cmd[*i + j + 1] == '|')
+			if (cmd[*i + j] == '|')
 				new_cmd->next_delim = 3;
-			else if (cmd[*i + j] == '&' && cmd[*i + j + 1] == '&')
+			else if (cmd[*i + j] == '&')
 				new_cmd->next_delim = 2;
-			else
-				new_cmd->next_delim = 1;
 			break ;
 		}
 		else
@@ -313,44 +303,137 @@ t_cmd	*add_cmd(char *cmd, size_t *i)
 	new_cmd->cmd = ft_trim(&cmd[*i]);
 	if (new_cmd->next_delim == 2 || new_cmd->next_delim == 3)
 		*i += j + 2;
-	else if(new_cmd->next_delim == 1)
-		*i += j + 1;
-	else
-		*i += j;
 	return (new_cmd);
 }
 
-int	ft_parse_cmd(t_info *info, char *cmd, int first_delim, int last_delim)
+int	is_wrapped_p(char *cmd)
+{
+	size_t	i;
+	int		double_qu;
+	int		simple_qu;
+	int		parenth;
+
+	double_qu = 0;
+	simple_qu = 0;
+	if (cmd[0] != '(')
+		return (0);
+	i = 0;
+	parenth = 1;
+	i++;
+	while (cmd[i])
+	{
+		if (cmd[i] == '(' && !double_qu && !simple_qu)
+		{
+			parenth++;
+			i++;
+		}
+		if (cmd[i] == ')' && !double_qu && !simple_qu)
+		{
+			if (parenth == 1)
+			{
+				printf("Breaking\n");
+				break;
+			}
+			else
+				parenth--;
+			i++;
+		}
+		else if (cmd[i] == '"' && !simple_qu)
+		{
+			double_qu ^= 1;
+			i++;
+		}
+		else if (cmd[i] == 39 && !double_qu)
+		{
+			simple_qu ^= 1;
+			i++;
+		}
+		else
+			i++;
+	}
+	if (cmd[i] != ')')
+		return (2);
+	i++;
+	if (cmd[i] == '\0')
+		return (1);
+	while (cmd[i] && ((cmd[i] >= '\t' && cmd[i] <= '\r') || cmd[i] == ' '))
+		i++;
+	if ((cmd[i] == '&' && cmd[i + 1] == '&') || cmd[i] == '|')
+		return (0);
+	else if (cmd[i] == '>')
+	{
+		i++;
+		if (cmd[i] && cmd[i] == '>')
+			i++;
+		while (cmd[i] && ((cmd[i] >= '\t' && cmd[i] <= '\r') || cmd[i] == ' '))
+			i++;
+		if (cmd[i] == '\0')
+			return (2);
+		while (cmd[i] && cmd[i] > 32 && cmd[i] < 127)
+			i++;
+		if (cmd[i] == '\0')
+			return (1);
+		while (cmd[i] && ((cmd[i] >= '\t' && cmd[i] <= '\r') || cmd[i] == ' '))
+			i++;
+		if (cmd[i] != '|' && cmd[i] != '&')
+		   return (2);
+		else
+			return (0);
+	}
+	return (2);
+}
+
+int	ft_parse_cmd(t_cmd ***cmd_tab, char *cmd, t_info *info)
 {
 	size_t		index;
 	long long	i;
 	long long	j;
+	int			is_wrapped;
 
 	if (cmd == NULL)
 		return (1);
 	if (cmd[0] == '&' || cmd[0] == '|')
-		return (free(cmd), write(2, "Parsing error\n", 14), 1);
+		return (write(2, "Parsing error\n", 14), 1);
 	i = count_cmds(cmd);
 	if (i <= 0)
-		return (free(cmd), write(2, "Parsing error\n", 14), 1);
-	info->cmd = (t_cmd **)malloc(sizeof(t_cmd *) * (i + 1));
-	if (!info->cmd)
-		return (free(cmd), 1);
+		return (write(2, "Parsing error\n", 14), 1);
+	*cmd_tab = (t_cmd **)malloc(sizeof(t_cmd *) * (i + 1));
+	if (!*cmd_tab)
+		return (1);
 	j = 0;
 	index = 0;
 	while (j < i)
 	{
-		info->cmd[j] = add_cmd(cmd, &index);
-		if (!info->cmd[j])
-			return (free_cmd(info), free(cmd), 1);
+		(*cmd_tab)[j] = add_cmd(cmd, &index);
+		if (!(*cmd_tab)[j])
+			return (free_cmd(info), 1);
 		if (j != 0)
-			info->cmd[j]->prev_delim = info->cmd[j - 1]->next_delim;
+			(*cmd_tab)[j]->prev_delim = (*cmd_tab)[j - 1]->next_delim;
+		(*cmd_tab)[j]->sub_cmd = NULL;
+		(*cmd_tab)[j]->pipe = NULL;
+		is_wrapped = is_wrapped_p((*cmd_tab)[j]->cmd);
+		if (is_wrapped == 2)
+		{
+			printf("Error on parenthesis in instruction %lld\n", j);
+			free((*cmd_tab)[j]->cmd);
+			free((*cmd_tab)[j]);
+			(*cmd_tab)[j] = NULL;
+			return (free_cmd(info), 1);
+		}
+		else if (is_wrapped == 1)
+		{
+			printf("Instruction %lld is wrapped between parenthesis\n", j);
+//			stripped_parenth(info->cmd[j]);
+			// Need to give it to new tab construct
+		}
+		else
+			printf("Well instruction %lld is not a wrap\n", j);
+		(*cmd_tab)[j]->fork = 0;
 		j++;
 	}
-	info->cmd[0]->prev_delim = first_delim;
-	info->cmd[i - 1]->next_delim = last_delim;
-	free(cmd);
-	info->cmd[i] = NULL;
+	(*cmd_tab)[0]->prev_delim = 0;
+	(*cmd_tab)[i - 1]->next_delim = 0;
+	(*cmd_tab)[i] = NULL;
 	return (0);
 }
 
@@ -373,8 +456,9 @@ int main(int argc, char **argv, char **envp)
 			add_history(cmd);
 			trimmed_cmd = ft_trim(cmd);
 			free(cmd);
-			if (!ft_parse_cmd(&info, trimmed_cmd, 0, 0))
+			if (!ft_parse_cmd(&info.cmd, trimmed_cmd, &info))
 				execute_command(&info);
+			free(trimmed_cmd);
 		}
 		else
 			free(cmd);
