@@ -76,10 +76,14 @@ extern t_info	g_info;
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
+char	*ft_genv(const char *path);
+
 size_t	ft_strlen(const char *s);
 
 //void	ft_putchar(char c);
 //void	ft_putendl_fd(char *str, int fd);
 //void	ft_putstr(char *str);
+
+void	*ft_memset(void *target, int char_to_set, size_t n);
 
 #endif
