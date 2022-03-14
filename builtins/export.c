@@ -1,10 +1,10 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 static char	**ft_lst_to_ptr(void)
 {
 	char	**env;
 	int		i;
-	t_list	*env2;
+	t_env	*env2;
 
 	i = 0;
 	env = malloc(sizeof(char *) * (ft_lstsize(*g_info.env) + 1));
@@ -13,8 +13,8 @@ static char	**ft_lst_to_ptr(void)
 	env2 = *g_info.env;
 	while (env2)
 	{
-		env[i++] = ft_strdup(env2->data);
-		env2 = evn2->next;
+		env[i++] = ft_strdup(env2->value);
+		env2 = env2->next;
 	}
 	env[i] = NULL;
 	return (env);
@@ -104,5 +104,5 @@ int	ft_export(char **new_env)
 		ft_lst_sort();
 	else
 		ft_export_var(new_env, tmp, env, env2);	
-	return (0)
+	return (0);
 }

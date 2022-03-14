@@ -1,5 +1,28 @@
 #include "../includes/minishell.h"
 
+void	ft_update_var(char *var, char *name_var)
+{
+	char	*content;
+	char	*tmp;
+	t_env	*env;
+
+	env = *g_info.env;
+	tmp = ft_strjoin(name_var, "=");
+	free(name_var);
+	content = ft_substr(var, ft_lenvar(var) + 1, 
+			ft_strlen(var) - ft_strlen(tmp));
+	while (env != NULL)
+	{
+		if (ft_strncmp(tmp, (char *)env->value, ft_strlen(tmp)) == 0)
+			break;
+		env = env->next;
+	}
+	free(env->value);
+	env->value = ft_strjoin(tmp, content);
+	free(tmp);
+	free(content);
+}
+
 static void	ft_print_err(const char *new_env)
 {
 	write(STDERR_FILENO, "export: ", 8);
