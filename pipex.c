@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:37:26 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/11 12:06:46 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/12 16:08:46 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int	main(int ac, char **av, char **envp)
 			printf("Test1: %s\n", test);
 			close(fd[0]);
 			close(fd[1]);
-			waitpid(pid, &status, 0);
-			waitpid(pid2, &status, 0);
+			waitpid(pid, &status, 1);
+			waitpid(pid2, &status, 1);
 			free(test);
 			return (status);
 		}
