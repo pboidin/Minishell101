@@ -34,20 +34,21 @@ static void	ft_print_pwd(const char *pwd)
 	write(STDOUT_FILENO, "\n", 1);
 }
 
-int	ft_working_dir()
+int	ft_working_dir(char **n)
 {
 	char	*pwd;
 
 	pwd = (char *)malloc(sizeof(char) * PATH_MAX);
 	if (!pwd)
 		return (1);
+	(void)n;
 	if (getcwd(pwd, PATH_MAX) == NULL)
 	{
 		free(pwd);
 		pwd = NULL;
 	}
 	if (pwd == NULL)
-		pwd = ft_getenv("PWD");
+		pwd = ft_genv("PWD");
 	if (pwd == NULL)
 		return (1);
 	ft_print_pwd(pwd);

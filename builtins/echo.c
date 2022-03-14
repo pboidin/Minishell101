@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	ft_putstr_nnl(const char *tab, int i)
+static void	ft_putstr_nnl(char *const *tab, int i)
 {
 	while (tab[i])
 	{
@@ -11,7 +11,7 @@ static void	ft_putstr_nnl(const char *tab, int i)
 	}
 }
 
-static void	ft_putstr_nl(const char *tab)
+static void	ft_putstr_nl(char *const *tab)
 {
 	int	i;
 
@@ -26,7 +26,7 @@ static void	ft_putstr_nl(const char *tab)
 	write(1, "\n", 1);
 }
 
-static int	ft_check_flag(char **tab)
+static int	ft_check_flag(char *tab)
 {
 	int	i;
 

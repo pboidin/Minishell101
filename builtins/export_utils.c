@@ -9,7 +9,7 @@ void	ft_update_var(char *var, char *name_var)
 	env = *g_info.env;
 	tmp = ft_strjoin(name_var, "=");
 	free(name_var);
-	content = ft_substr(var, ft_lenvar(var) + 1, 
+	content = ft_substr(var, ft_lenvar(var) + 1,
 			ft_strlen(var) - ft_strlen(tmp));
 	while (env != NULL)
 	{
@@ -56,7 +56,7 @@ int	ft_error(char *new_env)
 	return (1);
 }
 
-void	ft_add_env(const char *new_env, int i)
+void	ft_add_env(char *const *new_env, int i)
 {
 	if (ft_error(new_env[i]) == 0)
 		ft_lstadd_back(g_info.env,
@@ -86,7 +86,7 @@ void	ft_export_var(char **new_env, char *tmp, char *env, char *env2)
 		else
 		{
 			free(env);
-	//		ft_update_var(tmp, new_env[i]); // need to write this function.
+			ft_update_var(tmp, new_env[i]);
 		}
 	}
 }

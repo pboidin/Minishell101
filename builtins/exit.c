@@ -28,7 +28,7 @@ int	ft_atoi(const char *str)
 	return (rslt * neg);
 }
 
-static int	ft_exit_code(const char *tab, int i)
+static int	ft_exit_code(char *const *tab, int i)
 {
 	if (tab && tab[0] && tab[1] && tab[2])
 	{
@@ -73,7 +73,12 @@ int	ft_exit(char **tab)
 		free(g_info.env);
 		if (g_info.is_child == FALSE)
 			write(STDERR_FILENO, "exit\n", 5);
-		exit(g_info.status);
-		return (0);
+		exit((unsigned char)exit_code);
 	}
+	ft_lstclear(g_info.env, free);
+	free(g_info.env);
+	if (g_info.is_child == FALSE)
+		write(STDERR_FILENO, "exit\n", 5);
+	exit(g_info.status);
+	return (0);
 }

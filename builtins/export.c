@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static char	**ft_lst_to_ptr(void)
+static char	**ft_lst_to_str(void)
 {
 	char	**env;
 	int		i;
@@ -86,7 +86,7 @@ static void	ft_lst_sort(void)
 	{
 		j = -1;
 		while (env[++j])
-		ft_swap_str(i, j, env, tmp);
+			ft_swap_str(i, j, env, tmp);
 	}
 	ft_lst_printer(env);
 }
@@ -95,7 +95,7 @@ int	ft_export(char **new_env)
 {
 	char	*env;
 	char	*env2;
-	char 	*tmp;
+	char	*tmp;
 
 	env = NULL;
 	env2 = NULL;

@@ -39,3 +39,4 @@ int	ft_env(char **tab)
 	}
 	return (0);
 }
+

@@ -31,6 +31,13 @@
 #  define FALSE 0
 # endif
 
+typedef struct s_list
+{
+	void			*content;
+	size_t			content_size;
+	struct s_list	*next;
+}				t_list;
+
 typedef struct s_cmd
 {
 	int		prev_delim;
@@ -74,16 +81,32 @@ typedef struct s_info
 
 extern t_info	g_info;
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_isalnum(int c);
+int		ft_isalpha(int c);
+int		ft_isdigit(int c);
+int		ft_islower(int c);
+int		ft_isupper(int c);
+int		ft_lenvar(const char *s);
+int		ft_lstsize(t_env *lst);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 char	*ft_genv(const char *path);
+char	*ft_strdup(const char *str);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 size_t	ft_strlen(const char *s);
+
+t_env	*ft_lstnew(void *data);
 
 //void	ft_putchar(char c);
 //void	ft_putendl_fd(char *str, int fd);
 //void	ft_putstr(char *str);
 
+void	ft_export_var(char **new_env, char *tmp, char *env, char *env2);
+void	ft_lstclear(t_env **lst, void (*del)(void *));
+void	ft_lstadd_back(t_env **lst, t_env *new);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 
 #endif

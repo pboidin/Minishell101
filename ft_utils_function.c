@@ -42,15 +42,6 @@ char	*ft_strndup(const char *str, size_t n, t_bool free_str)
 	return (result);
 }
 
-char	*ft_strdup(const char *str, t_bool free_str)
-{
-	if (!str)
-		return (NULL);
-	if (free_str == TRUE)
-		return (ft_strndup(str, ft_strlen(str), TRUE));
-	return (ft_strndup(str, ft_strlen(str), FALSE));
-}
-
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
