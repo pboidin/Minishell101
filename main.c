@@ -2,6 +2,8 @@
 
 #include "minishell.h"
 
+static volatile sig_atomic_t	g_signal = 0;
+
 char	*get_str(char *line, char sep, size_t *index)
 {
 	size_t	i;
@@ -127,13 +129,16 @@ int	create_info(t_info *info, char **envp, char *name)
 	info->running_processes = NULL;
 	info->last_ret = 0;
 	info->env = NULL;
-	i = 0;
-	while (envp[i])
-		i++;
-	while (i--)
+	if (envp)
 	{
-		if (add_to_env(info, envp[i]))
-			return (free_env(info), 1);
+		i = 0;
+		while (envp[i])
+			i++;
+		while (i--)
+		{
+			if (add_to_env(info, envp[i]))
+				return (free_env(info), 1);
+		}
 	}
 	return (0);
 }
@@ -608,16 +613,6 @@ int	parse_cmd(t_cmd *cmd)
 	cmd->fork = 0;
 	cmd->pipe = NULL;
 	cmd->sub_cmd = NULL;
-	ret = parse_logical(cmd);
-	if (ret == 1)
-		return (1);
-	else if (ret)
-		return (0);
-	ret = parse_pipe(cmd);
-	if (ret == 1)
-		return (1);
-	else if (ret)
-		return (0);
 	ret = is_wrapped_p(cmd->cmd);
 	if (ret == 2)
 		return (1);
@@ -647,20 +642,36 @@ int	parse_cmd(t_cmd *cmd)
 	return (0);
 }
 
+void	handle_signal(int signal)
+{
+	if (signal == SIGKILL)
+		g_signal = 1;
+	printf("\n");
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
+
 int main(int argc, char **argv, char **envp)
 {
-	(void)argc;
-	char	*cmd;
-	t_info	info;
+	char				*cmd;
+	t_info				info;
 
-	if (!envp || !envp[0])
+	if (argc != 1)
 		return (1);
 	if (create_info(&info, envp, argv[0]))
 		return (1);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_signal);
 	while (1)
 	{
 		cmd = readline("Minishell: ");
-		if (cmd != NULL && cmd[0] != '\0')
+		if (cmd == NULL)
+		{
+			free_info(&info);
+			return (0);
+		}
+		if (cmd[0] != '\0')
 		{
 			add_history(cmd);
 			info.cmd.cmd = ft_trim(cmd);
