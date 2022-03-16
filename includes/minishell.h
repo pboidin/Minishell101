@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 18:43:49 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/16 20:23:30 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ void	save_delim(t_cmd *new_cmd, char c);
 int		parse_logical(t_cmd *cmd);
 void	skip_whitespaces(char *cmd, int *i);
 int		fork_cmd(t_cmd *cmd);
-
+int		parse_cmd(t_cmd *cmd);
+int		parse_simple_cmd(t_cmd *cmd);
 //int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 //size_t	ft_strlen(const char *s);
