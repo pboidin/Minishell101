@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 15:08:48 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/16 18:43:49 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,19 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
+typedef struct s_redirect
+{
+	int					type;
+	char				*str;
+	struct s_redirect	*next;
+}	t_redirect;
+
 typedef struct s_cmd
 {
 	int				prev_delim;
-	int				fork;
+	struct s_cmd	*fork;
+	t_redirect		*in;
+	t_redirect		*out;
 	char			*cmd;
 	char			*cmd_name;
 	char			**cmd_args;
@@ -81,6 +90,12 @@ int		save_token(char c, t_tokens *toks);
 void	free_info(t_info *info);
 char	*ft_trim(char *cmd);
 int		parse_pipe(t_cmd *cmd);
+int		has_tokens(t_tokens toks);
+int		is_delim(char *str, int delim);
+void	save_delim(t_cmd *new_cmd, char c);
+int		parse_logical(t_cmd *cmd);
+void	skip_whitespaces(char *cmd, int *i);
+int		fork_cmd(t_cmd *cmd);
 
 //int	ft_strncmp(const char *s1, const char *s2, size_t n);
 

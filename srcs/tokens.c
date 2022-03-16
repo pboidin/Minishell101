@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:57:09 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 14:58:07 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/16 18:33:55 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	save_token(char c, t_tokens *toks)
 	else if (c == 39 && !toks->dbl_qu)
 		toks->spl_qu ^= 1;
 	else if (c == '(' && !toks->spl_qu && !toks->dbl_qu)
-		tok->par += 1;
+		toks->par += 1;
 	else if (c == ')' && !toks->spl_qu && !toks->dbl_qu)
 	{
 		if (!toks->par)
@@ -36,4 +36,11 @@ int	save_token(char c, t_tokens *toks)
 	else
 		return (0);
 	return (1);
+}
+
+int	has_tokens(t_tokens toks)
+{
+	if (toks.par || toks.dbl_qu || toks.spl_qu)
+		return (1);
+	return (0);
 }
