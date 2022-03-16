@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/14 12:33:47 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/16 15:08:48 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ typedef struct s_cmd
 	struct s_cmd	**sub_cmd;
 	int				next_delim;
 } t_cmd;
+
+typedef struct s_tokens
+{
+	int	par;
+	int	dbl_qu;
+	int	spl_qu;
+}	t_tokens;
 
 typedef struct s_pid
 {
@@ -66,7 +73,14 @@ typedef struct s_info
 	t_cmd	cmd;
 }	t_info;
 
+void	free_env(t_info *info);
+int		create_info(t_info *info, char **envp, char *name);
 int		parse_cmd(t_cmd *cmd);
+void	init_tokens(t_tokens *tokens);
+int		save_token(char c, t_tokens *toks);
+void	free_info(t_info *info);
+char	*ft_trim(char *cmd);
+int		parse_pipe(t_cmd *cmd);
 
 //int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
