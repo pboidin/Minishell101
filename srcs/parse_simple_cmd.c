@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/17 13:07:26 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/17 14:52:49 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	is_valid(char *str, int i)
 			dbl_qu ^= 1;
 		else if (str[i] == 39 && !dbl_qu)
 			spl_qu ^= 1;
-		else if (!dbl_qu && !spl_qu && (str[i] == '&' || str[i] == '|'
+		else if (!dbl_qu && !spl_qu && (str[i] == '|'
 				|| str[i] == '(' || str[i] == ')'))
 			return (0);
 		i++;
@@ -78,6 +78,7 @@ static int	add_redirect(t_cmd *cmd, int i, int redirect)
 
 static int	save_redirect(t_cmd *cmd, char *str, int i)
 {
+	char		temp;
 	int			end;
 	int			redirect;
 	int			j;
@@ -88,7 +89,7 @@ static int	save_redirect(t_cmd *cmd, char *str, int i)
 	{
 		save_token(str[i], &toks);
 		if (!has_tokens(toks) && (str[i] == '>' || str[i] == '<'))
-			break;
+			break ;
 		i++;
 	}
 	if (str[i] == '\0')
@@ -117,10 +118,12 @@ static int	save_redirect(t_cmd *cmd, char *str, int i)
 	skip_whitespaces(str, &j);
 	if (str[j] == '\0')
 		return (1);
-	while (str[j] && str[j] > 32  && str[j] < 127)
+	while (str[j] && str[j] > 32 && str[j] < 127
+		&& !(str[j] == '<' || str[j] =='>'))
 		j++;
 	if (str[j] != '\0')
 	{
+		temp = str[j];
 		str[j] = '\0';
 		end = 0;
 	}
@@ -134,7 +137,7 @@ static int	save_redirect(t_cmd *cmd, char *str, int i)
 		return (0);
 	else
 	{
-		str[i] = ' ';
+		str[i] = temp;
 		return (save_redirect(cmd, cmd->cmd, i));
 	}
 }

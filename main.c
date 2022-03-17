@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/17 12:12:06 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/17 14:30:44 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ char *print_delim(int delim)
 
 void	execute_command(t_cmd *cmd)
 {
+	t_redirect	*current;
 	long long	i;
 
 	i = 0;
@@ -48,9 +49,39 @@ void	execute_command(t_cmd *cmd)
 		printf("(");
 		execute_command(cmd->fork);
 		printf(")");
+		current = cmd->in;
+		while (current)
+		{
+			printf(" %s %s", (current->type == 1 ? "<" : "<<"), current->str);
+			current = current->next;
+		}
+		current = cmd->out;
+		while (current)
+		{
+			printf(" %s %s", (current->type == 1 ? ">" : ">>"), current->str);
+			current = current->next;
+		}
 	}
 	else
-		printf("%s", cmd->cmd_name);
+	{
+		while (cmd->cmd_args[i])
+		{
+			printf("%s ", cmd->cmd_args[i]);
+			i++;
+		}
+		current = cmd->in;
+		while (current)
+		{
+			printf(" %s %s", (current->type == 1 ? "<" : "<<"), current->str);
+			current = current->next;
+		}
+		current = cmd->out;
+		while (current)
+		{
+			printf(" %s %s", (current->type == 1 ? ">" : ">>"), current->str);
+			current = current->next;
+		}
+	}
 }
 
 void	handle_signal(int signal)
