@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/17 12:27:32 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/17 13:07:26 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,11 @@ int	parse_simple_cmd(t_cmd *cmd)
 		return (write (2, "Parsing error\n", 14), 1);
 	if (save_redirect(cmd, cmd->cmd, i))
 		return (1);
-	cmd->cmd_name = ft_trim(cmd->cmd);
+	cmd->cmd = ft_trim(cmd->cmd);
+	if (cmd->cmd)
+	{
+		if (parse_args(cmd))
+			return (1);
+	}
 	return (0);
 }
