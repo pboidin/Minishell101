@@ -40,20 +40,18 @@ void	ft_putstr(char *str)
 
 char	*ft_trim(char *cmd)
 {
-	size_t	i;
-	size_t	j;
-	size_t	z;
+	int		i;
+	int		j;
+	int		z;
 	char	*new_cmd;
 
 	i = 0;
-	while (cmd[i] && ((cmd[i] >= '\t' && cmd[i] <= '\r') || cmd[i] == ' ' ))
-		i++;
-	if (!cmd[i])
+	skip_whitespaces(cmd, &i);
+	if (!cmd || !cmd[i])
 		return (NULL);
 	j = i;
-	while (cmd[j])
+	while (cmd[j + 1])
 		j++;
-	j--;
 	while (j >= i
 		&& ((cmd[i + j] >= '\t' && cmd[i + j] <= '\r') || cmd[i + j] == ' ' ))
 		j--;
@@ -69,6 +67,8 @@ char	*ft_trim(char *cmd)
 
 void	skip_whitespaces(char *cmd, int *i)
 {
+	if (!cmd)
+		return ;
 	while (cmd[*i] && ((cmd[*i] >= '\t' && cmd[*i] <= '\r') || cmd[*i] == ' '))
 		*i += 1;
 }

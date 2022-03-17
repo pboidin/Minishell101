@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 21:03:05 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/17 12:12:06 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,6 @@ void	execute_command(t_cmd *cmd)
 	}
 	else
 		printf("%s", cmd->cmd_name);
-}
-
-int	parse_simple_cmd(t_cmd *cmd)
-{
-	cmd->cmd_name = cmd->cmd;
-	return (0);
 }
 
 void	handle_signal(int signal)
