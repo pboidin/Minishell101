@@ -6,11 +6,22 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/09 14:43:09 by bdetune          ###   ########.fr        #
+#    Updated: 2022/03/17 14:18:02 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.c
+SRCS = main.c \
+	   srcs/init.c \
+	   srcs/free.c \
+	   srcs/tokens.c \
+	   srcs/parse_pipes.c \
+	   srcs/delim.c \
+	   srcs/parse_logical.c \
+	   srcs/ft_utils_str.c \
+	   srcs/parse_fork.c \
+	   srcs/parse_cmd.c \
+	   srcs/parse_simple_cmd.c \
+	   srcs/parse_cmd_args.c
 
 OBJS := ${SRCS:.c=.o}
 
