@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 15:19:55 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/18 18:50:23 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@
 # endif
 # ifndef FALSE
 #  define FALSE 0
+# endif
+# ifndef OR
+#  define OR 3
+# endif
+# ifndef AND
+#  define AND 2
 # endif
 
 typedef struct s_redirect

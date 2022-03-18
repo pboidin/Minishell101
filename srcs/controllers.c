@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 17:17:07 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/18 18:51:04 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ static void	logical_controller(t_info *info, t_cmd *cmd)
 			general_controller(info, cmd->sub_cmd[i]);
 		else
 		{
-			if (cmd->sub_cmd[i]->prev_delim == 2 && !info->status)
+			if (cmd->sub_cmd[i]->prev_delim == AND && !info->status)
 				general_controller(info, cmd->sub_cmd[i]);
-			else if (cmd->sub_cmd[i]->prev_delim == 3 && info->status)
+			else if (cmd->sub_cmd[i]->prev_delim == OR && info->status)
 				general_controller(info, cmd->sub_cmd[i]);
 		}
 		i++;
