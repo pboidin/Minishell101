@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/17 14:52:49 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/18 17:40:29 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,25 +95,17 @@ static int	save_redirect(t_cmd *cmd, char *str, int i)
 	if (str[i] == '\0')
 		return (0);
 	j = i;
-	if (str[i] == '>')
+	if (str[i] == '>' && ++j)
 	{
 		redirect = 1;
-		if (str[i + 1] == '>')
-		{
+		if (str[i + 1] == '>' && ++j)
 			redirect = 2;
-			j++;
-		}
-		j++;
 	}
-	else if (str[i] == '<')
+	else if (str[i] == '<' && ++j)
 	{
 		redirect = -1;
-		if (str[i + 1] == '<')
-		{
+		if (str[i + 1] == '<' && ++j)
 			redirect = -2;
-			j++;
-		}
-		j++;
 	}
 	skip_whitespaces(str, &j);
 	if (str[j] == '\0')
@@ -153,10 +145,7 @@ int	parse_simple_cmd(t_cmd *cmd)
 	if (save_redirect(cmd, cmd->cmd, i))
 		return (1);
 	cmd->cmd = ft_trim(cmd->cmd);
-	if (cmd->cmd)
-	{
-		if (parse_args(cmd))
-			return (1);
-	}
+	if (parse_args(cmd))
+		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/17 14:38:20 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/18 17:40:20 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static int	count_args(char *str)
 	while (str[i])
 	{
 		skip_whitespaces(str, &i);
-		nb_command++;
+		if (str[i])
+			nb_command++;
 		while (str[i])
 		{
 			save_token(str[i], &toks);
