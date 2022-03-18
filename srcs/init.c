@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 14:17:31 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/18 15:18:14 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	create_info(t_info *info, char **envp, char *name)
 	info->prog_name = name;
 	info->local_var = NULL;
 	info->running_processes = NULL;
-	info->last_ret = 0;
+	info->status = 0;
 	info->env = NULL;
 	if (envp)
 	{

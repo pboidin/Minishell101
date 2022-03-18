@@ -6,11 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/03/17 14:18:27 by bdetune          ###   ########.fr       */
-=======
-/*   Updated: 2022/03/11 19:38:41 by piboidin         ###   ########.fr       */
->>>>>>> 98fcf121b1ab300f08d5762ed32ea57740b52997
+/*   Updated: 2022/03/18 15:19:55 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +15,14 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
+# include <stdint.h>
+# include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-
-<<<<<<< HEAD
-typedef struct s_redirect
-{
-	int					type;
-	char				*str;
-	struct s_redirect	*next;
-}	t_redirect;
-=======
 # ifndef TRUE
 #  define TRUE 1
 # endif
@@ -43,13 +30,19 @@ typedef struct s_redirect
 #  define FALSE 0
 # endif
 
+typedef struct s_redirect
+{
+	int					type;
+	char				*str;
+	struct s_redirect	*next;
+}	t_redirect;
+
 typedef struct s_list
 {
 	void			*content;
 	size_t			content_size;
 	struct s_list	*next;
-}				t_list;
->>>>>>> 98fcf121b1ab300f08d5762ed32ea57740b52997
+}	t_list;
 
 typedef struct s_cmd
 {
@@ -98,12 +91,11 @@ typedef struct s_info
 {
 	int		status; // last exit status  
 	char	*prog_name;
-	t_env	**env; //environment vars
+	t_env	*env; //environment vars
 	t_var	*local_var;
 	t_pid	*running_processes;
-	int		last_ret;
-<<<<<<< HEAD
 	t_cmd	cmd;
+	t_bool	is_child; // if a process is a child
 }	t_info;
 
 void	free_env(t_info *info);
@@ -125,13 +117,8 @@ int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd);
 
 //int	ft_strncmp(const char *s1, const char *s2, size_t n);
-=======
-	t_cmd	**cmd;
-	t_bool	is_child; // if a process is a child
-}	t_info;
 
 extern t_info	g_info;
->>>>>>> 98fcf121b1ab300f08d5762ed32ea57740b52997
 
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
