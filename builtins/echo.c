@@ -1,39 +1,70 @@
 #include "../includes/minishell.h"
 
-static void	ft_print_args(int32_t argc, char **argv, bool newline)
+static void	ft_putstr_nnl(char *const *tab, int i)
 {
-	int32_t	i;
-
-	i = 1;
-	if (!newline)
-		i++;
-	while (argc >= 2 && i <= argc - 2)
+	while (tab[i])
 	{
-		ft_putstr(argv[i++]);
-		ft_putchar(' ');
+		write(1, tab[i], ft_strlen(tab[i]));
+		if (tab[i + 1])
+			write(STDOUT_FILENO, " ", 1);
+		i++;
 	}
-	ft_putstr(argv[i]);
-	if (newline)
-		ft_putchar('\n');
 }
 
-int32_t	ft_echo(int argc, char **argv)
+static void	ft_putstr_nl(char *const *tab)
 {
-	bool	newline;
+	int	i;
 
-	newline = true;
-	if (argc == 1)
+	i = 1;
+	while (tab[i])
 	{
-		ft_putchar('\n');
-		return (EXIT_SUCCESS);
+		write(1, tab[i], ft_strlen(tab[i]));
+		if (tab[i + 1])
+			write(STDOUT_FILENO, " ", 1);
+		i++;
 	}
-	if (argc >= 2)
+	write(1, "\n", 1);
+}
+
+static int	ft_check_flag(char *tab)
+{
+	int	i;
+
+	if (tab && ft_strncmp(tab, "-n", 2) == 0)
 	{
-		if (ft_strncmp(argv[1], "-n", 2) == 0)
-			newline = false;
-		if (argc < 3)
-			ft_putchar('\0');
+		i = 2;
+		while (tab[i])
+		{
+			if (tab[i] != 'n')
+				return (1);
+			i++;
+		}
 	}
-	ft_print_args(argc, argv, newline);
-	return (EXIT_SUCCESS);
+	else
+		return (1);
+	return (0);
+}
+
+int	ft_echo(char **tab)
+{
+	int	i;
+
+	i = 1;
+	if (!tab[i])
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		return (0);
+	}
+	if (ft_check_flag(tab[i]) == 0)
+	{
+		i++;
+		while (tab[i] && ft_check_flag(tab[i]) == 0)
+			i++;
+		if (!tab[i])
+			return (0);
+		ft_putstr_nnl(tab, i);
+	}
+	else
+		ft_putstr_nl(tab);
+	return (0);
 }
