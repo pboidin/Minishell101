@@ -1,7 +1,4 @@
 #include "../includes/minishell.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 
 static void	ft_print(void)
 {
@@ -9,7 +6,7 @@ static void	ft_print(void)
 	int		i;
 	t_env	*env;
 
-	env = *g_info.env;
+	env = g_info.env;
 	while (env)
 	{
 		i = 0;

@@ -35,6 +35,9 @@
 # ifndef AND
 #  define AND 2
 # endif
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
 
 typedef struct s_redirect
 {
@@ -133,6 +136,7 @@ int		ft_islower(int c);
 int		ft_isupper(int c);
 int		ft_lenvar(const char *s);
 int		ft_lstsize(t_env *lst);
+int		ft_set_old(t_env *env, char *pwd, char *val);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 char	*ft_genv(const char *path);
