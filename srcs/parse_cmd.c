@@ -6,13 +6,13 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:18:37 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 20:19:33 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:44:41 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	init_cmd(t_cmd *cmd)
+static int	reinit_cmd(t_cmd *cmd)
 {
 	char	*trimmed_cmd;
 
@@ -35,7 +35,7 @@ int	parse_cmd(t_cmd *cmd)
 {
 	int		ret;
 
-	if (init_cmd(cmd))
+	if (reinit_cmd(cmd))
 		return (1);
 	ret = parse_logical(cmd);
 	if (ret == 1)

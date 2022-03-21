@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 15:18:14 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:43:41 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,20 @@ static int	add_to_env(t_info *info, char *line)
 	return (0);
 }
 
+void	init_cmd(t_cmd *cmd)
+{
+	cmd->prev_delim = 0;
+	cmd->fork = NULL;
+	cmd->in = NULL;
+	cmd->out = NULL;
+	cmd->cmd = NULL;
+	cmd->cmd_name = NULL;
+	cmd->cmd_args = NULL;
+	cmd->pipe = NULL;
+	cmd->sub_cmd = NULL;
+	cmd->next_delim = 0;
+}
+
 int	create_info(t_info *info, char **envp, char *name)
 {
 	size_t	i;
@@ -75,5 +89,6 @@ int	create_info(t_info *info, char **envp, char *name)
 				return (free_env(info), 1);
 		}
 	}
+	init_cmd(&info->cmd);
 	return (0);
 }

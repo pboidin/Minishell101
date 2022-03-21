@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 11:31:37 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:41:51 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void	free_env(t_info *info);
 int		create_info(t_info *info, char **envp, char *name);
 int		parse_cmd(t_cmd *cmd);
 void	init_tokens(t_tokens *tokens);
+void	init_cmd(t_cmd *cmd);
 int		save_token(char c, t_tokens *toks);
 void	free_info(t_info *info);
 char	*ft_trim(char *cmd);

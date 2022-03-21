@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 15:17:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:42:28 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ int main(int argc, char **argv, char **envp)
 				}
 				else
 					write(2, "Error\n", 6);
+				free_cmd(&info.cmd);
+				init_cmd(&info.cmd);
 			}
 		}
 		else
