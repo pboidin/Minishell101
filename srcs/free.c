@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 11:36:49 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:52:12 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	free_cmd(t_cmd *cmd)
 	if (cmd->cmd_name)
 		free(cmd->cmd_name);
 	if (cmd->cmd)
-		free(cmd->cmd_name);
+		free(cmd->cmd);
 	free_redirect(cmd);
 }
 
