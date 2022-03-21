@@ -6,23 +6,32 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:22:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/21 11:23:41 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/21 14:49:32 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.c"
+#include "minishell.h"
 
-char	*ft_path(char *cmd, char **envp)
+char	*ft_path(char *cmd, t_info *info)
 {
+	t_env	*current;
 	char	**paths;
 	char	*path;
 	char	*path_dir;
 	int		i;
 
-	i = 0;
-	while (ft_strnstr(envp[i], "PATH", 4) == 0)
-		i++;
-	paths = ft_split(envp[i] + 5, ':');
+	if (!info->env)
+		return (NULL);
+	current = info->env;
+	while (current)
+	{
+		if (ft_strncmp(current->name, "PATH", 5))
+			break ;
+		current = current->next;
+	}
+	if (!current)
+		return (NULL);
+	paths = ft_split(current-value, ':');
 	i = 0;
 	while (paths[i])
 	{
