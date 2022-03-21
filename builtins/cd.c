@@ -13,7 +13,7 @@ static int	ft_go_to_dir(const char *dir)
 		free(aux);
 		return (1);
 	}
-	aux = // Créer une fonction Réalloc qui va prendre en argmts aux, la taille de dir + la taille de home +1;
+	aux = ft_realloc(aux, ft_strlen(dir) + ft_strlen(home) + 1);
 	tmp = ft_strjoin(home, aux);
 	if (chdir(tmp) == -1)
 	{
@@ -97,9 +97,9 @@ int	ft_ch_dir(char **dir)
 		else if (ft_go_to_dir(dir[1]) == 1)
 			return (1);
 	}
-	else if (dir[1][0] != '\0' && chdir(dir[1] == -1))
+	else if (dir[1][0] != '\0' && chdir(dir[1]) == -1)
 		return (ft_print_err(dir[1]));
 	else
-		ft_env_set(*g_info.env);
+		ft_env_set(g_info.env);
 	return (0);
 }

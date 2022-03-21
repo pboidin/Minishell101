@@ -1,4 +1,4 @@
-#include "../includes/minishell.c"
+#include "../includes/minishell.h"
 
 void	ft_env_set(t_env *env)
 {
@@ -18,7 +18,7 @@ int	ft_print_err(const char *dir)
 	return (1);
 }
 
-int	ft_return_home(void)
+int	ft_ret_home(void)
 {
 	if (ft_go_to_home() == 1)
 		return (1);

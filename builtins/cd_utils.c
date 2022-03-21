@@ -6,7 +6,7 @@ int	ft_go_to_home(void)
 	t_env	*env;
 
 	home = ft_genv("HOME");
-	env = *g_info.env;
+	env = g_info.env;
 	if (!home || chdir(home) == -1)
 	{
 		ft_print_err(home);
@@ -43,12 +43,12 @@ void	ft_set_val(t_env **env, const char *val, int c)
 		(*env)->value = (void *)ft_strdup(val);
 	}
 	else
-		ft_lstadd_back(g_info.env, ft_lstnew((void *) ft_strdup(val)));
+		ft_lstadd_back(&g_info.env, ft_lstnew((void *) ft_strdup(val)));
 }
 
 int	ft_try_go_oldpwd(t_env **env)
 {
-	t_list	*aux;
+	t_env	*aux;
 	
 	aux = *env;
 	if (!env)
@@ -71,7 +71,7 @@ int	ft_set_old(t_env *env, char *pwd, char *val)
 	tmp = env;
 	pwd = ft_genv("PWD");
 	ret = ft_try_go_oldpwd(&tmp);
-	if (tmp = NULL)
+	if (tmp == NULL)
 	{
 		free(pwd);
 		return (1);
