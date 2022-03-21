@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 14:25:12 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/21 11:28:55 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,25 +61,79 @@ void	free_running_processes(t_info *info)
 	info->running_processes = NULL;
 }
 
-/*
-void	free_cmd(t_info *info)
+void	free_redirect(t_cmd *cmd)
 {
-	size_t	i;
+	t_redirect	*current;
+	t_redirect	*next;
 
-	if (!info->cmd)
-		return ;
-	i = 0;
-	while (info->cmd[i])
+	current = cmd->in;
+	while (current)
 	{
-		free(info->cmd[i]->cmd);
-		free(info->cmd[i]);
-		i++;
+		next = current->next;
+		free(current->str);
+		free(current);
+		current = next;
+	}
+	current = cmd->out;
+	while (current)
+	{
+		next = current->next;
+		free(current->str);
+		free(current);
+		current = next;
 	}
 }
-*/
+
+
+void	free_cmd(t_cmd *cmd)
+{
+	size_t	i;
+	t_cmd	**tab;
+
+	tab = NULL;
+	if (!cmd)
+		return ;
+	i = 0;
+	if (cmd->sub_cmd)
+		tab = cmd->sub_cmd;
+	else if (cmd->pipe)
+		tab = cmd->pipe;
+	if (tab)
+	{
+		while (tab[i])
+		{
+			free_cmd(tab[i]);
+			free(tab[i]);
+			i++;
+		}
+		free(tab);
+	}
+	else if (cmd->fork)
+	{
+		free_cmd(cmd->fork);
+		free(cmd->fork);
+	}
+	else if (cmd->cmd_args)
+	{
+		while (cmd->cmd_args[i])
+		{
+			free(cmd->cmd_args[i]);
+			i++;
+		}
+		free(cmd->cmd_args);
+	}
+	if (cmd->cmd_name)
+		free(cmd->cmd_name);
+	if (cmd->cmd)
+		free(cmd->cmd_name);
+	free_redirect(cmd);
+}
+
 void	free_info(t_info *info)
 {
 	free_env(info);
 	free_var(info);
 	free_running_processes(info);
+	free_cmd(info->cmd);
+	rl_clear_history();
 }
