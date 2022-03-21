@@ -158,6 +158,8 @@ t_env	*ft_lstnew(void *data);
 void	ft_export_var(char **new_env, char *tmp, char *env, char *env2);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);
+void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
+void	*ft_realloc(void *ptr, size_t memSize);
 
 #endif
