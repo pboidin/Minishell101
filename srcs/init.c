@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 11:43:41 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 13:04:39 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static char	*get_str(char *line, char sep, size_t *index)
 	size_t	j;
 	char	*str;
 
+	str = NULL;
 	i = *index;
 	j = 0;
 	while (line[i + j] && line[i + j] != sep)
@@ -31,6 +32,7 @@ static char	*get_str(char *line, char sep, size_t *index)
 		str[j] = line[i + j];
 		j++;
 	}
+	str[j] = '\0';
 	*index += j + 1;
 	return (str);
 }
@@ -41,9 +43,13 @@ static int	add_to_env(t_info *info, char *line)
 	t_env	*new_var;
 
 	index = 0;
+	new_var = NULL;
 	new_var = (t_env *)malloc(sizeof(t_env));
 	if (!new_var)
 		return (1);
+	new_var->name = NULL;
+	new_var->value = NULL;
+	new_var->next = NULL;
 	new_var->name = get_str(line, '=', &index);
 	if (!new_var->name)
 		return (free(new_var), 1);

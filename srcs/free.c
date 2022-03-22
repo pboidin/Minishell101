@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 12:21:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 12:44:26 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,25 +88,30 @@ void	free_redirect(t_cmd *cmd)
 void	free_cmd(t_cmd *cmd)
 {
 	size_t	i;
-	t_cmd	**tab;
-
-	tab = NULL;
+	
 	if (!cmd)
 		return ;
+	free(cmd->cmd);
 	i = 0;
 	if (cmd->sub_cmd)
-		tab = cmd->sub_cmd;
-	else if (cmd->pipe)
-		tab = cmd->pipe;
-	if (tab)
 	{
-		while (tab[i])
+		while (cmd->sub_cmd[i])
 		{
-			free_cmd(tab[i]);
-			free(tab[i]);
+			free_cmd(cmd->sub_cmd[i]);
+			free(cmd->sub_cmd[i]);
 			i++;
 		}
-		free(tab);
+		free(cmd->sub_cmd);
+	}
+	else if (cmd->pipe)
+	{
+		while (cmd->pipe[i])
+		{
+			free_cmd(cmd->pipe[i]);
+			free(cmd->pipe[i]);
+			i++;
+		}
+		free(cmd->pipe);
 	}
 	else if (cmd->fork)
 	{
@@ -124,7 +129,6 @@ void	free_cmd(t_cmd *cmd)
 	}
 	if (cmd->cmd_name)
 		free(cmd->cmd_name);
-	free(cmd->cmd);
 	free_redirect(cmd);
 }
 
