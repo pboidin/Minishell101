@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 14:04:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 14:31:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,4 +139,6 @@ void	free_info(t_info *info)
 	free_running_processes(info);
 	free_cmd(&info->cmd);
 	rl_clear_history();
+	close(0);
+	close(1);
 }

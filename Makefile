@@ -6,30 +6,30 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/22 11:39:13 by bdetune          ###   ########.fr        #
+#    Updated: 2022/03/22 14:34:59 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS = main.c \
 	   srcs/init.c \
-	   srcs/free.c \
-	   srcs/tokens.c \
-	   srcs/parse_pipes.c \
-	   srcs/delim.c \
-	   srcs/parse_logical.c \
-	   srcs/ft_utils_str.c \
-	   srcs/parse_fork.c \
-	   srcs/parse_cmd.c \
-	   srcs/parse_simple_cmd.c \
-	   srcs/parse_cmd_args.c \
-	   srcs/controllers.c \
-	   srcs/pid.c \
-	   srcs/env.c \
-	   srcs/pipex_utils.c \
+	   srcs/utils/free.c \
+	   srcs/parsing/tokens.c \
+	   srcs/parsing/parse_pipes.c \
+	   srcs/parsing/delim.c \
+	   srcs/parsing/parse_logical.c \
+	   srcs/utils/ft_utils_str.c \
+	   srcs/parsing/parse_fork.c \
+	   srcs/parsing/parse_cmd.c \
+	   srcs/parsing/parse_simple_cmd.c \
+	   srcs/parsing/parse_cmd_args.c \
+	   srcs/execution/controllers.c \
+	   srcs/execution/pid.c \
+	   srcs/utils/env.c \
+	   srcs/execution/pipex_utils.c \
 	   ft_utils_function.c \
 	   ft_utils_function2.c \
 	   ft_utils_mem.c \
-	   srcs/ft_split.c
+	   srcs/utils/ft_split.c
 
 OBJS := ${SRCS:.c=.o}
 
