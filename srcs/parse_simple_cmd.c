@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 17:40:29 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 14:08:32 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ static int	save_redirect(t_cmd *cmd, char *str, int i)
 
 int	parse_simple_cmd(t_cmd *cmd)
 {
-	int	i;
+	char	*trimmed;
+	int		i;
 
 	i = 0;
 	skip_whitespaces(cmd->cmd, &i);
@@ -144,7 +145,9 @@ int	parse_simple_cmd(t_cmd *cmd)
 		return (write (2, "Parsing error\n", 14), 1);
 	if (save_redirect(cmd, cmd->cmd, i))
 		return (1);
-	cmd->cmd = ft_trim(cmd->cmd);
+	trimmed = ft_trim(cmd->cmd);
+	free(cmd->cmd);
+	cmd->cmd = trimmed;
 	if (parse_args(cmd))
 		return (1);
 	return (0);

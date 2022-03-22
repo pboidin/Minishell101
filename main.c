@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 10:59:42 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 14:03:31 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,19 +113,16 @@ int main(int argc, char **argv, char **envp)
 			add_history(cmd);
 			info.cmd.cmd = ft_trim(cmd);
 			free(cmd);
-			if (!info.cmd.cmd)
-				free(info.cmd.cmd);
-			else
+			if (info.cmd.cmd)
 			{
 				info.cmd.prev_delim = 0;
 				info.cmd.next_delim = 0;
 				if (!parse_cmd(&info.cmd))
-				{
 					general_controller(&info, &info.cmd);
-					printf("\n");
-				}
 				else
 					write(2, "Error\n", 6);
+				free(info.cmd.cmd);
+				info.cmd.cmd = NULL;
 				free_cmd(&info.cmd);
 				init_cmd(&info.cmd);
 			}
