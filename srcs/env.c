@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 14:23:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 14:43:05 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 11:34:34 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,17 @@ static char	*join_env_var(t_env *env)
 	line = (char *)malloc(sizeof(char) * (size + 2));
 	size = 0;
 	while (env->name[size])
-		line[size] = env->name[size++];
+	{
+		line[size] = env->name[size];
+		size++;
+	}
 	line[size] = '=';
 	size++;
 	i = 0;
 	while (env->value[i])
 		line[size++] = env->value[i++];
 	line[size] = '\0';
+	return (line);
 }
 
 char	**join_env(t_info *info)
@@ -60,7 +64,7 @@ char	**join_env(t_info *info)
 		if (!env_tab)
 			return (write (2, "Malloc error\n", 13), NULL);
 		env_tab[0] = NULL;
-		return (env_tab)
+		return (env_tab);
 	}
 	env_tab = (char **)malloc(sizeof(char *) * (size + 1));
 	if (!env_tab)

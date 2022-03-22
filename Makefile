@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/17 14:18:02 by bdetune          ###   ########.fr        #
+#    Updated: 2022/03/22 11:39:13 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,15 @@ SRCS = main.c \
 	   srcs/parse_fork.c \
 	   srcs/parse_cmd.c \
 	   srcs/parse_simple_cmd.c \
-	   srcs/parse_cmd_args.c
+	   srcs/parse_cmd_args.c \
+	   srcs/controllers.c \
+	   srcs/pid.c \
+	   srcs/env.c \
+	   srcs/pipex_utils.c \
+	   ft_utils_function.c \
+	   ft_utils_function2.c \
+	   ft_utils_mem.c \
+	   srcs/ft_split.c
 
 OBJS := ${SRCS:.c=.o}
 

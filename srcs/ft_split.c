@@ -6,11 +6,11 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:17:22 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/21 11:21:39 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/22 11:34:59 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.c"
+#include "minishell.h"
 
 int	ft_is_charset(char s, char c)
 {

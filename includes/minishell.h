@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 11:41:51 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 11:43:22 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,11 +119,13 @@ int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
+char	**join_env(t_info *info);
 
-//int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 extern t_info	g_info;
 
+void	ft_execute(t_info *info, char **cmd_args);
+char	**ft_split(char const *s, char c);
 int		ft_env_loc(t_env *env);
 int		ft_go_to_home(void);
 int		ft_isalnum(int c);
@@ -138,12 +140,18 @@ int		ft_ret_home(void);
 int		ft_set_old(t_env *env, char *pwd, char *val);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
+void	general_controller(t_info *info, t_cmd *cmd);
+int		add_pid(t_info *info, int pid);
+void	free_pid(t_info *info);
 
 char	*ft_genv(const char *path);
 char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	*ft_calloc(size_t quantity, size_t type_size);
+void	ft_bzero(void *s, size_t n);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *s);

@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 14:49:38 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 11:24:54 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	get_exit_status(t_info *info)
 	current = info->running_processes;
 	while (current)
 	{
-		wait_pid(current->pid, &status, 0);
+		waitpid(current->pid, &status, 0);
 		if (WIFEXITED(status))
 			info->status = WEXITSTATUS(status);
 		current = current->next;
@@ -116,9 +116,56 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	get_exit_status(info);
 }
 
+void	fork_controller(t_info *info, t_cmd *cmd)
+{
+	int	ret;
+
+	ret = fork();
+	if (ret == -1)
+	{
+		write(2, "Fork error\n", 11);
+		exit (1);
+	}
+	if (!ret)
+	{
+		free_pid(info);
+		general_controller(info, cmd->fork);
+		exit(info->status);
+	}
+	else
+	{
+		if (add_pid(info, ret))
+		{
+			write(2, "Malloc error\n", 13);
+			exit (1);
+		}
+		get_exit_status(info);
+	}
+}
+
 void	simple_controller(t_info *info, t_cmd *cmd)
 {
-	
+	int	ret;
+
+	ret = fork();
+	if (ret == -1)
+	{
+		write(2, "Fork error\n", 13);
+		exit (1);
+	}
+	if (!ret)
+	{
+		ft_execute(info, cmd->cmd_args);
+	}
+	else
+	{
+		if (add_pid(info, ret))
+		{
+			write(2, "Malloc error\n", 13);
+			exit (1);
+		}
+		get_exit_status(info);
+	}
 }
 
 void	general_controller(t_info *info, t_cmd *cmd)

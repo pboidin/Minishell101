@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/21 11:42:28 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/22 10:59:42 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int main(int argc, char **argv, char **envp)
 				info.cmd.next_delim = 0;
 				if (!parse_cmd(&info.cmd))
 				{
-					execute_command(&info.cmd);
+					general_controller(&info, &info.cmd);
 					printf("\n");
 				}
 				else
