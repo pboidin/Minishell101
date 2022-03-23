@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/22 14:34:59 by bdetune          ###   ########.fr        #
+#    Updated: 2022/03/23 15:26:54 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,9 +26,9 @@ SRCS = main.c \
 	   srcs/execution/pid.c \
 	   srcs/utils/env.c \
 	   srcs/execution/pipex_utils.c \
-	   ft_utils_function.c \
-	   ft_utils_function2.c \
-	   ft_utils_mem.c \
+	   srcs/utils/ft_utils_function.c \
+	   srcs/utils/ft_utils_function2.c \
+	   srcs/utils/ft_utils_mem.c \
 	   srcs/utils/ft_split.c
 
 OBJS := ${SRCS:.c=.o}
