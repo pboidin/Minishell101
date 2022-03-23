@@ -6,83 +6,13 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 14:43:15 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/23 15:12:22 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static volatile sig_atomic_t	g_signal = 0;
-
-char *print_delim(int delim)
-{
-	 return (delim == 0 ? ("") : (delim == 1 ? ("|") : (delim == 2 ? ("&&") : ("||"))));
-}
-
-void	execute_command(t_cmd *cmd)
-{
-	t_redirect	*current;
-	long long	i;
-
-	i = 0;
-	if (cmd->sub_cmd)
-	{
-		while (cmd->sub_cmd[i])
-		{
-			execute_command(cmd->sub_cmd[i]);
-			printf("%s", print_delim(cmd->sub_cmd[i]->next_delim));
-			i++;
-		}
-	}
-	else if (cmd->pipe)
-	{
-		while (cmd->pipe[i])
-		{
-			execute_command(cmd->pipe[i]);
-			if (cmd->pipe[i + 1])
-				printf("|");
-			i++;
-		}
-	}
-	else if (cmd->fork)
-	{
-		printf("(");
-		execute_command(cmd->fork);
-		printf(")");
-		current = cmd->in;
-		while (current)
-		{
-			printf(" %s %s", (current->type == 1 ? "<" : "<<"), current->str);
-			current = current->next;
-		}
-		current = cmd->out;
-		while (current)
-		{
-			printf(" %s %s", (current->type == 1 ? ">" : ">>"), current->str);
-			current = current->next;
-		}
-	}
-	else
-	{
-		while (cmd->cmd_args[i])
-		{
-			printf("%s ", cmd->cmd_args[i]);
-			i++;
-		}
-		current = cmd->in;
-		while (current)
-		{
-			printf(" %s %s", (current->type == 1 ? "<" : "<<"), current->str);
-			current = current->next;
-		}
-		current = cmd->out;
-		while (current)
-		{
-			printf(" %s %s", (current->type == 1 ? ">" : ">>"), current->str);
-			current = current->next;
-		}
-	}
-}
 
 void	handle_signal(int signal)
 {
