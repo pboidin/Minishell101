@@ -9,6 +9,7 @@ void	ft_perror_exit(const char *str)
 	exit(EXIT_FAILURE);
 }
 
+/* add built in to built in list */
 static void	ft_add_blti(t_blti **head, char *name, int (*f)(char **))
 {
 	t_blti	*aux;
@@ -31,6 +32,7 @@ static void	ft_add_blti(t_blti **head, char *name, int (*f)(char **))
 		*head = new;
 }
 
+/* initialise built ins */
 static t_blti	*ft_init_blti(void)
 {
 	t_blti	*bi;
