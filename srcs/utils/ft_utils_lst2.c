@@ -1,4 +1,4 @@
-#include "includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	ft_lstdelone(t_env *lst, void (*del)(void*))
 {

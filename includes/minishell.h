@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 11:43:22 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/23 08:22:08 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,14 @@
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
 # endif
+
+typedef struct s_blti	t_blti;
+
+struct s_blti {
+	char	*name;
+	int		(*f)(char **);
+	t_blti	*next;
+};
 
 typedef struct s_redirect
 {
@@ -123,6 +131,16 @@ char	**join_env(t_info *info);
 
 
 extern t_info	g_info;
+
+/* BUILT-IN */
+
+int		ft_ch_dir(char **dir);
+int		ft_echo(char **tab);
+int		ft_env(char **tab);
+int		ft_exit(char **tab);
+int		ft_export(char **new_env);
+int		ft_working_dir(char **n);
+int		ft_unset(char **unset);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
