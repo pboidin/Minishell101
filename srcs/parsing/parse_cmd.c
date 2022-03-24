@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:18:37 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 14:06:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/24 14:25:58 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	reinit_cmd(t_cmd *cmd)
 	cmd->fork = NULL;
 	cmd->pipe = NULL;
 	cmd->sub_cmd = NULL;
+	cmd->redirections = NULL;
 	cmd->in = NULL;
 	cmd->out = NULL;
 	cmd->cmd_name = NULL;

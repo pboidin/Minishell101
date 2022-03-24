@@ -6,12 +6,13 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/23 08:22:08 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/24 15:44:11 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef  MINISHELL_H
 # define MINISHELL_H
+# define _GNU_SOURCE
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -21,7 +22,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
-# include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # ifndef TRUE
 #  define TRUE 1
@@ -51,6 +52,8 @@ typedef struct s_redirect
 {
 	int					type;
 	char				*str;
+	int					fd;
+	int					var_expansion;
 	struct s_redirect	*next;
 }	t_redirect;
 
@@ -58,6 +61,7 @@ typedef struct s_cmd
 {
 	int				prev_delim;
 	struct s_cmd	*fork;
+	t_redirect		*redirections;
 	t_redirect		*in;
 	t_redirect		*out;
 	char			*cmd;
@@ -161,6 +165,7 @@ int		ft_unset_handle(char *new_env);
 void	general_controller(t_info *info, t_cmd *cmd);
 int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
+int		ft_abs(int nb);
 
 char	*ft_genv(const char *path);
 char	*ft_strdup(const char *str);

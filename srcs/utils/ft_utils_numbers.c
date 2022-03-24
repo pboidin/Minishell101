@@ -26,9 +26,9 @@ int	ft_atoi(const char *str)
 	return (rslt * neg);
 }
 
-size_t	ft_strlen(const char *s)
+int	ft_abs(int nb)
 {
-	if (*s == '\0')
-		return (0);
-	return (ft_strlen(s + 1) + 1);
+	if (nb < 0)
+		return (-nb);
+	return (nb);
 }

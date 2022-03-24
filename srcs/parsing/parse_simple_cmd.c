@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 14:08:32 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/24 15:34:26 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,35 +44,20 @@ static int	add_redirect(t_cmd *cmd, int i, int redirect)
 	if (!new_redirect)
 		return (1);
 	new_redirect->next = NULL;
-	if (redirect < 0)
-	{
-		new_redirect->type = -redirect;
-		if (!cmd->in)
-			cmd->in = new_redirect;
-		else
-		{
-			current = cmd->in;
-			while (current->next)
-				current = current->next;
-			current->next = new_redirect;
-		}
-	}
+	new_redirect->type = redirect;
+	if (!cmd->redirections)
+		cmd->redirections = new_redirect;
 	else
 	{
-		new_redirect->type = redirect;
-		if (!cmd->out)
-			cmd->out = new_redirect;
-		else
-		{
-			current = cmd->out;
-			while (current->next)
-				current = current->next;
-			current->next = new_redirect;
-		}
+		current = cmd->redirections;
+		while (current->next)
+			current = current->next;
+		current->next = new_redirect;
 	}
-	new_redirect->str = ft_trim(&cmd->cmd[i + new_redirect->type]);
+	new_redirect->str = ft_trim(&cmd->cmd[i + ft_abs(new_redirect->type)]);
 	if (!new_redirect->str)
 		return (1);
+	new_redirect->fd = -1;
 	return (0);
 }
 
