@@ -6,11 +6,11 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:28:52 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/22 17:28:55 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/24 13:16:50 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 char	*ft_strcpy(char *dst, const char *src)
 {

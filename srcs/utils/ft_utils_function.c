@@ -6,11 +6,11 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:29:03 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/22 17:29:06 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/03/24 13:17:02 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
