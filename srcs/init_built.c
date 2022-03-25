@@ -1,4 +1,4 @@
-#include "../8_Minishell/Minishell101/includes/minishell.h"
+#include "minishell.h"
 
 void	ft_perror_exit(const char *str)
 {

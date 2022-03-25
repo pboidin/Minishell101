@@ -108,86 +108,87 @@ typedef struct s_info
 	t_bool	is_child; // if a process is a child
 }	t_info;
 
-void	free_env(t_info *info);
-int		create_info(t_info *info, char **envp, char *name);
-int		parse_cmd(t_cmd *cmd);
-void	init_tokens(t_tokens *tokens);
-void	init_cmd(t_cmd *cmd);
-int		save_token(char c, t_tokens *toks);
-void	free_info(t_info *info);
-char	*ft_trim(char *cmd);
-int		parse_pipe(t_cmd *cmd);
-int		has_tokens(t_tokens toks);
-int		is_delim(char *str, int delim);
-void	save_delim(t_cmd *new_cmd, char c);
-int		parse_logical(t_cmd *cmd);
-void	skip_whitespaces(char *cmd, int *i);
-int		fork_cmd(t_cmd *cmd);
-int		parse_cmd(t_cmd *cmd);
-int		parse_simple_cmd(t_cmd *cmd);
-int		parse_args(t_cmd *cmd);
-void	free_cmd(t_cmd *cmd);
-char	**join_env(t_info *info);
+void			free_env(t_info *info);
+int				create_info(t_info *info, char **envp, char *name);
+int				parse_cmd(t_cmd *cmd);
+void			init_tokens(t_tokens *tokens);
+void			init_cmd(t_cmd *cmd);
+int				save_token(char c, t_tokens *toks);
+void			free_info(t_info *info);
+char			*ft_trim(char *cmd);
+int				parse_pipe(t_cmd *cmd);
+int				has_tokens(t_tokens toks);
+int				is_delim(char *str, int delim);
+void			save_delim(t_cmd *new_cmd, char c);
+int				parse_logical(t_cmd *cmd);
+void			skip_whitespaces(char *cmd, int *i);
+int				fork_cmd(t_cmd *cmd);
+int				parse_cmd(t_cmd *cmd);
+int				parse_simple_cmd(t_cmd *cmd);
+int				parse_args(t_cmd *cmd);
+void			free_cmd(t_cmd *cmd);
+char			**join_env(t_info *info);
 
 
 extern t_info	g_info;
 
 /* BUILT-IN */
 
-int		ft_ch_dir(char **dir);
-int		ft_echo(char **tab);
-int		ft_env(char **tab);
-int		ft_exit(char **tab);
-int		ft_export(char **new_env);
-int		ft_working_dir(char **n);
-int		ft_unset(char **unset);
+int				ft_ch_dir(char **dir);
+int				ft_echo(char **tab);
+int				ft_env(char **tab);
+int				ft_exit(char **tab);
+int				ft_export(char **new_env);
+int				ft_working_dir(char **n);
+int				ft_unset(char **unset);
+static t_blti	*ft_init_blti(void);
 
-void	ft_execute(t_info *info, char **cmd_args);
-char	**ft_split(char const *s, char c);
-int		ft_env_loc(t_env *env);
-int		ft_go_to_home(void);
-int		ft_isalnum(int c);
-int		ft_isalpha(int c);
-int		ft_isdigit(int c);
-int		ft_islower(int c);
-int		ft_isupper(int c);
-int		ft_lenvar(const char *s);
-int		ft_lstsize(t_env *lst);
-int		ft_print_err(const char *dir);
-int		ft_ret_home(void);
-int		ft_set_old(t_env *env, char *pwd, char *val);
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
-int		ft_unset_handle(char *new_env);
-void	general_controller(t_info *info, t_cmd *cmd);
-int		add_pid(t_info *info, int pid);
-void	free_pid(t_info *info);
+void			ft_execute(t_info *info, char **cmd_args);
+char			**ft_split(char const *s, char c);
+int				ft_env_loc(t_env *env);
+int				ft_go_to_home(void);
+int				ft_isalnum(int c);
+int				ft_isalpha(int c);
+int				ft_isdigit(int c);
+int				ft_islower(int c);
+int				ft_isupper(int c);
+int				ft_lenvar(const char *s);
+int				ft_lstsize(t_env *lst);
+int				ft_print_err(const char *dir);
+int				ft_ret_home(void);
+int				ft_set_old(t_env *env, char *pwd, char *val);
+int				ft_strncmp(const char *s1, const char *s2, size_t n);
+int				ft_unset_handle(char *new_env);
+void			general_controller(t_info *info, t_cmd *cmd);
+int				add_pid(t_info *info, int pid);
+void			free_pid(t_info *info);
 
-char	*ft_genv(const char *path);
-char	*ft_strdup(const char *str);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-void	*ft_calloc(size_t quantity, size_t type_size);
-void	ft_bzero(void *s, size_t n);
-char	*ft_strjoin(char const *s1, char const *s2);
+char			*ft_genv(const char *path);
+char			*ft_strdup(const char *str);
+char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_strndup(const char *Str, size_t n, t_bool free_str);
+char			*ft_substr(char const *s, unsigned int start, size_t len);
+void			*ft_calloc(size_t quantity, size_t type_size);
+void			ft_bzero(void *s, size_t n);
+char			*ft_strjoin(char const *s1, char const *s2);
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-size_t	ft_strlen(const char *s);
+size_t			ft_strlcpy(char *dst, const char *src, size_t size);
+size_t			ft_strlen(const char *s);
 
-t_env	*ft_lstnew(void *data);
+t_env			*ft_lstnew(void *data);
 
 //void	ft_putchar(char c);
 //void	ft_putendl_fd(char *str, int fd);
 //void	ft_putstr(char *str);
 
-void	ft_env_set(t_env *env);
-void	ft_export_var(char **new_env, char *tmp, char *env, char *env2);
-void	ft_lstclear(t_env **lst, void (*del)(void *));
-void	ft_lstadd_back(t_env **lst, t_env *new);
-void	ft_lstdelone(t_env *lst, void (*del)(void*));
-void	ft_upd_env(t_env **env);
-void	*ft_memcpy(void *dst, const void *src, size_t memSize);
-void	*ft_memset(void *target, int char_to_set, size_t n);
-void	*ft_realloc(void *ptr, size_t memSize);
+void			ft_env_set(t_env *env);
+void			ft_export_var(char **new_env, char *tmp, char *env, char *env2);
+void			ft_lstclear(t_env **lst, void (*del)(void *));
+void			ft_lstadd_back(t_env **lst, t_env *new);
+void			ft_lstdelone(t_env *lst, void (*del)(void*));
+void			ft_upd_env(t_env **env);
+void			*ft_memcpy(void *dst, const void *src, size_t memSize);
+void			*ft_memset(void *target, int char_to_set, size_t n);
+void			*ft_realloc(void *ptr, size_t memSize);
 
 #endif
