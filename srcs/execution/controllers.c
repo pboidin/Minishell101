@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 11:24:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/25 17:56:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,14 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	}
 	get_exit_status(info);
 }
+/*
+void	handle_redirections(t_cmd *cmd)
+{
+	t_redirect	*current;
 
+
+}
+*/
 void	fork_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
@@ -129,7 +136,11 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 	if (!ret)
 	{
 		free_pid(info);
-		general_controller(info, cmd->fork);
+//		if (!handle_redirections(cmd))
+			general_controller(info, cmd->fork);
+//		else
+//			info->status = 1;
+		free_info(info);
 		exit(info->status);
 	}
 	else
@@ -137,6 +148,7 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 		if (add_pid(info, ret))
 		{
 			write(2, "Malloc error\n", 13);
+			free_info(info);
 			exit (1);
 		}
 		get_exit_status(info);

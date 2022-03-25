@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/25 15:21:39 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/25 19:43:03 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,19 +227,32 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 
 int	save_redirect(char *str, size_t i, t_cmd *cmd)
 {
-	int		redirect;
+	int	spl_qu;
+	int	dbl_qu;
+	int	redirect;
 
 	if (str[i] == ')')
 	{
 		str[i] = '\0';
 		return (0);
 	}
+	spl_qu = 0;
+	dbl_qu = 0;
 	if (str[i] == '<' || str[i] == '>' || str[i] == '&' || str[i] == '|')
 		return (1);
-	while (str[i] > 32 && str[i] < 127 && str[i] != '<' && str[i] != '>'
-		&& str[i] != ')' && str[i] != '(' && str[i] != '&' && str[i] != '|')
+	while (str[i] > 32 && str[i] < 127)
+	{
+		if (str[i] == '"' && !spl_qu)
+			dbl_qu ^= 1;
+		else if (str[i] == 39 && !dbl_qu)
+			spl_qu ^= 1;
+		else if (!dbl_qu && !spl_qu && (str[i] == '<' || str[i] == '>'
+				|| str[i] == ')' || str[i] == '(' || str[i] == '&'
+				|| str[i] == '|'))
+				break ;
 		i--;
-	if (str[i] == '&' || str[i] == '|')
+	}
+	if (str[i] == ')' || str[i] == '(' || str[i] == '&' || str[i] == '|')
 		return (1);
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i--;
@@ -273,6 +286,28 @@ int	save_redirect(char *str, size_t i, t_cmd *cmd)
 	return (save_redirect(str, i, cmd));
 }
 
+int	skip_closing_parenth(char *str, int *i)
+{
+	int	dbl_qu;
+	int	spl_qu;
+	int	parenth;
+
+	dbl_qu = 0;
+	spl_qu = 0;
+	parenth = 0;
+	while (str[*i])
+	{
+		if (str[*i] == '"' && !spl_qu)
+			dbl_qu ^= 1;
+		else if (str[*i] == 39 && !dbl_qu)
+			spl_qu ^= 1;
+		else if (!spl_qu && !dbl_qu && str[*i] == '(')
+		{
+
+		}
+	}
+}
+
 int	fork_cmd(t_cmd *cmd)
 {
 	int		i;
@@ -282,6 +317,8 @@ int	fork_cmd(t_cmd *cmd)
 	skip_whitespaces(cmd->cmd, &i);
 	if (cmd->cmd[i] != '(')
 		return (0);
+	if (skip_closing_parenth(cmd->cmd, &i))
+		return (2);
 	cmd->cmd[i] = ' ';
 	while (cmd->cmd[i])
 		i++;
