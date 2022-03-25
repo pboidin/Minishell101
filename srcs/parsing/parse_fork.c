@@ -6,11 +6,30 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/24 15:49:37 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/25 15:21:39 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/* void	next_parenth(char *str, size_t *i)
+{
+	int	dbl_qu;
+	int	spl_qu;
+
+	dbl_qu = 0;
+	spl_qu = 0;
+	while (str[*i])
+	{
+		if (str[*i] == dbl_qu && !spl_qu)
+			dbl_qu ^= 1;
+		else if (str[*i] == spl_qu && !dbl_qu)
+			spl_qu ^= 1;
+		if (str[*i] == ')' && !spl_qu && !dbl_qu)
+			break ;
+		*i += 1;
+	}
+}
 
 int	has_parenthesis(char *str)
 {
@@ -28,11 +47,16 @@ int	has_parenthesis(char *str)
 		else if (str[i] == spl_qu && !dbl_qu)
 			spl_qu ^= 1;
 		if (str[i] == '(' && !spl_qu && !dbl_qu)
-			return (1);
+		{
+			if (i > 0 && str[i - 1] == '=')
+				next_parenth(str, &i);
+			else
+				return (1);
+		}
 		i++;
 	}
 	return (0);
-}
+}*/
 
 char	*ft_del_spaces(char *str)
 {
@@ -101,17 +125,57 @@ int	get_delimiter(t_redirect *redir)
 	return (0);
 }
 
+void	init_nb(char *nb)
+{
+	nb[0] = '0';
+	nb[1] = '0';
+	nb[2] = '0';
+	nb[3] = '0';
+	nb[4] = '0';
+	nb[5] = '0';
+	nb[6] = '0';
+	nb[7] = '0';
+	nb[8] = '0';
+	nb[9] = '1';
+	nb[10] = '\0';
+}
+
+void	increase_nb(char *nb, int index)
+{
+	nb[index] += 1;
+	if (nb[index] > '9')
+	{
+		if (index == 0)
+			return ;
+		nb[index] = '0';
+		increase_nb(nb, (index - 1));	
+	}
+}
+
 int	save_heredoc(t_redirect *new_redirect)
 {
 	int		size;
 	char	*ret;
+	char	*path;
+	char	nb[11];
 
 	if (get_delimiter(new_redirect))
 		return (1);
 	size = ft_strlen(new_redirect->str) + 1;
-	new_redirect->fd = open(".", O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR);
+	init_nb(nb);
+	path = ft_strjoin("/tmp/minishell-", nb);
+	while (!access(path, F_OK))
+	{
+		free(path);
+		increase_nb(nb, 9);
+		if (nb[0] > '9')
+			return (write(2, "Error creating here-document\n", 29), 1);
+		path = ft_strjoin("/tmp/minishell-", nb);
+	}
+	new_redirect->fd = open(path, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
 	if (new_redirect->fd == -1)
 		return (perror("Error creating here-document"), 1);
+	new_redirect->path = path;
 	ret = readline("> ");
 	while (ret)
 	{
@@ -123,8 +187,15 @@ int	save_heredoc(t_redirect *new_redirect)
 		ret = readline("> ");
 	}
 	if (!ret)
-		return (perror("warning: here-document delimited by end-of-file"), 1);
+	{
+		write (2, \
+		"Warning: here-document delimited by end-of-file (wanted `", 57);
+		write(2, new_redirect->str, ft_strlen(new_redirect->str));
+		write(2, "')\n", 3);
+	}
 	free(ret);
+	close(new_redirect->fd);
+	new_redirect->fd = -1;
 	return (0);
 }
 
@@ -138,8 +209,8 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 	new_redirect->type = redirect;
 	new_redirect->fd = -1;
 	new_redirect->var_expansion = 1;
+	new_redirect->path = NULL;
 	new_redirect->next = cmd->redirections;
-	
 	while (!(*str == '>' || *str == '<'))
 		str++;
 	new_redirect->str = ft_trim(&str[ft_abs(new_redirect->type)]);
@@ -147,7 +218,7 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 		return (free(new_redirect), 1);
 	if (new_redirect->type == -2)
 	{
-		if(!save_heredoc(new_redirect))
+		if (save_heredoc(new_redirect))
 			return (free(new_redirect->str), free(new_redirect), 1);
 	}
 	cmd->redirections = new_redirect;
@@ -207,21 +278,19 @@ int	fork_cmd(t_cmd *cmd)
 	int		i;
 	t_cmd	*new_cmd;
 
-	if (!has_parenthesis(cmd->cmd))
-		return (0);
-	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new_cmd)
-		return (2);
 	i = 0;
 	skip_whitespaces(cmd->cmd, &i);
 	if (cmd->cmd[i] != '(')
-		return (free(new_cmd), write(2, "Parsing error\n", 14), 2);
+		return (0);
 	cmd->cmd[i] = ' ';
 	while (cmd->cmd[i])
 		i++;
 	i--;
 	if (save_redirect(cmd->cmd, i, cmd))
-		return (free(new_cmd), write(2, "Parsing error\n", 14), 2);
+		return (write(2, "Parsing error\n", 14), 2);
+	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!new_cmd)
+		return (2);
 	cmd->fork = new_cmd;
 	new_cmd->cmd = ft_trim(cmd->cmd);
 	if (!new_cmd->cmd)

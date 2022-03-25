@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/24 15:44:11 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/25 13:58:33 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_redirect
 {
 	int					type;
 	char				*str;
+	char				*path;
 	int					fd;
 	int					var_expansion;
 	struct s_redirect	*next;
