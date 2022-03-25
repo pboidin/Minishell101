@@ -147,9 +147,7 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
 
-	printf("Je rentre dans le simple controler")
-	ft_init_blti();
-	printf("Je passe le le Builtin");;
+	ft_blti(info, cmd->cmd_args);
 	ret = fork();
 	if (ret == -1)
 	{

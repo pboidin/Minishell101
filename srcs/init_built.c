@@ -47,3 +47,11 @@ static t_blti	*ft_init_blti(void)
 	ft_add_blti(&bi, "unset", ft_unset);
 	return (bi);
 }
+
+
+void	ft_blti(t_info *info, t_cmd *cmd)
+{
+	g_info.status = EXIT_SUCCESS;
+	g_info.bi = ft_init_blti();
+	g_info.ischild = FALSE;
+}
