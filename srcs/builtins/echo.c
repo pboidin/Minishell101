@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static void	ft_putstr_nnl(char *const *tab, int i)
 {

@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 void	*ft_memcpy(void *dst, const void *src, size_t memSize)
 {

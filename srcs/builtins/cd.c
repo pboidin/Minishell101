@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static int	ft_go_to_dir(const char *dir)
 {

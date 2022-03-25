@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static void	ft_print_err_uns(const char *new_env)
 {

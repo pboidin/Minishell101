@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 #ifndef PATH_MAX
 # define PATH_MAX 256

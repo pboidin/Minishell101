@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static void	ft_delete_join(t_env *aux, int c)
 {

@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 void	ft_update_var(char *var, char *name_var)
 {
