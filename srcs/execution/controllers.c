@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/25 17:56:13 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/28 14:47:48 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,111 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	}
 	get_exit_status(info);
 }
-/*
-void	handle_redirections(t_cmd *cmd)
+
+static char	*ft_del_spaces(char *str)
+{
+	size_t	size;
+	size_t	i;
+	char	*new_str;
+
+	size = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ')
+			size++;
+		i++;
+	}
+	new_str = (char *)malloc(sizeof(char) * (size + 1));
+	if (!new_str)
+		return (perror("Malloc error"), NULL);
+	i = 0;
+	size = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ')
+		{
+			new_str[size] = str[i];
+			size++;
+		}
+		i++;
+	}
+	new_str[size] = '\0';
+	return (new_str);
+}
+
+char *get_path(char *str)
+{
+	int		spl_qu;
+	int		dbl_qu;
+	size_t	i;
+	char	*word;
+
+	i = 0;
+	spl_qu = 0;
+	dbl_qu = 0;
+	while (str[i])
+	{
+		if (str[i] == 39 && !dbl_qu)
+		{
+			str[i] = ' ';
+			spl_qu ^= 1;
+		}
+		else if (str[i] == '"' && !spl_qu)
+		{
+			str[i] = ' ';
+			dbl_qu ^= 1;
+		}
+		i++;
+	}
+	word = ft_del_spaces(str);
+	if (!word)
+		return (NULL);
+	return (word);
+}
+
+int	handle_redirections(t_cmd *cmd)
 {
 	t_redirect	*current;
-
-
+	
+	current = cmd->redirections;
+	while (current)
+	{
+		if (current->type != -2)
+			current->path = get_path(current->str);
+		if (current->type < 0)
+		{
+			if (cmd->in)
+			{
+				close(cmd->in->fd);
+				cmd->in->fd = -1;
+			}
+			current->fd = open(current->path, O_RDONLY);
+			if (current->fd == -1)
+				return (perror("Open error"), 1);
+			cmd->in = current;
+		}
+		else
+		{
+			if (cmd->out)
+			{
+				close(cmd->out->fd);
+				cmd->out->fd = -1;
+			}
+			printf("current type: %d\n", current->type);
+			if (current->type == 1)
+				current->fd = open(current->path, O_RDWR | O_TRUNC | O_CREAT, 0666);
+			else
+				current->fd = open(current->path, O_RDWR | O_APPEND | O_CREAT, 0666);
+			if (current->fd == -1)
+				return (perror("Open error"), 1);
+			cmd->out = current;
+		}
+		current = current->next;
+	}
+	return (0);
 }
-*/
+
 void	fork_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
@@ -136,10 +233,16 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 	if (!ret)
 	{
 		free_pid(info);
-//		if (!handle_redirections(cmd))
+		if (!handle_redirections(cmd))
+		{
+			if (cmd->in)
+				dup2(cmd->in->fd, 0);
+			if (cmd->out)
+				dup2(cmd->out->fd, 1);
 			general_controller(info, cmd->fork);
-//		else
-//			info->status = 1;
+		}
+		else
+			info->status = 1;
 		free_info(info);
 		exit(info->status);
 	}

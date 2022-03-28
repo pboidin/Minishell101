@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 14:31:13 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/28 15:06:34 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,22 +66,20 @@ void	free_redirect(t_cmd *cmd)
 	t_redirect	*current;
 	t_redirect	*next;
 
-	current = cmd->in;
+	current = cmd->redirections;
 	while (current)
 	{
 		next = current->next;
 		free(current->str);
+		if (current->fd != -1)
+			close(current->fd);
+		if (current->type == -2)
+			unlink(current->path);
+		free(current->path);
 		free(current);
 		current = next;
 	}
-	current = cmd->out;
-	while (current)
-	{
-		next = current->next;
-		free(current->str);
-		free(current);
-		current = next;
-	}
+	cmd->redirections = NULL;
 }
 
 
@@ -139,6 +137,6 @@ void	free_info(t_info *info)
 	free_running_processes(info);
 	free_cmd(&info->cmd);
 	rl_clear_history();
-	close(0);
-	close(1);
+//	close(0);
+//	close(1);
 }
