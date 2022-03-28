@@ -1,9 +1,5 @@
 #include "minishell.h"
 
-#ifndef PATH_MAX
-# define PATH_MAX 256
-#endif
-
 char	*ft_genv(const char *path)
 {
 	int		path_size;
@@ -11,7 +7,7 @@ char	*ft_genv(const char *path)
 	char	*ret;
 	t_env	*tmp;
 
-	tmp = *g_info.env;
+	tmp = g_info.env;
 	env = ft_strjoin(path, "=");
 	path_size = ft_strlen(env);
 	while (tmp)

@@ -39,14 +39,6 @@
 #  define PATH_MAX 4096
 # endif
 
-typedef struct s_blti	t_blti;
-
-struct s_blti {
-	char	*name;
-	int		(*f)(char **);
-	t_blti	*next;
-};
-
 typedef struct s_redirect
 {
 	int					type;
@@ -106,8 +98,10 @@ typedef struct s_info
 	t_pid	*running_processes;
 	t_cmd	cmd;
 	t_bool	is_child; // if a process is a child
-	t_blti	*bi;
+	// t_blti	*bi;
 }	t_info;
+
+extern 	t_info	g_info;
 
 void	free_env(t_info *info);
 int		create_info(t_info *info, char **envp, char *name);
@@ -130,9 +124,6 @@ int		parse_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 char	**join_env(t_info *info);
 
-
-extern t_info	g_info;
-
 /* BUILT-IN */
 
 int		ft_ch_dir(char **dir);
@@ -142,7 +133,7 @@ int		ft_exit(char **tab);
 int		ft_export(char **new_env);
 int		ft_working_dir(char **n);
 int		ft_unset(char **unset);
-void	ft_blti(t_info *info, t_cmd cmd);
+// void	ft_blti(t_info *info, t_cmd *cmd);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);

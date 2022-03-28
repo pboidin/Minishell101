@@ -147,25 +147,29 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
 
-	ft_blti(info, cmd->cmd_args);
-	ret = fork();
-	if (ret == -1)
-	{
-		write(2, "Fork error\n", 13);
-		exit (1);
-	}
-	if (!ret)
-	{
-		ft_execute(info, cmd->cmd_args);
-	}
+	if (ft_strncmp(cmd->cmd_args[0], "pwd", ft_strlen(cmd->cmd_args[0])) != 0)
+		info->status = ft_working_dir(cmd->cmd_args);
 	else
 	{
-		if (add_pid(info, ret))
+		ret = fork();
+		if (ret == -1)
 		{
-			write(2, "Malloc error\n", 13);
+			write(2, "Fork error\n", 13);
 			exit (1);
 		}
-		get_exit_status(info);
+		if (!ret)
+		{
+			ft_execute(info, cmd->cmd_args);
+		}
+		else
+		{
+			if (add_pid(info, ret))
+			{
+				write(2, "Malloc error\n", 13);
+				exit (1);
+			}
+			get_exit_status(info);
+		}
 	}
 }
 

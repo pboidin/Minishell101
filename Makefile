@@ -10,6 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
+#	Names
+NAME		= minishell
+
 SRCS = main.c \
 	   srcs/init.c \
 	   srcs/utils/free.c \
@@ -29,7 +32,9 @@ SRCS = main.c \
 	   srcs/utils/ft_utils_function.c \
 	   srcs/utils/ft_utils_function2.c \
 	   srcs/utils/ft_utils_mem.c \
-	   srcs/utils/ft_split.c
+	   srcs/utils/ft_split.c \
+	   srcs/builtins/echo.c \
+	   srcs/builtins/pwd.c
 
 OBJS := ${SRCS:.c=.o}
 
@@ -57,5 +62,6 @@ re:		fclean all
 
 .c.o:		
 		$(CC) $(CFLAGS) -c $< -o ${<:.c=.o} -Iincludes -lreadline
+
 
 .PHONY:	all clean fclean re bonus
