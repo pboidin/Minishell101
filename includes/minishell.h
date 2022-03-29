@@ -133,7 +133,7 @@ int		ft_env(char **tab, t_info *info);
 int		ft_exit(char **tab);
 int		ft_export(char **new_env);
 int		ft_working_dir(char **n, t_info *info);
-int		ft_unset(char **unset);
+int		ft_unset(char **unset, t_info *info);
 // void	ft_blti(t_info *info, t_cmd *cmd);
 
 void	ft_execute(t_info *info, char **cmd_args);

@@ -36,12 +36,15 @@ SRCS = main.c \
 	   srcs/utils/ft_split.c \
 	   srcs/utils/ft_utils_lst.c \
 	   srcs/utils/ft_utils_lst2.c \
+	   srcs/utils/ft_utils_alpha.c \
 	   srcs/builtins/echo.c \
 	   srcs/builtins/pwd.c \
 	   srcs/builtins/cd.c \
 	   srcs/builtins/cd_utils.c \
 	   srcs/builtins/cd_error.c \
-	   srcs/builtins/env.c
+	   srcs/builtins/env.c \
+	   srcs/builtins/unset.c \
+	   srcs/builtins/unset_utils.c
 
 OBJS := ${SRCS:.c=.o}
 

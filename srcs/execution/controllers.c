@@ -155,6 +155,8 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = ft_ch_dir(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "env") == 0)
 		info->status = ft_env(cmd->cmd_args, info);
+	else if (ft_strcmp(cmd->cmd_args[0], "unset") == 0)
+		info->status = ft_unset(cmd->cmd_args, info);
 	else
 	{
 		ret = fork();
