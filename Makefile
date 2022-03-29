@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/24 14:34:50 by bdetune          ###   ########.fr        #
+#    Updated: 2022/03/29 14:18:33 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRCS = main.c \
 	   srcs/parsing/parse_cmd.c \
 	   srcs/parsing/parse_simple_cmd.c \
 	   srcs/parsing/parse_cmd_args.c \
+	   srcs/parsing/heredoc.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
 	   srcs/utils/env.c \
