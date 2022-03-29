@@ -147,8 +147,10 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
 
-	if (ft_strncmp(cmd->cmd_args[0], "pwd", ft_strlen(cmd->cmd_args[0])) != 0)
-		info->status = ft_working_dir(cmd->cmd_args);
+	if (ft_strcmp(cmd->cmd_args[0], "echo") == 0)
+		info->status = ft_echo(cmd->cmd_args);
+	else if (ft_strcmp(cmd->cmd_args[0], "pwd") == 0)
+		info->status = ft_working_dir(cmd->cmd_args, info);
 	else
 	{
 		ret = fork();

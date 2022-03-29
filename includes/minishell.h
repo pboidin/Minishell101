@@ -87,18 +87,19 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+extern	t_env	g_env;
+
 typedef int t_bool;
 
 typedef struct s_info
 {
 	int		status; // last exit status  
 	char	*prog_name;
-	t_env	*env; //environment vars
+	t_env	*env; // environment vars
 	t_var	*local_var;
 	t_pid	*running_processes;
 	t_cmd	cmd;
 	t_bool	is_child; // if a process is a child
-	// t_blti	*bi;
 }	t_info;
 
 extern 	t_info	g_info;
@@ -131,7 +132,7 @@ int		ft_echo(char **tab);
 int		ft_env(char **tab);
 int		ft_exit(char **tab);
 int		ft_export(char **new_env);
-int		ft_working_dir(char **n);
+int		ft_working_dir(char **n, t_info *info);
 int		ft_unset(char **unset);
 // void	ft_blti(t_info *info, t_cmd *cmd);
 
@@ -149,13 +150,14 @@ int		ft_lstsize(t_env *lst);
 int		ft_print_err(const char *dir);
 int		ft_ret_home(void);
 int		ft_set_old(t_env *env, char *pwd, char *val);
+int		ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
 void	general_controller(t_info *info, t_cmd *cmd);
 int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
 
-char	*ft_genv(const char *path);
+char	*ft_genv(const char *path, t_info *info);
 char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strndup(const char *Str, size_t n, t_bool free_str);

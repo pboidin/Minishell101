@@ -1,13 +1,13 @@
 #include "minishell.h"
 
-char	*ft_genv(const char *path)
+char	*ft_genv(const char *path, t_info *info)
 {
 	int		path_size;
 	char	*env;
 	char	*ret;
 	t_env	*tmp;
 
-	tmp = g_info.env;
+	tmp = info->env;
 	env = ft_strjoin(path, "=");
 	path_size = ft_strlen(env);
 	while (tmp)
@@ -30,7 +30,7 @@ static void	ft_print_pwd(const char *pwd)
 	write(STDOUT_FILENO, "\n", 1);
 }
 
-int	ft_working_dir(char **n)
+int	ft_working_dir(char **n, t_info *info)
 {
 	char	*pwd;
 
@@ -44,7 +44,7 @@ int	ft_working_dir(char **n)
 		pwd = NULL;
 	}
 	if (pwd == NULL)
-		pwd = ft_genv("PWD");
+		pwd = ft_genv("PWD", info);
 	if (pwd == NULL)
 		return (1);
 	ft_print_pwd(pwd);

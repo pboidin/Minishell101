@@ -26,9 +26,12 @@ int	ft_atoi(const char *str)
 	return (rslt * neg);
 }
 
-size_t	ft_strlen(const char *s)
+int	ft_strcmp(char *s1, char *s2)
 {
-	if (*s == '\0')
-		return (0);
-	return (ft_strlen(s + 1) + 1);
+	while (*s1 && *s2 && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
 }

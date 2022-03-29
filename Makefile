@@ -28,6 +28,7 @@ SRCS = main.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
 	   srcs/utils/env.c \
+	   srcs/utils/ft_utils_numbers.c \
 	   srcs/execution/pipex_utils.c \
 	   srcs/utils/ft_utils_function.c \
 	   srcs/utils/ft_utils_function2.c \
