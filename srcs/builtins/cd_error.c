@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-void	ft_env_set(t_env *env)
+void	ft_env_set(t_env *env, t_info *info)
 {
-	ft_env_loc(env);
+	ft_env_loc(env, info);
 }
 
 int	ft_print_err(const char *dir)
@@ -18,9 +18,9 @@ int	ft_print_err(const char *dir)
 	return (1);
 }
 
-int	ft_ret_home(void)
+int	ft_ret_home(t_info *info)
 {
-	if (ft_go_to_home() == 1)
+	if (ft_go_to_home(info) == 1)
 		return (1);
 	return (0);
 }

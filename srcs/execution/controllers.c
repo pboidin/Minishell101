@@ -151,6 +151,8 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = ft_echo(cmd->cmd_args);
 	else if (ft_strcmp(cmd->cmd_args[0], "pwd") == 0)
 		info->status = ft_working_dir(cmd->cmd_args, info);
+	else if (ft_strcmp(cmd->cmd_args[0], "cd") == 0)
+		info->status = ft_ch_dir(cmd->cmd_args, info);
 	else
 	{
 		ret = fork();

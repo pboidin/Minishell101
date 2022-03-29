@@ -13,7 +13,7 @@ void	ft_blti(t_info *info, t_cmd *cmd)
 	// else if (ft_strncmp(cmd->cmd_args[0], "export", ft_strlen(cmd->cmd_args[0])) != 0)
 	// 	info->status = ft_export(cmd->cmd_args);
 	else if (ft_strncmp(cmd->cmd_args[0], "pwd", ft_strlen(cmd->cmd_args[0])) != 0)
-		info->status = ft_working_dir(cmd->cmd_args);
+		info->status = ft_working_dir(cmd->cmd_args, info);
 	// else if (ft_strncmp(cmd->cmd_args[0], "unset", ft_strlen(cmd->cmd_args[0])) != 0)
 	// 	info->status = ft_unset(cmd->cmd_args);
 }

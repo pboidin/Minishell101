@@ -127,7 +127,7 @@ char	**join_env(t_info *info);
 
 /* BUILT-IN */
 
-int		ft_ch_dir(char **dir);
+int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab);
 int		ft_env(char **tab);
 int		ft_exit(char **tab);
@@ -138,8 +138,8 @@ int		ft_unset(char **unset);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
-int		ft_env_loc(t_env *env);
-int		ft_go_to_home(void);
+int		ft_env_loc(t_env *env, t_info *info);
+int		ft_go_to_home(t_info *info);
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
@@ -148,8 +148,8 @@ int		ft_isupper(int c);
 int		ft_lenvar(const char *s);
 int		ft_lstsize(t_env *lst);
 int		ft_print_err(const char *dir);
-int		ft_ret_home(void);
-int		ft_set_old(t_env *env, char *pwd, char *val);
+int		ft_ret_home(t_info *info);
+int		ft_set_old(t_env *env, t_info *info, char *pwd, char *val);
 int		ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
@@ -171,12 +171,12 @@ size_t	ft_strlen(const char *s);
 
 t_env	*ft_lstnew(void *data);
 
-void	ft_env_set(t_env *env);
+void	ft_env_set(t_env *env, t_info *info);
 void	ft_export_var(char **new_env, char *tmp, char *env, char *env2);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);
 void	ft_lstdelone(t_env *lst, void (*del)(void*));
-void	ft_upd_env(t_env **env);
+void	ft_upd_env(t_env **env, t_info *info);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);

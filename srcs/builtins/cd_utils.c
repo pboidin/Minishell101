@@ -1,24 +1,24 @@
 #include "minishell.h"
 
-int	ft_go_to_home(void)
+int	ft_go_to_home(t_info *info)
 {
 	char	*home;
 	t_env	*env;
 
-	home = ft_genv("HOME");
-	env = g_info.env;
+	home = ft_genv("HOME", info);
+	env = info->env;
 	if (!home || chdir(home) == -1)
 	{
 		ft_print_err(home);
 		free(home);
 		return (0);
 	}
-	ft_env_loc(env);
+	ft_env_loc(env, info);
 	free(home);
 	return (0);
 }
 
-int	ft_env_loc(t_env *env)
+int	ft_env_loc(t_env *env, t_info *info)
 {
 	t_env	*aux;
 	
@@ -27,7 +27,7 @@ int	ft_env_loc(t_env *env)
 	{
 		if (ft_strncmp("PWD=", (char *)aux->value, 4) == 0)
 		{
-			ft_upd_env(&aux);
+			ft_upd_env(&aux, info);
 			return (0);
 		}
 		aux = aux->next;
@@ -35,7 +35,7 @@ int	ft_env_loc(t_env *env)
 	return (1);
 }
 
-void	ft_set_val(t_env **env, const char *val, int c)
+void	ft_set_val(t_env **env, t_info *info, const char *val, int c)
 {
 	if (c == 0)
 	{
@@ -43,7 +43,7 @@ void	ft_set_val(t_env **env, const char *val, int c)
 		(*env)->value = (void *)ft_strdup(val);
 	}
 	else
-		ft_lstadd_back(&g_info.env, ft_lstnew((void *) ft_strdup(val)));
+		ft_lstadd_back(&info->env, ft_lstnew((void *) ft_strdup(val)));
 }
 
 int	ft_try_go_oldpwd(t_env **env)
@@ -63,13 +63,13 @@ int	ft_try_go_oldpwd(t_env **env)
 	return (1);
 }
 
-int	ft_set_old(t_env *env, char *pwd, char *val)
+int	ft_set_old(t_env *env, t_info *info, char *pwd, char *val)
 {
 	int		ret;
 	t_env	*tmp;
 
 	tmp = env;
-	pwd = ft_genv("PWD");
+	pwd = ft_genv("PWD", info);
 	ret = ft_try_go_oldpwd(&tmp);
 	if (tmp == NULL)
 	{
@@ -86,7 +86,7 @@ int	ft_set_old(t_env *env, char *pwd, char *val)
 		}
 	}
 	val = ft_strjoin("OLDPWD=", pwd);
-	ft_set_val(&tmp, val, ret);
+	ft_set_val(&tmp, info, val, ret);
 	free(pwd);
 	free(val);
 	return (0);
