@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/24 15:34:26 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/29 12:30:15 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,12 @@ static int	add_redirect(t_cmd *cmd, int i, int redirect)
 	t_redirect	*current;
 	t_redirect	*new_redirect;
 
-	new_redirect = (t_redirect *)malloc(sizeof(t_redirect));
+	new_redirect = (t_redirect *)ft_calloc(1, sizeof(t_redirect));
 	if (!new_redirect)
 		return (1);
-	new_redirect->next = NULL;
 	new_redirect->type = redirect;
+	new_redirect->fd = -1;
+	new_redirect->var_expansion = 1;
 	if (!cmd->redirections)
 		cmd->redirections = new_redirect;
 	else
@@ -57,7 +58,7 @@ static int	add_redirect(t_cmd *cmd, int i, int redirect)
 	new_redirect->str = ft_trim(&cmd->cmd[i + ft_abs(new_redirect->type)]);
 	if (!new_redirect->str)
 		return (1);
-	new_redirect->fd = -1;
+
 	return (0);
 }
 
@@ -127,7 +128,7 @@ int	parse_simple_cmd(t_cmd *cmd)
 	i = 0;
 	skip_whitespaces(cmd->cmd, &i);
 	if (!is_valid(cmd->cmd, i))
-		return (write (2, "Parsing error\n", 14), 1);
+		return (1);
 	if (save_redirect(cmd, cmd->cmd, i))
 		return (1);
 	trimmed = ft_trim(cmd->cmd);

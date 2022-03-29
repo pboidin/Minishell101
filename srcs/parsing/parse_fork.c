@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/28 14:33:17 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/29 12:31:15 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	get_delimiter(t_redirect *redir)
 	i = 0;
 	spl_qu = 0;
 	dbl_qu = 0;
+	redir-var_expansion = 1;
 	while (redir->str[i])
 	{
 		if (redir->str[i] == 39 && !dbl_qu)
@@ -158,13 +159,11 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 	t_redirect	*current;
 	t_redirect	*new_redirect;
 
-	new_redirect = (t_redirect *)malloc(sizeof(t_redirect));
+	new_redirect = (t_redirect *)ft_calloc(1, sizeof(t_redirect));
 	if (!new_redirect)
 		return (perror("Malloc error"), 1);
 	new_redirect->type = redirect;
 	new_redirect->fd = -1;
-	new_redirect->var_expansion = 1;
-	new_redirect->path = NULL;
 	if (!cmd->redirections)
 		cmd->redirections = new_redirect;
 	else
