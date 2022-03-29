@@ -129,7 +129,7 @@ char	**join_env(t_info *info);
 
 int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab);
-int		ft_env(char **tab);
+int		ft_env(char **tab, t_info *info);
 int		ft_exit(char **tab);
 int		ft_export(char **new_env);
 int		ft_working_dir(char **n, t_info *info);

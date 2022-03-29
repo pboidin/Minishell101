@@ -40,7 +40,8 @@ SRCS = main.c \
 	   srcs/builtins/pwd.c \
 	   srcs/builtins/cd.c \
 	   srcs/builtins/cd_utils.c \
-	   srcs/builtins/cd_error.c
+	   srcs/builtins/cd_error.c \
+	   srcs/builtins/env.c
 
 OBJS := ${SRCS:.c=.o}
 
