@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/18 17:40:20 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/30 14:24:20 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	count_args(char *str)
 {
+	char		tmp;
 	t_tokens	toks;
 	int			i;
 	int			nb_command;
@@ -26,11 +27,15 @@ static int	count_args(char *str)
 		skip_whitespaces(str, &i);
 		if (str[i])
 			nb_command++;
+		if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i] == '<'))
+			i += 2;
+		else if (str[i] == '>' || str[i] == '<')
+			i++;
 		while (str[i])
 		{
 			save_token(str[i], &toks);
-			if (!has_tokens(toks) && ((str[i] >= '\t' && str[i] <= '\r')
-					|| str[i] == ' '))
+			if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
+					|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
 				break ;
 			i++;
 		}
@@ -40,6 +45,7 @@ static int	count_args(char *str)
 
 static char	*save_arg(char *str, int *index)
 {
+	char		tmp;
 	char		*arg;
 	t_tokens	toks;
 	int			i;
@@ -47,19 +53,28 @@ static char	*save_arg(char *str, int *index)
 	init_tokens(&toks);
 	skip_whitespaces(str, index);
 	i = *index;
-	while (str[i])
-	{
-		save_token(str[i], &toks);
-		if (!has_tokens(toks) && ((str[i] >= '\t' && str[i] <= '\r')
-				|| str[i] == ' '))
-			break ;
+	if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i] == '<'))
+		i += 2;
+	else if (str[i] == '>' || str[i] == '<')
 		i++;
+	else
+	{
+		while (str[i])
+		{
+			save_token(str[i], &toks);
+			if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
+				|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
+				break ;
+			i++;
+		}
 	}
+	tmp = str[i];
 	str[i] = '\0';
 	arg = ft_trim(&str[*index]);
 	if (!arg)
-		return (NULL);
-	*index = i + 1;
+		return (perror("Malloc error"), NULL);
+	str[i] = tmp;
+	*index = i;
 	return (arg);
 }
 
@@ -71,7 +86,7 @@ static char	**split_args(char *str, int nb_args)
 
 	tab = (char **)malloc(sizeof(char *) * (nb_args + 1));
 	if (!tab)
-		return (NULL);
+		return (perror("Malloc error"), NULL);
 	i = 0;
 	index = 0;
 	while (i < nb_args)
@@ -89,17 +104,11 @@ int	parse_args(t_cmd *cmd)
 {
 	int	nb_args;
 
-	if (!cmd->cmd)
-	{
-		cmd->cmd_args = (char **)malloc(sizeof(char *));
-		if (!cmd->cmd_args)
-			return (1);
-		cmd->cmd_args[0] = NULL;
-		return (0);
-	}
 	nb_args = count_args(cmd->cmd);
+	if (nb_args == 0)
+		return (write(2, "Empty command\n", 14), 0);
 	cmd->cmd_args = split_args(cmd->cmd, nb_args);
 	if (!cmd->cmd_args)
-		return (1);
-	return (0);
+		return (0);
+	return (nb_args);
 }
