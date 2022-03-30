@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 14:24:20 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/30 17:46:37 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static int	count_args(char *str)
 {
-	char		tmp;
 	t_tokens	toks;
 	int			i;
 	int			nb_command;
@@ -27,17 +26,20 @@ static int	count_args(char *str)
 		skip_whitespaces(str, &i);
 		if (str[i])
 			nb_command++;
-		if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i] == '<'))
+		if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i + 1] == '<'))
 			i += 2;
 		else if (str[i] == '>' || str[i] == '<')
 			i++;
-		while (str[i])
+		else
 		{
-			save_token(str[i], &toks);
-			if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
-					|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
-				break ;
-			i++;
+			while (str[i])
+			{
+				save_token(str[i], &toks);
+				if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
+						|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
+					break ;
+				i++;
+			}
 		}
 	}
 	return (nb_command);
@@ -53,7 +55,7 @@ static char	*save_arg(char *str, int *index)
 	init_tokens(&toks);
 	skip_whitespaces(str, index);
 	i = *index;
-	if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i] == '<'))
+	if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i + 1] == '<'))
 		i += 2;
 	else if (str[i] == '>' || str[i] == '<')
 		i++;

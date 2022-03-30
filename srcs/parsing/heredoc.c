@@ -6,13 +6,13 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 14:16:27 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/29 14:20:25 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/30 17:31:34 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*ft_del_spaces(char *str)
+char	*ft_del_spaces(char *str)
 {
 	size_t	size;
 	size_t	i;

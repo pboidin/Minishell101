@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/28 14:47:48 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/30 17:40:54 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,38 +114,6 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 		i++;
 	}
 	get_exit_status(info);
-}
-
-static char	*ft_del_spaces(char *str)
-{
-	size_t	size;
-	size_t	i;
-	char	*new_str;
-
-	size = 0;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ')
-			size++;
-		i++;
-	}
-	new_str = (char *)malloc(sizeof(char) * (size + 1));
-	if (!new_str)
-		return (perror("Malloc error"), NULL);
-	i = 0;
-	size = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ')
-		{
-			new_str[size] = str[i];
-			size++;
-		}
-		i++;
-	}
-	new_str[size] = '\0';
-	return (new_str);
 }
 
 char *get_path(char *str)
