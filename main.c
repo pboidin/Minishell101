@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		cmd = readline("Minishell: ");
 		if (cmd == NULL)
-			return (free_info(&info), info.status);
+			return (free_info(&info), write(1, "exit\n", 5), info.status);
 		if (cmd[0] != '\0')
 		{
 			add_history(cmd);
