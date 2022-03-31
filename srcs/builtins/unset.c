@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:48:06 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:48:09 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	ft_delete_join(t_env *aux, int c, t_info *info)
@@ -60,11 +72,13 @@ static t_env	*ft_find_pos(const char *unset, int *c, char *tmp, t_info *info)
 	return (NULL);
 }
 
-void	ft_unset_exec(char *const *unset, t_env *aux, char *tmp, int i, t_info *info)
+void	ft_unset_exec(char *const *unset, t_env *aux, int i, t_info *info)
 {
-	int	j;
+	int		j;
+	char	*tmp;
 
 	j = 0;
+	tmp = NULL;
 	aux = ft_find_pos(unset[i], &i, tmp, info);
 	if (aux != NULL)
 		ft_delete_join(aux, j, info);
@@ -72,14 +86,12 @@ void	ft_unset_exec(char *const *unset, t_env *aux, char *tmp, int i, t_info *inf
 
 int	ft_unset(char **unset, t_info *info)
 {
-	char	*tmp;
 	int		i;
 	int		ret;
 	t_env	*aux;
 
 	aux = info->env;
 	i = 0;
-	tmp = NULL;
 	ret = 0;
 	if (unset[1] && !aux)
 		return (0);
@@ -88,7 +100,7 @@ int	ft_unset(char **unset, t_info *info)
 		while (unset[++i])
 		{
 			if (ft_unset_handle(unset[i]) == 0)
-				ft_unset_exec(unset, aux, tmp, i, info);
+				ft_unset_exec(unset, aux, i, info);
 			else
 				ret = 1;
 		}

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pwd.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:47:55 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:47:57 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_genv(const char *path, t_info *info)
@@ -14,7 +26,8 @@ char	*ft_genv(const char *path, t_info *info)
 	{
 		if (ft_strncmp(env, (char *)tmp->value, path_size) == 0)
 		{
-			ret = ft_substr((char *)tmp->value, path_size, ft_strlen((char *)tmp->value) - path_size);
+			ret = ft_substr((char *)tmp->value, path_size,
+					ft_strlen((char *)tmp->value) - path_size);
 			free(env);
 			return (ret);
 		}

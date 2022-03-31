@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_error.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:46:27 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:46:32 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ft_env_set(t_env *env, t_info *info)
@@ -5,7 +17,7 @@ void	ft_env_set(t_env *env, t_info *info)
 	ft_env_loc(env, info);
 }
 
-int	ft_print_err(const char *dir)
+int	ft_print_err_cd(const char *dir)
 {
 	if (dir)
 	{

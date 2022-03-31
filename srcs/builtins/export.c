@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:47:21 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:47:23 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static char	**ft_lst_to_str(void)
+static char	**ft_lst_to_str(t_info *info)
 {
 	char	**env;
 	int		i;
 	t_env	*env2;
 
 	i = 0;
-	env = malloc(sizeof(char *) * (ft_lstsize(*g_info.env) + 1));
+	env = malloc(sizeof(char *) * (ft_lstsize(info->env) + 1));
 	if (!env)
 		return (NULL);
-	env2 = *g_info.env;
+	env2 = info->env;
 	while (env2)
 	{
 		env[i++] = ft_strdup(env2->value);
@@ -59,7 +71,7 @@ static void	ft_lst_printer(char **env)
 		{
 			write(STDOUT_FILENO, &env[i][j], 1);
 			if (env[i][j] == '=')
-				break;
+				break ;
 		}
 		write(STDOUT_FILENO, "\"", 1);
 		while (env[i][++j] != '\0')
@@ -72,7 +84,7 @@ static void	ft_lst_printer(char **env)
 	free(env);
 }
 
-static void	ft_lst_sort(void)
+static void	ft_lst_sort(t_info *info)
 {
 	char	*tmp;
 	char	**env;
@@ -81,7 +93,7 @@ static void	ft_lst_sort(void)
 
 	tmp = NULL;
 	i = -1;
-	env = ft_lst_to_str();
+	env = ft_lst_to_str(info);
 	while (env[++i])
 	{
 		j = -1;
@@ -91,18 +103,16 @@ static void	ft_lst_sort(void)
 	ft_lst_printer(env);
 }
 
-int	ft_export(char **new_env)
+int	ft_export(char **new_env, t_info *info)
 {
 	char	*env;
 	char	*env2;
-	char	*tmp;
 
 	env = NULL;
 	env2 = NULL;
-	tmp = NULL;
 	if (!new_env)
-		ft_lst_sort();
+		ft_lst_sort(info);
 	else
-		ft_export_var(new_env, tmp, env, env2);	
+		ft_export_var(new_env, env, env2, info);
 	return (0);
 }

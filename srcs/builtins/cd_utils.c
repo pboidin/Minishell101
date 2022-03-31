@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:46:39 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:46:41 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_go_to_home(t_info *info)
@@ -9,7 +21,7 @@ int	ft_go_to_home(t_info *info)
 	env = info->env;
 	if (!home || chdir(home) == -1)
 	{
-		ft_print_err(home);
+		ft_print_err_cd(home);
 		free(home);
 		return (0);
 	}
@@ -21,7 +33,7 @@ int	ft_go_to_home(t_info *info)
 int	ft_env_loc(t_env *env, t_info *info)
 {
 	t_env	*aux;
-	
+
 	aux = env;
 	while (aux != NULL)
 	{
@@ -49,11 +61,11 @@ void	ft_set_val(t_env **env, t_info *info, const char *val, int c)
 int	ft_try_go_oldpwd(t_env **env)
 {
 	t_env	*aux;
-	
+
 	aux = *env;
 	if (!env)
 		return (1);
-	while(*env)
+	while (*env)
 	{
 		if (ft_strncmp("OLDPWD=", (char *)(*env)->value, 7) == 0)
 			return (0);

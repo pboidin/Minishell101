@@ -44,7 +44,12 @@ SRCS = main.c \
 	   srcs/builtins/cd_error.c \
 	   srcs/builtins/env.c \
 	   srcs/builtins/unset.c \
-	   srcs/builtins/unset_utils.c
+	   srcs/builtins/unset_utils.c \
+	   srcs/builtins/export.c \
+	   srcs/builtins/export_utils.c \
+	   srcs/builtins/export_utils_2.c \
+	   srcs/builtins/exit.c \
+	   srcs/builtins/init_built.c
 
 OBJS := ${SRCS:.c=.o}
 

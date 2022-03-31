@@ -58,7 +58,7 @@ typedef struct s_cmd
 	struct s_cmd	**pipe;
 	struct s_cmd	**sub_cmd;
 	int				next_delim;
-} t_cmd;
+}	t_cmd;
 
 typedef struct s_tokens
 {
@@ -87,22 +87,22 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-extern	t_env	g_env;
+extern t_env	g_env;
 
-typedef int t_bool;
+typedef	int	t_bool;
 
 typedef struct s_info
 {
-	int		status; // last exit status  
+	int		status;
 	char	*prog_name;
-	t_env	*env; // environment vars
+	t_env	*env;
 	t_var	*local_var;
 	t_pid	*running_processes;
 	t_cmd	cmd;
-	t_bool	is_child; // if a process is a child
+	t_bool	is_child;
 }	t_info;
 
-extern 	t_info	g_info;
+extern t_info	g_info;
 
 void	free_env(t_info *info);
 int		create_info(t_info *info, char **envp, char *name);
@@ -125,16 +125,15 @@ int		parse_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 char	**join_env(t_info *info);
 
-/* BUILT-IN */
-
 int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab);
 int		ft_env(char **tab, t_info *info);
-int		ft_exit(char **tab);
-int		ft_export(char **new_env);
+int		ft_exit(char **tab, t_info *info);
+int		ft_export(char **new_env, t_info *info);
 int		ft_working_dir(char **n, t_info *info);
 int		ft_unset(char **unset, t_info *info);
-// void	ft_blti(t_info *info, t_cmd *cmd);
+int		ft_blt(t_cmd *cmd);
+void	ft_blti(t_info *info, t_cmd *cmd);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
@@ -147,12 +146,13 @@ int		ft_islower(int c);
 int		ft_isupper(int c);
 int		ft_lenvar(const char *s);
 int		ft_lstsize(t_env *lst);
-int		ft_print_err(const char *dir);
+int		ft_print_err_cd(const char *dir);
 int		ft_ret_home(t_info *info);
 int		ft_set_old(t_env *env, t_info *info, char *pwd, char *val);
 int		ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
+int		ft_atoi(const char *str);
 void	general_controller(t_info *info, t_cmd *cmd);
 int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
@@ -172,7 +172,7 @@ size_t	ft_strlen(const char *s);
 t_env	*ft_lstnew(void *data);
 
 void	ft_env_set(t_env *env, t_info *info);
-void	ft_export_var(char **new_env, char *tmp, char *env, char *env2);
+void	ft_export_var(char **new_env, char *env, char *env2, t_info *info);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);
 void	ft_lstdelone(t_env *lst, void (*del)(void*));
