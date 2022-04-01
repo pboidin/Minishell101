@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/01 21:21:15 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/01 22:25:21 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ size_t	count_words_var_expansion(char *str)
 			else
 			{
 				i++;
-				while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\'))
+				while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\' || str[i] == '?'))
 					i++;
 				if (str[i] == '\0')
 					break ;
@@ -201,7 +201,7 @@ char	*add_redirect_word(char *str, size_t *index)
 		else
 		{
 			i++;
-			while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\'))
+			while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\' || str[i] == '?'))
 				i++;
 		}
 	}
@@ -289,7 +289,7 @@ int	replace_redirect_var(char **words, size_t i, t_info *info, char *input)
 	return (0);
 }
 
-int	remove_spl_qu(char **tab, size_t i)
+int	remove_qu(char **tab, size_t i)
 {
 	size_t	j;
 	size_t	len;
@@ -312,20 +312,73 @@ int	remove_spl_qu(char **tab, size_t i)
 	return (0);
 }
 
-void	expand_dbl_qu_var(char **tab, size_t i)
+int	is_whitespace(char c)
 {
+	if ((c >= '\t' && c <= '\r') || c == ' ')
+		return (1);
+	return (0);
+}
+
+int	expand_dbl_qu_var(char **tab, size_t i, t_info *info)
+{
+	size_t	len;
+	char	*tmp1;
+	char	*tmp2;
+	char	holder;
 	size_t	j;
 
 	j = 0;
+	tmp1 = NULL;
+	tmp2 = NULL;
 	while (tab[i][j])
 	{
-		if (tab[i][j] == '$' && tab[i][j + 1] == '?')
+		if (tab[i][j] == '$' && !(tab[i][j + 1] == 39 || tab[i][j + 1] == '"'
+				|| tab[i][j + 1] == '$' || tab[i][j + 1] == '/' || tab[i][j + 1] == '\\' || is_whitespace(tab[i][j + 1])))
 		{
-
+			len = 0;
+			if (tab[i][j + 1] == '?')
+			{
+				tmp1 = ft_itoa(info->status);
+				len = 1;
+			}
+			else
+			{
+				j++;
+				while (tab[i][j + len] && !(tab[i][j + len] == 39
+					|| tab[i][j + len] == '"' || tab[i][j + len] == '$' || tab[i][j + len] == '?'
+					|| tab[i][j + len] == '/' || tab[i][j + len] == '\\' || is_whitespace(tab[i][j + len])))
+						len++;
+				holder = tab[i][j + len];
+				tab[i][j + len] = '\0';
+				j--;
+				tmp1 = find_variable(&tab[i][j], info);
+				tab[i][j + len + 1] = holder;
+			}
+			if (!tmp1)
+				return (perror("Malloc error"), 1);
+			printf("Variable found: %s\n", tmp1);
+			tab[i][j] = '\0';
+			tmp2 = ft_strjoin(tab[i], tmp1);
+			printf("Variable after first join: %s\n", tmp2);
+			printf("remainder: %s\n", &tab[i][j + len + 1]);
+			free(tmp1);
+			if (!tmp2)
+				return (perror("Malloc error"), 1);
+			tmp1 = ft_strjoin(tmp2, &tab[i][j + len + 1]);
+			j = ft_strlen(tmp2) - 1;
+			free(tmp2);
+			if (!tmp1)
+				return (perror("Malloc error"), 1);
+			free(tab[i]);
+			tab[i] = tmp1;
+			tmp1 = NULL;
+			tmp2 = NULL;
 		}
-		if (tab[i][j] == '$' && !(tab[i][j + 1] == 39 || tab[i][j = 1] == '"' || tab[i][j = 1] == '$' || tab[i][j = 1] == '/' || tab[i][j = 1] == '\\'))
 		j++;
 	}
+	if (remove_qu(tab, i))
+		return (1);
+	return (0);
 }
 
 char	**expand_redirect_var(char *str, t_info *info)
@@ -371,14 +424,13 @@ char	**expand_redirect_var(char *str, t_info *info)
 		}
 		else if (words[i][0] == 39)
 		{
-			if (remove_spl_qu(words, i))
+			if (remove_qu(words, i))
 				return (NULL);
 		}
 		else if (words[i][0] == '"')
 		{
-			if (remove_spl_qu(words, i))
+			if (expand_dbl_qu_var(words, i, info))
 				return (NULL);
-			expand_dbl_qu_var(words, i);
 		}
 		printf("Word in redirection after: %s\n", words[i]);
 		i++;
@@ -417,11 +469,20 @@ char *get_path(char *str, t_info *info)
 	{
 		new_word = ft_strjoin(word, path[i]);
 		if (!new_word)
-			return (free_char_tab(path), free(word), perror("Malloc error", NULL);
+			return (free_char_tab(path), free(word), perror("Malloc error"), NULL);
 		free(word);
 		word = new_word;
 		i++;
 	}
+	printf("path: %s\n", word);
+	if (!ft_strlen(word))
+	{
+		write(2, str, ft_strlen(str));
+		write(2, ": ambiguous redirect\n", 21);
+		free(word);
+		word = NULL;
+	}
+	return (free_char_tab(path), word);
 }
 
 int	handle_redirections(t_cmd *cmd, t_info *info)
