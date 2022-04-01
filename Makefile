@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/03/29 14:18:33 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/01 20:04:15 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,9 @@ SRCS = main.c \
 	   srcs/utils/ft_utils_function2.c \
 	   srcs/utils/ft_utils_mem.c \
 	   srcs/utils/ft_split.c \
-	   srcs/utils/ft_utils_numbers.c
+	   srcs/utils/ft_utils_numbers.c \
+	   srcs/utils/ft_strcmp.c \
+	   srcs/utils/ft_itoa.c
 
 OBJS := ${SRCS:.c=.o}
 

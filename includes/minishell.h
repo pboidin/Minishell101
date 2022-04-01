@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 17:37:50 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/01 20:01:36 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,9 @@ void	free_cmd(t_cmd *cmd);
 char	**join_env(t_info *info);
 int		save_heredoc(t_redirect *new_redirect);
 char	*ft_del_spaces(char *str);
+char	*ft_strdup(const char *s);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_itoa(int n);
 
 extern t_info	g_info;
 

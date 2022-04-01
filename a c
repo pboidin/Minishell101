@@ -1,11 +1,6 @@
-$?aabc
-$?aabc$?
-$abc
-a
-a$
-a$?
-a$a
-abc
+aa
+a c
+ac
 includes
 main.c
 main.o
