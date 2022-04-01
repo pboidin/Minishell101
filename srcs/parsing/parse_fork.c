@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/29 14:19:44 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/01 17:14:25 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 int	save_redirect(char *str, int i, t_cmd *cmd)
 {
 	int		j;
-	int		spl_qu;
-	int		dbl_qu;
 	int		redirect;
 	char	tmp;
 
@@ -85,17 +83,22 @@ int	save_redirect(char *str, int i, t_cmd *cmd)
 	}
 	skip_whitespaces(str, &i);
 	j = i;
-	spl_qu = 0;
-	dbl_qu = 0;
 	while (str[i] > 32 && str[i] < 127)
 	{
-		if (str[i] == '"' && !spl_qu)
-			dbl_qu ^= 1;
-		else if (str[i] == 39 && !dbl_qu)
-			spl_qu ^= 1;
-		else if (!dbl_qu && !spl_qu && (str[i] == '<' || str[i] == '>'
-				|| str[i] == ')' || str[i] == '(' || str[i] == '&'
-				|| str[i] == '|'))
+		if (str[i] == '"')
+		{
+			i++;
+			while (str[i] && str[i] != '"')
+				i++;
+		}
+		else if (str[i] == 39)
+		{
+			i++;
+			while (str[i] && str[i] != 39)
+				i++;
+		}
+		else if (str[i] == '<' || str[i] == '>' || str[i] == ')'
+				|| str[i] == '(' || str[i] == '&' || str[i] == '|')
 				break ;
 		i++;
 	}

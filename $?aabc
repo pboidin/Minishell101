@@ -1,0 +1,15 @@
+$?aabc
+$abc
+a
+a$
+a$?
+a$a
+abc
+includes
+main.c
+main.o
+Makefile
+minishell
+README.md
+srcs
+test

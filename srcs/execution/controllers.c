@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 17:40:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/01 17:17:42 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,158 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	get_exit_status(info);
 }
 
+size_t	count_words_var_expansion(char *str)
+{
+	size_t	nb_words;
+	size_t	i;
+
+	i = 0;
+	nb_words = 0;
+	while (str[i])
+	{
+		if (str[i] == '"')
+		{
+			i++;
+			while (str[i] && str[i] != '"')
+				i++;
+			nb_words++;
+		}
+		else if(str[i] == 39)
+		{
+			i++;
+			while (str[i] && str[i] != 39)
+				i++;
+			nb_words++;
+		}
+		else if (str[i] == '$' && str[i] != '\0')
+		{
+			nb_words++;
+			if (str[i + 1] == '?')
+				i++;
+			else
+			{
+				i++;
+				while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$'))
+					i++;
+				if (str[i] == '\0')
+					break ;
+				else
+					i--;
+			}
+		}
+		else
+		{
+			nb_words++;
+			while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
+				i++;
+			if (str[i] == '$' && str[i + 1] == '\0')
+				i++;
+			if (!str[i])
+				break ;
+			else
+				i--;
+		}
+		i++;
+	}
+	return (nb_words);
+}
+
+char	*add_redirect_word(char *str, size_t *index)
+{
+	char	*word;
+	size_t	i;
+	size_t	j;
+
+	i = *index;
+	printf("Rest of word: %s\n", &str[*index]);
+	if (str[i] == '"')
+	{
+		i++;
+		while (str[i] && str[i] != '"')
+			i++;
+		i++;
+	}
+	else if(str[i] == 39)
+	{
+		i++;
+		while (str[i] && str[i] != 39)
+			i++;
+		i++;
+	}
+	else if (str[i] == '$' && str[i] != '\0')
+	{
+		if (str[i + 1] == '?')
+			i += 2;
+		else
+		{
+			i++;
+			while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$'))
+				i++;
+		}
+	}
+	else
+	{
+		while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
+			i++;
+		if (str[i] == '$' && str[i + 1] == '\0')
+			i++;
+	}
+	word = (char *)ft_calloc((i - *index + 1), sizeof(char));
+	if (!word)
+		return (perror("Malloc error"), NULL);
+	j = 0;
+	while (*index < i)
+	{
+		word[j] = str[*index];
+		j++;
+		*index += 1;
+	}
+	return (word);
+}
+
+char	**expand_redirect_var(char *str)
+{
+	size_t	word_count;
+	char	**words;
+	size_t	i;
+	size_t	index;
+
+	word_count = count_words_var_expansion(str);
+	words = (char **)ft_calloc((word_count + 1), sizeof(char *));
+	if (!words)
+		return (perror("Malloc error"), NULL);
+	i = 0;
+	index = 0;
+	while (i < word_count)
+	{
+		words[i] = add_redirect_word(str, &index);
+		if (!words[i])
+		{
+			while (i--)
+				free(words[i]);
+			return (free(words), NULL);
+		}
+		i++;
+	}
+	i = 0;
+	while (words[i])
+	{
+
+		printf("Word in redirection: %s\n", words[i]);
+		i++;
+	}
+	return (words);
+}
+
 char *get_path(char *str)
 {
+//	char	**path;
 	int		spl_qu;
 	int		dbl_qu;
 	size_t	i;
 	char	*word;
 
+	expand_redirect_var(str); //	path = expand_redirect_var(str);
 	i = 0;
 	spl_qu = 0;
 	dbl_qu = 0;
@@ -174,7 +319,6 @@ int	handle_redirections(t_cmd *cmd)
 				close(cmd->out->fd);
 				cmd->out->fd = -1;
 			}
-			printf("current type: %d\n", current->type);
 			if (current->type == 1)
 				current->fd = open(current->path, O_RDWR | O_TRUNC | O_CREAT, 0666);
 			else
