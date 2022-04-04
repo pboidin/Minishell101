@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/04 12:33:29 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/04 15:18:01 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ typedef struct s_block
 	char	*str;
 	int		spl_qu;
 	int		dbl_qu;
+	int		var;
 }	t_block;
 
 typedef int t_bool;
@@ -145,6 +146,7 @@ char	*ft_del_spaces(char *str);
 char	*ft_strdup(const char *s);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_itoa(int n);
+char	**ft_split_charset(char const *s, char *set);
 
 extern t_info	g_info;
 

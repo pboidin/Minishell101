@@ -1,0 +1,15 @@
+$
+a
+ab
+abt
+includes
+main.c
+main.o
+Makefile
+minishell
+README.md
+srcs
+t
+t$
+test
+test1
