@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/01 22:25:21 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/04 12:38:00 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,10 +144,10 @@ size_t	count_words_var_expansion(char *str)
 			nb_words++;
 			if (str[i + 1] == '?')
 				i++;
-			else
+			else if (ft_isalpha(str[i + 1]) || str[i + 1] == '_')
 			{
 				i++;
-				while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\' || str[i] == '?'))
+				while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 					i++;
 				if (str[i] == '\0')
 					break ;
@@ -196,12 +196,13 @@ char	*add_redirect_word(char *str, size_t *index)
 	}
 	else if (str[i] == '$' && str[i] != '\0')
 	{
-		if (str[i + 1] == '?')
-			i += 2;
-		else
+		i++;
+		if (str[i] == '?')
+			i++;
+		else if (ft_isalpha(str[i]) || str[i] == '_')
 		{
 			i++;
-			while (str[i] && !(str[i] == 39 || str[i] == '"' || str[i] == '$' || str[i] == '/' || str[i] == '\\' || str[i] == '?'))
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 				i++;
 		}
 	}
@@ -381,26 +382,26 @@ int	expand_dbl_qu_var(char **tab, size_t i, t_info *info)
 	return (0);
 }
 
-char	**expand_redirect_var(char *str, t_info *info)
+t_block	*expand_redirect_var(char *str, t_info *info)
 {
 	size_t	word_count;
-	char	**words;
+	t_block	*words;
 	size_t	i;
 	size_t	index;
 
 	word_count = count_words_var_expansion(str);
-	words = (char **)ft_calloc((word_count + 1), sizeof(char *));
+	words = (t_block *)ft_calloc((word_count + 1), sizeof(t_block));
 	if (!words)
 		return (perror("Malloc error"), NULL);
 	i = 0;
 	index = 0;
 	while (i < word_count)
 	{
-		words[i] = add_redirect_word(str, &index);
-		if (!words[i])
+		words[i].str = add_redirect_word(str, &index);
+		if (!words[i].str)
 		{
 			while (i--)
-				free(words[i]);
+				free(words[i].str);
 			return (free(words), NULL);
 		}
 		i++;

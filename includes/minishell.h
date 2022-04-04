@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/01 20:01:36 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/04 12:33:29 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,13 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+typedef struct s_block
+{
+	char	*str;
+	int		spl_qu;
+	int		dbl_qu;
+}	t_block;
 
 typedef int t_bool;
 

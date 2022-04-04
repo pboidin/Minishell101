@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 18:10:57 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/04 12:22:57 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,12 @@ static int	is_assignation(char	*str)
 	}
 	if (str[i] != '=')
 		return (0);
-	j = 0;
+	if (!(ft_isalpha(str[0]) || str[0] == '_'))
+		return (0);
+	j = 1;
 	while (j < i)
 	{
-		if (str[i] == '?' || str[i] == '&' || str[i] == '|' || str[i] == '('
-			|| str[i] == ')' || str[i] == '"' || str[i] == 39 || str[i] == '$')
+		if (!(ft_isalnum(str[i]) || str[i] == '_'))
 			return (0);
 		j++;
 	}
