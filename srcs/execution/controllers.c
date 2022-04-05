@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/04 16:13:11 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/05 12:27:45 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,8 +384,6 @@ int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
 		}
 		j++;
 	}
-	if (remove_qu(tab, i))
-		return (1);
 	return (0);
 }
 
@@ -466,13 +464,15 @@ t_block	*expand_redirect_var(char *str, t_info *info)
 		{
 			words[i].spl_qu = 1;
 			if (remove_qu(words, i))
-				return (NULL);
+				return (free_t_block(words), NULL);
 		}
 		else if (words[i].str[0] == '"')
 		{
 			words[i].dbl_qu = 1;
 			if (expand_dbl_qu_var(words, i, info))
-				return (NULL);
+				return (free_t_block(words), NULL);
+			if (remove_qu(words, i))
+				return (free_t_block(words), NULL);
 		}
 		printf("Word in redirection after: %s\n", words[i].str);
 		i++;
@@ -553,7 +553,10 @@ int	handle_redirections(t_cmd *cmd, t_info *info)
 			}
 			current->fd = open(current->path, O_RDONLY);
 			if (current->fd == -1)
-				return (perror("Open error"), 1);
+			{
+				write(2, current->path, ft_strlen(current->path));
+				return (perror(""), 1);
+			}
 			cmd->in = current;
 		}
 		else
@@ -568,7 +571,10 @@ int	handle_redirections(t_cmd *cmd, t_info *info)
 			else
 				current->fd = open(current->path, O_RDWR | O_APPEND | O_CREAT, 0666);
 			if (current->fd == -1)
-				return (perror("Open error"), 1);
+			{
+				write(2, current->path, ft_strlen(current->path));
+				return (perror(" "), 1);
+			}
 			cmd->out = current;
 		}
 		current = current->next;
@@ -618,6 +624,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
 
+	if (handle_redirections(cmd, info))
+	{
+		info->status = 1;
+		return ;
+	}
 	ret = fork();
 	if (ret == -1)
 	{
@@ -626,13 +637,28 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 	}
 	if (!ret)
 	{
+		free_pid(info);
+		if (cmd->in)
+			dup2(cmd->in->fd, 0);
+		if (cmd->out)
+			dup2(cmd->out->fd, 1);
 		ft_execute(info, cmd->cmd_args);
 	}
 	else
 	{
+		if (cmd->in)
+		{
+			close(cmd->in->fd);
+			cmd->in->fd = -1;
+		}
+		if (cmd->out)
+		{
+			close(cmd->out->fd);
+			cmd->out->fd = -1;
+		}
 		if (add_pid(info, ret))
 		{
-			write(2, "Malloc error\n", 13);
+			perror("Malloc error");
 			exit (1);
 		}
 		get_exit_status(info);
