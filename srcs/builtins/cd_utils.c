@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:46:39 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:46:41 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/05 07:39:11 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	ft_try_go_oldpwd(t_env **env)
 	t_env	*aux;
 
 	aux = *env;
-	if (!env)
+	if (!*env)
 		return (1);
 	while (*env)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:46:00 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/05 07:44:59 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_upd_env(t_env **env, t_info *info)
 	{
 		free(path);
 		path = ft_genv("PWD", info);
-		if (path)
+		if (!path)
 			return ;
 	}
 	free((*env)->value);
