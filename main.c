@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/23 15:12:22 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/30 18:03:55 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		cmd = readline("Minishell: ");
 		if (cmd == NULL)
-			return (free_info(&info), info.status);
+			return (free_info(&info), write(1, "exit\n", 5), info.status);
 		if (cmd[0] != '\0')
 		{
 			add_history(cmd);

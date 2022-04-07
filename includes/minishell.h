@@ -6,12 +6,13 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/23 08:22:08 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/04 15:18:01 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef  MINISHELL_H
 # define MINISHELL_H
+# define _GNU_SOURCE
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -21,7 +22,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
-# include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # ifndef TRUE
 #  define TRUE 1
@@ -43,6 +44,9 @@ typedef struct s_redirect
 {
 	int					type;
 	char				*str;
+	char				*path;
+	int					fd;
+	int					var_expansion;
 	struct s_redirect	*next;
 }	t_redirect;
 
@@ -50,6 +54,7 @@ typedef struct s_cmd
 {
 	int				prev_delim;
 	struct s_cmd	*fork;
+	t_redirect		*redirections;
 	t_redirect		*in;
 	t_redirect		*out;
 	char			*cmd;
@@ -86,6 +91,14 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+typedef struct s_block
+{
+	char	*str;
+	int		spl_qu;
+	int		dbl_qu;
+	int		var;
+}	t_block;
 
 extern t_env	g_env;
 
@@ -124,6 +137,16 @@ int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd);
 void	free_cmd(t_cmd *cmd);
 char	**join_env(t_info *info);
+int		save_heredoc(t_redirect *new_redirect);
+char	*ft_del_spaces(char *str);
+char	*ft_strdup(const char *s);
+int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_itoa(int n);
+char	**ft_split_charset(char const *s, char *set);
+
+extern t_info	g_info;
+
+/* BUILT-IN */
 
 int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab);
@@ -156,6 +179,7 @@ int		ft_atoi(const char *str);
 void	general_controller(t_info *info, t_cmd *cmd);
 int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
+int		ft_abs(int nb);
 
 char	*ft_genv(const char *path, t_info *info);
 char	*ft_strdup(const char *str);

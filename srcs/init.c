@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/22 13:04:39 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/03/28 15:07:31 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	init_cmd(t_cmd *cmd)
 	cmd->fork = NULL;
 	cmd->in = NULL;
 	cmd->out = NULL;
+	cmd->redirections = NULL;
 	cmd->cmd = NULL;
 	cmd->cmd_name = NULL;
 	cmd->cmd_args = NULL;

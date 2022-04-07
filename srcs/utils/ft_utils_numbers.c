@@ -38,6 +38,13 @@ int	ft_atoi(const char *str)
 	return (rslt * neg);
 }
 
+int	ft_abs(int nb)
+{
+	if (nb < 0)
+		return (-nb);
+	return (nb);
+}
+
 int	ft_strcmp(char *s1, char *s2)
 {
 	while (*s1 && *s2 && (*s1 == *s2))
@@ -46,16 +53,4 @@ int	ft_strcmp(char *s1, char *s2)
 		s2++;
 	}
 	return (*s1 - *s2);
-}
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
 }
