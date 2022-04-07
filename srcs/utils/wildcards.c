@@ -46,11 +46,8 @@ int		ft_strlen(char *str)
 char	*ft_strreturn(char *str, int i)
 {
 	char	*ret;
-	int		size;
 
-	size = ft_strlen(str);
 	printf("%i", i);
-
 	ret = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (str == NULL || ret == NULL)
 		return (NULL);
@@ -73,45 +70,39 @@ char	*ft_strreturn(char *str, int i)
 	return (ret);
 }
 
+char	**ft_wildcards(char *cmd, char **ret)
+{
+	struct dirent *de;
+  
+    DIR *dr = opendir(".");
+  
+    if (dr == NULL)
+    {
+        printf("Could not open current directory" );
+        return 0;
+    }
+	if (ft_strchr(cmd, '*') == 1)
+	{
+		while ((de = readdir(dr)) != NULL)
+            printf("%s\n", de->d_name);
+		ret = 1;
+	}
+	else
+		ret = 0;
+    closedir(dr);
+    return (ret);
+}
+
 int main(int argc, char **argv)
 {
 	char	*cmd;
-	struct	dirent *de;
+	char	**ret;
 	(void)	argc;
-	int		i;
 
-	DIR *dr = opendir(".");
-	i = 0;
-	if (dr == NULL)
-	{
-		printf("Could not open current directory");
-		return (0);
-	}
 	cmd = argv[1];
-	if (argv[1] == NULL)
-		return (0);
-	while (cmd[i])
-	{
-		write(1, &cmd[i], 1);
-		i++;
-	}
-	write(1, "\n", 1);
-	i = 0;
 	if (cmd == NULL)
-        return (0);
-	if (ft_strchr(argv[1], '*') == 1)
-	{
-		while ((de = readdir(dr)) != NULL)
-		{
-			while (argv[1][i] == '*')
-				i++;
-			if (ft_strreturn(argv[1], i) != NULL)
-			{
-				ft_putstr(ft_strreturn(argv[1], i));
-				ft_putstr(de->d_name);
-			}
-		}
-    	closedir(dr);    
-    	return 0;
-	}
+		return (0);
+	ret = ft_wildcards(cmd, ret);
+
+	return (ret);
 }

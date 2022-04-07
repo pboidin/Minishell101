@@ -76,11 +76,3 @@ char	*ft_trim(char *cmd)
 	new_cmd[z] = '\0';
 	return (new_cmd);
 }
-
-void	skip_whitespaces(char *cmd, int *i)
-{
-	if (!cmd)
-		return ;
-	while (cmd[*i] && ((cmd[*i] >= '\t' && cmd[*i] <= '\r') || cmd[*i] == ' '))
-		*i += 1;
-}

@@ -53,7 +53,8 @@ SRCS = main.c \
 	   srcs/builtins/export_utils.c \
 	   srcs/builtins/export_utils_2.c \
 	   srcs/builtins/exit.c \
-	   srcs/builtins/init_built.c
+	   srcs/builtins/init_built.c \
+	   srcs/utils/ft_utils_str_2.c
 
 OBJS := ${SRCS:.c=.o}
 
