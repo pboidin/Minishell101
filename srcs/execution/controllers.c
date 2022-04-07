@@ -77,6 +77,7 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 		else if (!ret)
 		{
 			free_pid(info);
+			info->is_child = TRUE;
 			if (i == 0)
 			{
 				dup2(fd[1], 1);
@@ -595,6 +596,7 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 	if (!ret)
 	{
 		free_pid(info);
+		info->is_child = TRUE;
 		if (!handle_redirections(cmd, info))
 		{
 			if (cmd->in)
@@ -632,7 +634,7 @@ void	simple_controller(t_info *info, t_cmd *cmd)
   if (ft_blt(cmd) == 0)
   {
 		ft_blti(info, cmd);
-    return ;
+	    return ;
   }
 	ret = fork();
 	if (ret == -1)

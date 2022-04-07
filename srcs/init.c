@@ -85,6 +85,7 @@ int	create_info(t_info *info, char **envp, char *name)
 	info->running_processes = NULL;
 	info->status = 0;
 	info->env = NULL;
+	info->is_child = FALSE;
 	if (envp)
 	{
 		i = 0;
