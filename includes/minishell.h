@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/04 15:18:01 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/07 13:03:42 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdint.h>
 # include <stdbool.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
@@ -140,7 +141,7 @@ char	**join_env(t_info *info);
 int		save_heredoc(t_redirect *new_redirect);
 char	*ft_del_spaces(char *str);
 char	*ft_strdup(const char *s);
-int		ft_strcmp(const char *s1, const char *s2);
+int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 
@@ -172,7 +173,6 @@ int		ft_lstsize(t_env *lst);
 int		ft_print_err_cd(const char *dir);
 int		ft_ret_home(t_info *info);
 int		ft_set_old(t_env *env, t_info *info, char *pwd, char *val);
-int		ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
 int		ft_atoi(const char *str);
