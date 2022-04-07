@@ -1,12 +1,24 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:47:01 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:47:02 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	ft_print(void)
+#include "minishell.h"
+
+static void	ft_print(t_info *info)
 {
 	char	*values;
 	int		i;
 	t_env	*env;
 
-	env = g_info.env;
+	env = info->env;
 	while (env)
 	{
 		i = 0;
@@ -22,12 +34,12 @@ static void	ft_print(void)
 	}
 }
 
-int	ft_env(char **tab)
+int	ft_env(char **tab, t_info *info)
 {
-	if (!g_info.env)
+	if (info->env)
 		return (0);
 	if (tab[1] == NULL)
-		ft_print();
+		ft_print(info);
 	else
 	{
 		write(STDERR_FILENO, "env: ", 5);
@@ -36,4 +48,3 @@ int	ft_env(char **tab)
 	}
 	return (0);
 }
-

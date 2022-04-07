@@ -1,4 +1,16 @@
-#include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_utils_mem.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 15:43:55 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 15:44:36 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	*ft_memcpy(void *dst, const void *src, size_t memSize)
 {
@@ -26,7 +38,7 @@ void	*ft_realloc(void *ptr, size_t memSize)
 		if (ptr)
 		{
 			free (ptr);
-			ptr=NULL;
+			ptr = NULL;
 		}
 		return (NULL);
 	}

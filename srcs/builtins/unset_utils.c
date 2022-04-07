@@ -1,4 +1,16 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:48:15 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:48:18 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 static void	ft_print_err_uns(const char *new_env)
 {
@@ -14,8 +26,8 @@ int	ft_unset_handle(char *new_env)
 
 	i = 0;
 	if ((new_env[0] >= 'A' && new_env[0] <= 'Z')
-			|| (new_env[0] >= 'a' && new_env[0] <= 'z')
-			|| new_env[0] == '_')
+		|| (new_env[0] >= 'a' && new_env[0] <= 'z')
+		|| (new_env[0] == '_'))
 	{
 		while (new_env[++i])
 		{

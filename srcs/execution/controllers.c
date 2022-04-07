@@ -629,6 +629,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = 1;
 		return ;
 	}
+  if (ft_blt(cmd) == 0)
+  {
+		ft_blti(info, cmd);
+    return ;
+  }
 	ret = fork();
 	if (ret == -1)
 	{
@@ -661,7 +666,7 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 			perror("Malloc error");
 			exit (1);
 		}
-		get_exit_status(info);
+			get_exit_status(info);
 	}
 }
 

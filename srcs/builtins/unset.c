@@ -1,14 +1,26 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/31 14:48:06 by piboidin          #+#    #+#             */
+/*   Updated: 2022/03/31 14:48:09 by piboidin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	ft_delete_join(t_env *aux, int c)
+#include "minishell.h"
+
+static void	ft_delete_join(t_env *aux, int c, t_info *info)
 {
 	t_env	*tmp;
 
 	tmp = NULL;
 	if (c == 0)
 	{
-		aux = g_info.env;
-		g_info.env = (g_info.env)->next;
+		aux = info->env;
+		info->env = (info->env)->next;
 		ft_lstdelone(aux, free);
 		return ;
 	}
@@ -18,7 +30,7 @@ static void	ft_delete_join(t_env *aux, int c)
 	aux->next = tmp;
 }
 
-static t_env	*ft_build_str(const char *unset, char **tmp)
+static t_env	*ft_build_str(const char *unset, char **tmp, t_info *info)
 {
 	char	*tmp1;
 	t_env	*aux;
@@ -27,11 +39,11 @@ static t_env	*ft_build_str(const char *unset, char **tmp)
 	tmp1 = *tmp;
 	*tmp = ft_strjoin(tmp1, "=");
 	free(tmp1);
-	aux = g_info.env;
+	aux = info->env;
 	return (aux);
 }
 
-static t_env	*ft_find_pos(const char *unset, int *c, char *tmp)
+static t_env	*ft_find_pos(const char *unset, int *c, char *tmp, t_info *info)
 {
 	t_env	*aux;
 
@@ -40,7 +52,7 @@ static t_env	*ft_find_pos(const char *unset, int *c, char *tmp)
 	tmp = (char *)malloc(sizeof(char) * (ft_strlen(unset) + 1));
 	if (!tmp)
 		return (NULL);
-	aux = ft_build_str(unset, &tmp);
+	aux = ft_build_str(unset, &tmp, info);
 	if (ft_strncmp((char *)aux->next->value, tmp, ft_strlen(tmp)) == 0)
 	{
 		free (tmp);
@@ -60,26 +72,26 @@ static t_env	*ft_find_pos(const char *unset, int *c, char *tmp)
 	return (NULL);
 }
 
-void	ft_unset_exec(char *const *unset, t_env *aux, char *tmp, int i)
+void	ft_unset_exec(char *const *unset, t_env *aux, int i, t_info *info)
 {
-	int	j;
+	int		j;
+	char	*tmp;
 
 	j = 0;
-	aux = ft_find_pos(unset[i], &i, tmp);
+	tmp = NULL;
+	aux = ft_find_pos(unset[i], &i, tmp, info);
 	if (aux != NULL)
-		ft_delete_join(aux, j);
+		ft_delete_join(aux, j, info);
 }
 
-int	ft_unset(char **unset)
+int	ft_unset(char **unset, t_info *info)
 {
-	char	*tmp;
 	int		i;
 	int		ret;
 	t_env	*aux;
 
-	aux = g_info.env;
+	aux = info->env;
 	i = 0;
-	tmp = NULL;
 	ret = 0;
 	if (unset[1] && !aux)
 		return (0);
@@ -88,7 +100,7 @@ int	ft_unset(char **unset)
 		while (unset[++i])
 		{
 			if (ft_unset_handle(unset[i]) == 0)
-				ft_unset_exec(unset, aux, tmp, i);
+				ft_unset_exec(unset, aux, i, info);
 			else
 				ret = 1;
 		}

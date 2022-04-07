@@ -10,6 +10,9 @@
 #                                                                              #
 # **************************************************************************** #
 
+#	Names
+NAME		= minishell
+
 SRCS = main.c \
 	   srcs/init.c \
 	   srcs/utils/free.c \
@@ -26,6 +29,7 @@ SRCS = main.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
 	   srcs/utils/env.c \
+	   srcs/utils/ft_utils_numbers.c \
 	   srcs/execution/pipex_utils.c \
 	   srcs/utils/ft_utils_function.c \
 	   srcs/utils/ft_utils_function2.c \
@@ -35,7 +39,22 @@ SRCS = main.c \
 	   srcs/utils/ft_strcmp.c \
 	   srcs/utils/ft_itoa.c \
 	   srcs/utils/ft_utils_alpha.c \
-	   srcs/utils/ft_split_charset.c
+	   srcs/utils/ft_split_charset.c \
+	   srcs/utils/ft_utils_lst.c \
+	   srcs/utils/ft_utils_lst2.c \
+	   srcs/builtins/echo.c \
+	   srcs/builtins/pwd.c \
+	   srcs/builtins/cd.c \
+	   srcs/builtins/cd_utils.c \
+	   srcs/builtins/cd_error.c \
+	   srcs/builtins/env.c \
+	   srcs/builtins/unset.c \
+	   srcs/builtins/unset_utils.c \
+	   srcs/builtins/export.c \
+	   srcs/builtins/export_utils.c \
+	   srcs/builtins/export_utils_2.c \
+	   srcs/builtins/exit.c \
+	   srcs/builtins/init_built.c
 
 OBJS := ${SRCS:.c=.o}
 
@@ -63,5 +82,6 @@ re:		fclean all
 
 .c.o:		
 		$(CC) $(CFLAGS) -c $< -o ${<:.c=.o} -Iincludes -lreadline
+
 
 .PHONY:	all clean fclean re bonus
