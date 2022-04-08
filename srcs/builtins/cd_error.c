@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-void	ft_env_set(t_env *env, t_info *info)
+void	ft_env_set(t_info *info)
 {
-	ft_env_loc(env, info);
+	ft_env_loc(info);
 }
 
 int	ft_print_err_cd(const char *dir)

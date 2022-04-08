@@ -15,6 +15,7 @@
 static void	ft_print(t_info *info)
 {
 	char	*values;
+	char	*t_name;
 	int		i;
 	t_env	*env;
 
@@ -23,20 +24,22 @@ static void	ft_print(t_info *info)
 	{
 		i = 0;
 		values = (char *)env->value;
-		while (values[i] && values[i] != '=')
-			i++;
-		if (values[i] == '=' && values[i + 1])
+		t_name = (char *)env->name; 
+		if (values[i] && t_name[i])
 		{
+			write(1, env->name, ft_strlen((char *)env->name));
+			write(1, "=", 1);
 			write(1, env->value, ft_strlen((char *)env->value));
 			write(1, "\n", 1);
 		}
 		env = env->next;
+		i++;
 	}
 }
 
 int	ft_env(char **tab, t_info *info)
 {
-	if (info->env)
+	if (!info->env)
 		return (0);
 	if (tab[1] == NULL)
 		ft_print(info);

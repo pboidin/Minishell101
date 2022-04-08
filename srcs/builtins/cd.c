@@ -41,7 +41,7 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	return (0);
 }
 
-void	ft_upd_env(t_env **env, t_info *info)
+void	ft_upd_env(t_info *info)
 {
 	char	*path;
 
@@ -55,12 +55,12 @@ void	ft_upd_env(t_env **env, t_info *info)
 		if (!path)
 			return ;
 	}
-	free((*env)->value);
-	(*env)->value = ft_strjoin("PWD=", path);
+	free(info->env->value);
+	info->env->value = path;
 	free(path);
 }
 
-static int	ft_go_to_pwd(t_env *env, t_info *info)
+static int	ft_go_to_pwd(t_info *info)
 {
 	char	*tmp;
 	char	*old;
@@ -82,8 +82,8 @@ static int	ft_go_to_pwd(t_env *env, t_info *info)
 		return (1);
 	}
 	free(old);
-	ft_set_old(env, info, pwd, tmp);
-	ft_env_loc(env, info);
+	ft_set_old(info, pwd, tmp);
+	ft_env_loc(info);
 	return (0);
 }
 
@@ -95,8 +95,8 @@ int	ft_ch_dir(char **dir, t_info *info)
 	pwd = NULL;
 	tmp = NULL;
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
-		return (ft_go_to_pwd(info->env, info));
-	ft_set_old(info->env, info, pwd, tmp);
+		return (ft_go_to_pwd(info));
+	ft_set_old(info, pwd, tmp);
 	if (!dir[1] || (!ft_strncmp(dir[1], "~\0", 2)
 			|| !ft_strncmp(dir[1], "~/", 2)))
 	{
@@ -112,6 +112,6 @@ int	ft_ch_dir(char **dir, t_info *info)
 	else if (dir[1][0] != '\0' && chdir(dir[1]) == -1)
 		return (ft_print_err_cd(dir[1]));
 	else
-		ft_env_set(info->env, info);
+		ft_env_set(info);
 	return (0);
 }
