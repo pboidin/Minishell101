@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/05 12:27:45 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/08 13:35:32 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ size_t	count_words_var_expansion(char *str)
 			nb_words++;
 			if (str[i + 1] == '?')
 				i++;
+			else if (ft_isdigit(str[i + 1]))
+				i++;
 			else
 			{
 				i++;
@@ -200,6 +202,8 @@ char	*add_redirect_word(char *str, size_t *index)
 		i++;
 		if (str[i] == '?')
 			i++;
+		else if (ft_isdigit(str[i + 1]))
+				i++;
 		else
 		{
 			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
@@ -269,7 +273,7 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 			return (perror("malloc error"), NULL);
 		if (words[i].str[1] == '?')
 			var_val[0] = ft_itoa(info->status);
-		else if (words[i + 1].str)
+		else if (words[i + 1].str && (words[i + 1].str[0] == '"' || words[i + 1].str[0] == 39))
 			var_val[0] = (char *)ft_calloc(1, sizeof(char));
 		else
 			var_val[0] = ft_strdup(words[i].str);
@@ -307,8 +311,6 @@ int	remove_qu(t_block *tab, size_t i)
 	char	*word;
 
 	len = ft_strlen(tab[i].str);
-	tab[i].str[0] = ' ';
-	tab[i].str[len - 1] = ' ';
 	word = (char *)ft_calloc((len - 1), sizeof(char));
 	if (!word)
 		return (perror("Malloc error"), 1);
@@ -349,6 +351,13 @@ int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
 			if (tab[i].str[j + 1] == '?')
 			{
 				tmp1 = ft_itoa(info->status);
+				len = 1;
+			}
+			else if (ft_isdigit(tab[i].str[j + 1]))
+			{
+				tmp1 = (char *)ft_calloc(1, sizeof(char));
+				if (!tmp1)
+					return (perror("Malloc error"), 1);
 				len = 1;
 			}
 			else
@@ -631,11 +640,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = 1;
 		return ;
 	}
-  if (ft_blt(cmd) == 0)
-  {
+	if (ft_blt(cmd) == 0)
+	{
 		ft_blti(info, cmd);
 	    return ;
-  }
+	}
 	ret = fork();
 	if (ret == -1)
 	{
