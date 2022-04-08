@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/04 12:22:57 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/08 18:29:12 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,20 +118,6 @@ static int	is_valid_assignation(char *str)
 	return (1);
 }
 
-static void	move_upward(t_cmd *cmd, int i, int mv)
-{
-	while (cmd->cmd_args[i])
-	{
-		cmd->cmd_args[i - mv] = cmd->cmd_args[i];
-		i++;
-	}
-	while (mv)
-	{
-		cmd->cmd_args[i - mv] = NULL;
-		mv--;
-	}
-}
-
 static int	handle_redirections(t_cmd *cmd, int *i)
 {
 	char	*str;
@@ -211,27 +197,31 @@ char	*get_cmd_val(char *str)
 {
 	int		spl_qu;
 	int		dbl_qu;
+	char	*dupped;
 	size_t	i;
 	char	*word;
 
+	dupped = ft_strdup(str);
+	if (!dupped)
+		return (perror("Malloc error"), NULL);
 	i = 0;
 	spl_qu = 0;
 	dbl_qu = 0;
-	while (str[i])
+	while (dupped[i])
 	{
-		if (str[i] == 39 && !dbl_qu)
+		if (dupped[i] == 39 && !dbl_qu)
 		{
-			str[i] = ' ';
+			dupped[i] = ' ';
 			spl_qu ^= 1;
 		}
-		else if (str[i] == '"' && !spl_qu)
+		else if (dupped[i] == '"' && !spl_qu)
 		{
 			str[i] = ' ';
 			dbl_qu ^= 1;
 		}
 		i++;
 	}
-	word = ft_del_spaces(str);
+	word = ft_del_spaces(dupped);
 	if (!word)
 		return (NULL);
 	printf("cmd %s\n", word);
@@ -283,7 +273,7 @@ static int	check_cmd(t_cmd *cmd)
 				cmd_val = get_cmd_val(cmd->cmd_args[i]);
 				if (!cmd_val)
 					return (perror("Malloc error"), 1);
-				if (!strncmp("export", cmd_val, 7))
+				if (!strcmp("export", cmd_val))
 					is_export = 1;
 				free(cmd_val);
 				clean_previous_args(cmd, &i);

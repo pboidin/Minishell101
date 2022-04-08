@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 17:46:37 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/08 18:26:03 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static char	**split_args(char *str, int nb_args)
 	int			i;
 	char		**tab;
 
-	tab = (char **)malloc(sizeof(char *) * (nb_args + 1));
+	tab = (char **)ft_calloc((nb_args + 1), sizeof(char *));
 	if (!tab)
 		return (perror("Malloc error"), NULL);
 	i = 0;

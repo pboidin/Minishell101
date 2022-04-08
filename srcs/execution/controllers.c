@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/08 13:35:32 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/08 18:26:21 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,6 +410,19 @@ void	free_t_block(t_block *block)
 	free(block);
 }
 
+void	free_t_block_tab(t_block **block_tab)
+{
+	size_t	i;
+
+	i = 0;
+	while (block_tab[i])
+	{
+		free_t_block(block_tab[i]);
+		i++;
+	}
+	free(block_tab);
+}
+
 void	free_char_tab(char **tab)
 {
 	size_t	i;
@@ -631,6 +644,273 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 	}
 }
 
+size_t	char_tab_size(char **tab)
+{
+	size_t	i;
+
+	i = 0;
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+size_t	t_block_tab_size(t_block **tab)
+{
+	size_t	i;
+
+	if (!tab)
+		return (0);
+	i = 0;
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+t_block	*cpy_t_blocks(t_block *line, long long max, char *new_var)
+{
+	t_block	*new_line;
+	size_t	line_size;
+	size_t	i;
+
+	if (max >= 0)
+		line_size = (size_t)max + 1;
+	else
+	{
+		line_size = 0;
+		while (line[line_size].str)
+			line_size++;
+		if (max == -2)
+			line_size++;
+	}
+	new_line = (t_block *)ft_calloc((line_size + 1), sizeof(t_block));
+	if (!new_line)
+		return (perror("Malloc error"), NULL);
+	i = 0;
+	if (max == -2)
+	{
+		new_line[i].str = ft_strdup(new_var);
+		if (!new_line[i].str)
+			return (free_t_block(new_line), NULL);
+		i++;
+	}
+	while (line[i].str && i < (size_t)max)
+	{
+		new_line[line_size].str = ft_strdup(line[line_size].str);
+		if (!new_line[line_size].str)
+			return (free_t_block(new_line), NULL);
+		i++;
+	}
+	if (max >= 0)
+	{
+		new_line[i].str = ft_strdup(new_var);
+		if (!new_line[i].str)
+			return (free_t_block(new_line), NULL);
+	}
+	return (new_line);
+}
+
+size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
+{
+	size_t	x;
+	size_t	y;
+	size_t	nb_var;
+	t_block	**new_words_tab;
+
+	nb_var = char_tab_size(var);
+	new_words_tab =	(t_block **)ft_calloc((t_block_tab_size(*words_tab) + nb_var), sizeof(t_block *));
+	if (!new_words_tab)
+		return (perror("Malloc error"), free_char_tab(var), 0);
+	y = 0;
+	while (y < j)
+	{
+		new_words_tab[y] = cpy_t_blocks(words_tab[0][y], -1, NULL);
+		if (!new_words_tab[y])
+			return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
+		y++;
+	}
+	new_words_tab[y] = cpy_t_blocks(words_tab[0][y], (long long)i, var[0]);
+	if (!new_words_tab[y])
+		return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
+	y++;
+	x = 1;
+	while ((x + 1) < nb_var)
+	{
+		new_words_tab[y] = cpy_t_blocks(words_tab[0][y], 0, var[x]);
+		if (!new_words_tab[y])
+			return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
+		y++;
+		x++;
+	}
+	new_words_tab[y] = cpy_t_blocks(words_tab[0][y], -2, var[x]);
+	if (!new_words_tab[y])
+		return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
+	free_t_block_tab(*words_tab);
+	*words_tab = new_words_tab;
+	return (nb_var);
+}
+
+void	print_t_block_tab(t_block **tab)
+{
+	size_t	i;
+	size_t	j;
+
+	if (!tab)
+		return ;
+	i = 0;
+	while (tab[j])
+	{
+		i = 0;
+		while (tab[j][i].str)
+		{
+			printf("%s", tab[j][i].str);
+			i++;
+		}
+		printf("\n");
+		j++;
+	}
+}
+
+t_block	**add_args_word(char *str, t_info *info)
+{
+	size_t	word_count;
+	t_block	**words_tab;
+	size_t	i;
+	size_t	j;
+	size_t	index;
+	char	**var;
+
+	printf("str in expansion: %s\n", str);
+	words_tab = (t_block **)ft_calloc(2, sizeof(t_block *));
+	if (!words_tab)
+		return (perror("Malloc error"), NULL);
+	word_count = count_words_var_expansion(str);
+	printf("Word count: %lu\n", word_count);
+	words_tab[0] = (t_block *)ft_calloc((word_count + 1), sizeof(t_block));
+	if (!words_tab[0])
+		return (perror("Malloc error"), free_t_block_tab(words_tab), NULL);
+	words_tab[0][0].str = NULL;
+	printf("init");
+	print_t_block_tab(words_tab);
+	i = 0;
+	j = 0;
+	index = 0;
+	while (i < word_count)
+	{
+		words_tab[j][i].str = add_redirect_word(str, &index);
+		if (!words_tab[j][i].str)
+			return (free_t_block_tab(words_tab), NULL);
+		i++;
+	}
+	i = 0;
+	while (words_tab[j][i].str)
+	{
+		if (words_tab[j][i].str[0] == '$')
+		{
+			words_tab[j][i].var = 1;
+			var = replace_redirect_var(words_tab[j], i, info);
+			if (!var || !var[0])
+			{
+				free_t_block_tab(words_tab);
+				if (var)
+					free(var);
+				return (NULL);
+			}
+			if (char_tab_size(var) == 1)
+			{
+				free(words_tab[j][i].str);
+				words_tab[j][i].str = var[0];
+				free(var);
+			}
+			else
+			{
+				word_count = split_tab_var(&words_tab, j, i, var);
+				if (!word_count)
+					return (free_t_block_tab(words_tab), NULL);
+				j += (word_count - 1);
+				i = 1;
+			}
+		}
+		else if (words_tab[j][i].str[0] == 39)
+		{
+			words_tab[j][i].spl_qu = 1;
+			if (remove_qu(words_tab[j], i))
+				return (free_t_block_tab(words_tab), NULL);
+		}
+		else if (words_tab[j][i].str[0] == '"')
+		{
+			words_tab[j][i].dbl_qu = 1;
+			if (expand_dbl_qu_var(words_tab[j], i, info))
+				return (free_t_block_tab(words_tab), NULL);
+			if (remove_qu(words_tab[j], i))
+				return (free_t_block_tab(words_tab), NULL);
+		}
+		printf("Word in redirection after: %s\n", words_tab[j][i].str);
+		i++;
+	}
+	return (words_tab);
+}
+
+t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add)
+{
+	size_t	i;
+	size_t	j;
+	t_block	**new_tab;
+
+	new_tab = (t_block **)ft_calloc((t_block_tab_size(old_tab) + t_block_tab_size(to_add) + 1), sizeof(t_block *));
+	if (!new_tab)
+		return (free_t_block_tab(old_tab), free_t_block_tab(to_add), NULL);
+	i = 0;
+	while (old_tab && old_tab[i])
+	{
+		new_tab[i] = old_tab[i];
+		i++;
+	}
+	j = 0;
+	while (to_add && to_add[j])
+	{
+		new_tab[i + j] = to_add[j];
+		j++;
+	}
+	free(old_tab);
+	free(to_add);
+	return (new_tab);
+}
+
+t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
+{
+	size_t	nb_args;
+	t_block	**t_block_tab;
+	t_block	**ret;
+
+	nb_args = char_tab_size(cmd->cmd_args);
+	t_block_tab = NULL;
+	nb_args = 0;
+	while (cmd->cmd_args[nb_args])
+	{
+		ret = add_args_word(cmd->cmd_args[nb_args], info);
+		if (!ret)
+			return (perror("Malloc error"), NULL);
+		printf("Current:");
+		print_t_block_tab(ret);
+		t_block_tab = add_block_to_tab(t_block_tab, ret);
+		if (!t_block_tab)
+			return (NULL);
+		nb_args++;
+	}
+	return (t_block_tab);
+}
+
+int	get_final_cmd(t_cmd *cmd, t_info *info)
+{
+	t_block	**t_block_tab;
+
+	t_block_tab = expand_cmd_var(cmd, info);
+	if (!t_block_tab)
+		return (1);
+	print_t_block_tab(t_block_tab);
+	return (0);
+}
+
 void	simple_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
@@ -640,6 +920,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = 1;
 		return ;
 	}
+/*	if (get_final_cmd(cmd, info))
+	{
+		info->status = 1;
+		return ;
+	}*/
 	if (ft_blt(cmd) == 0)
 	{
 		ft_blti(info, cmd);

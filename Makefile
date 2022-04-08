@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/07 13:04:50 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/08 13:42:41 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRCS = main.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
 	   srcs/utils/env.c \
+	   srcs/utils/move_upward.c \
 	   srcs/utils/ft_utils_numbers.c \
 	   srcs/execution/pipex_utils.c \
 	   srcs/utils/ft_utils_function.c \
