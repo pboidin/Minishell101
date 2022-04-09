@@ -216,12 +216,13 @@ char	*get_cmd_val(char *str)
 		}
 		else if (dupped[i] == '"' && !spl_qu)
 		{
-			str[i] = ' ';
+			dupped[i] = ' ';
 			dbl_qu ^= 1;
 		}
 		i++;
 	}
 	word = ft_del_spaces(dupped);
+	free(dupped);
 	if (!word)
 		return (NULL);
 	printf("cmd %s\n", word);
@@ -287,25 +288,12 @@ static int	check_cmd(t_cmd *cmd)
 
 int	parse_simple_cmd(t_cmd *cmd)
 {
-	int	i;
 	int	nb_args;
 
 	nb_args = parse_args(cmd);
 	if (!nb_args)
 		return (1);
-	i = 0;
-	while (cmd->cmd_args[i])
-	{
-		printf("arg %d: %s\n", i, cmd->cmd_args[i]);
-		i++;
-	}
 	if(check_cmd(cmd))
 		return (1);
-	i = 0;
-	while (cmd->cmd_args[i])
-	{
-		printf("arg after parsing %d: %s\n", i, cmd->cmd_args[i]);
-		i++;
-	}
 	return (0);
 }

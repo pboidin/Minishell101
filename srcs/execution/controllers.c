@@ -182,7 +182,6 @@ char	*add_redirect_word(char *str, size_t *index)
 	size_t	j;
 
 	i = *index;
-	printf("Rest of word: %s\n", &str[*index]);
 	if (str[i] == '"')
 	{
 		i++;
@@ -236,7 +235,6 @@ char	*find_variable(char	*var, t_info *info)
 	t_env	*current_env;
 	t_var	*current_var;
 
-	printf("var sought: %s\n", var);
 	current_env = info->env;
 	while (current_env)
 	{
@@ -265,7 +263,6 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 	char	**var_val;
 	char	*var_found;
 
-	printf("var before expansion: %s\n", words[i].str);
 	if (ft_strlen(words[i].str) == 1 || words[i].str[1] == '?')
 	{
 		var_val = (char **)ft_calloc(2, sizeof(char *));
@@ -300,7 +297,6 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 				return (perror("Malloc error"), NULL);
 		}
 	}
-	printf("var after expansion: %s\n", var_val[0]);
 	return (var_val);
 }
 
@@ -365,7 +361,6 @@ int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
 				j++;
 				while (tab[i].str[j + len] && (ft_isalnum(tab[i].str[j + len]) || tab[i].str[j + len] == '_'))
 						len++;
-				printf("len: %ld\n", len);
 				holder = tab[i].str[j + len];
 				tab[i].str[j + len] = '\0';
 				j--;
@@ -374,11 +369,8 @@ int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
 			}
 			if (!tmp1)
 				return (perror("Malloc error"), 1);
-			printf("Variable found: %s\n", tmp1);
 			tab[i].str[j] = '\0';
 			tmp2 = ft_strjoin(tab[i].str, tmp1);
-			printf("Variable after first join: %s\n", tmp2);
-			printf("remainder: %s\n", &tab[i].str[j + len + 1]);
 			free(tmp1);
 			if (!tmp2)
 				return (perror("Malloc error"), 1);
@@ -460,7 +452,6 @@ t_block	*expand_redirect_var(char *str, t_info *info)
 	i = 0;
 	while (words[i].str)
 	{
-		printf("Word in redirection before: %s\n", words[i].str);
 		if (words[i].str[0] == '$')
 		{
 			words[i].var = 1;
@@ -497,7 +488,6 @@ t_block	*expand_redirect_var(char *str, t_info *info)
 			if (remove_qu(words, i))
 				return (free_t_block(words), NULL);
 		}
-		printf("Word in redirection after: %s\n", words[i].str);
 		i++;
 	}
 	return (words);
@@ -756,7 +746,7 @@ void	print_t_block_tab(t_block **tab)
 
 	if (!tab)
 		return ;
-	i = 0;
+	j = 0;
 	while (tab[j])
 	{
 		i = 0;
@@ -779,18 +769,13 @@ t_block	**add_args_word(char *str, t_info *info)
 	size_t	index;
 	char	**var;
 
-	printf("str in expansion: %s\n", str);
 	words_tab = (t_block **)ft_calloc(2, sizeof(t_block *));
 	if (!words_tab)
 		return (perror("Malloc error"), NULL);
 	word_count = count_words_var_expansion(str);
-	printf("Word count: %lu\n", word_count);
 	words_tab[0] = (t_block *)ft_calloc((word_count + 1), sizeof(t_block));
 	if (!words_tab[0])
 		return (perror("Malloc error"), free_t_block_tab(words_tab), NULL);
-	words_tab[0][0].str = NULL;
-	printf("init");
-	print_t_block_tab(words_tab);
 	i = 0;
 	j = 0;
 	index = 0;
@@ -844,7 +829,6 @@ t_block	**add_args_word(char *str, t_info *info)
 			if (remove_qu(words_tab[j], i))
 				return (free_t_block_tab(words_tab), NULL);
 		}
-		printf("Word in redirection after: %s\n", words_tab[j][i].str);
 		i++;
 	}
 	return (words_tab);
@@ -882,7 +866,6 @@ t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
 	t_block	**t_block_tab;
 	t_block	**ret;
 
-	nb_args = char_tab_size(cmd->cmd_args);
 	t_block_tab = NULL;
 	nb_args = 0;
 	while (cmd->cmd_args[nb_args])
@@ -890,8 +873,6 @@ t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
 		ret = add_args_word(cmd->cmd_args[nb_args], info);
 		if (!ret)
 			return (perror("Malloc error"), NULL);
-		printf("Current:");
-		print_t_block_tab(ret);
 		t_block_tab = add_block_to_tab(t_block_tab, ret);
 		if (!t_block_tab)
 			return (NULL);
@@ -907,7 +888,9 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 	t_block_tab = expand_cmd_var(cmd, info);
 	if (!t_block_tab)
 		return (1);
+	printf("After variable expansion:\n");
 	print_t_block_tab(t_block_tab);
+	free_t_block_tab(t_block_tab);
 	return (0);
 }
 
@@ -920,11 +903,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = 1;
 		return ;
 	}
-/*	if (get_final_cmd(cmd, info))
+	if (get_final_cmd(cmd, info))
 	{
 		info->status = 1;
 		return ;
-	}*/
+	}
 	if (ft_blt(cmd) == 0)
 	{
 		ft_blti(info, cmd);
