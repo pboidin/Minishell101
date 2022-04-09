@@ -493,7 +493,7 @@ t_block	*expand_redirect_var(char *str, t_info *info)
 	return (words);
 }
 
-int	is_valid_redirection(t_block *path)
+int	is_empty_var(t_block *word)
 {
 	size_t	i;
 	size_t	tot_len;
@@ -502,15 +502,15 @@ int	is_valid_redirection(t_block *path)
 	i = 0;
 	tot_len = 0;
 	var_only = 0;
-	while (path[i].str)
+	while (word[i].str)
 	{
-		tot_len += ft_strlen(path[i].str);
-		var_only += path[i].var;
+		tot_len += ft_strlen(word[i].str);
+		var_only += word[i].var;
 		i++;	
 	}
 	if (!tot_len && var_only == i)
-		return (0);
-	return (1);
+		return (1);
+	return (0);
 }
 
 char *get_path(char *str, t_info *info)
@@ -523,7 +523,7 @@ char *get_path(char *str, t_info *info)
 	path = expand_redirect_var(str, info);
 	if (!path)
 		return (NULL);
-	if (!is_valid_redirection(path))
+	if (is_empty_var(path))
 	{
 		write(2, str, ft_strlen(str));
 		write(2, ": ambiguous redirect\n", 21);
@@ -881,16 +881,81 @@ t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
 	return (t_block_tab);
 }
 
+void	move_t_block_tab_upward(t_block **tab, size_t i, int mv)
+{
+	while (tab[i])
+	{
+		tab[i - mv] = tab[i];
+		i++;
+	}
+	while (mv)
+	{
+		tab[i - mv] = NULL;
+		mv--;
+	}
+}
+
+char	**t_block_tab_to_char_tab(t_block **tab)
+{
+	size_t	tab_size;
+	size_t	i;
+	char	**new_args;
+	char	*arg;
+
+	tab_size = t_block_tab_size(tab);
+	new_args = (char **)ft_calloc((tab_size + 1), sizeof(char *));
+	if (!new_args)
+		return (NULL);
+	tab_size = 0;
+	while (tab[tab_size])
+	{
+		new_args[tab_size] = ft_strdup(tab[tab_size][0].str);
+		if (!new_args[tab_size])
+			return (free_char_tab(new_args), perror("Malloc error"), NULL);
+		i = 1;
+		while (tab[tab_size][i].str)
+		{
+			arg = ft_strjoin(new_args[tab_size], tab[tab_size][i].str);
+			if (!arg)
+				return (free_char_tab(new_args), perror("Malloc error"), NULL);
+			free(new_args[tab_size]);
+			new_args[tab_size] = arg;
+			i++;
+		}
+		tab_size++;
+	}
+	return (new_args);
+}
+
 int	get_final_cmd(t_cmd *cmd, t_info *info)
 {
+	size_t	i;
 	t_block	**t_block_tab;
+	char	**new_args;
 
 	t_block_tab = expand_cmd_var(cmd, info);
 	if (!t_block_tab)
 		return (1);
 	printf("After variable expansion:\n");
 	print_t_block_tab(t_block_tab);
+	i = 0;
+	while (t_block_tab[i])
+	{
+		if (is_empty_var(t_block_tab[i]))
+		{
+			free_t_block(t_block_tab[i]);
+			t_block_tab[i] = NULL;
+			move_t_block_tab_upward(t_block_tab, (i + 1), 1);
+			i--;
+		}
+		i++;
+	}
+	new_args = t_block_tab_to_char_tab(t_block_tab);
 	free_t_block_tab(t_block_tab);
+	if (!new_args)
+		return (1);
+	free_char_tab(cmd->cmd_args);
+	cmd->cmd_args = new_args;
 	return (0);
 }
 
@@ -906,6 +971,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 	if (get_final_cmd(cmd, info))
 	{
 		info->status = 1;
+		return ;
+	}
+	if (!cmd->cmd_args[0])
+	{
+		info->status = 0;
 		return ;
 	}
 	if (ft_blt(cmd) == 0)

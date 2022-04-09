@@ -118,7 +118,7 @@ static int	is_valid_assignation(char *str)
 	return (1);
 }
 
-static int	handle_redirections(t_cmd *cmd, int *i)
+static int	parse_redirections(t_cmd *cmd, int *i)
 {
 	char	*str;
 	int		redirect;
@@ -262,7 +262,7 @@ static int	check_cmd(t_cmd *cmd)
 		}
 		else if (cmd->cmd_args[i][0] == '>' || cmd->cmd_args[i][0] == '<')
 		{
-			if (handle_redirections(cmd, &i))
+			if (parse_redirections(cmd, &i))
 				return (1);
 		}
 		else if (has_illegal_char(cmd->cmd_args[i]))
