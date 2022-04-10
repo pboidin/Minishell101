@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/10 17:01:13 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:35:21 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
 int		ft_abs(int nb);
 
-char	*ft_genv(const char *path, t_info *info);
+char	*ft_genv(const char *path, t_env *info);
 char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
