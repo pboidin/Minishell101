@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:46:39 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:26:15 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:48:58 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	ft_set_old(t_info *info, char *pwd, char *val)
 		}
 	}
 	val = ft_strjoin("OLDPWD=", pwd);
-	ft_set_val(info, val, ret);
+	ft_set_val(&tmp, val, ret);
 	free(pwd);
 	free(val);
 	return (0);
