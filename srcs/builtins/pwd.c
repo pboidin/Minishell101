@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:55 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:57 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:21:36 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_genv(const char *path, t_info *info)
+char	*ft_genv(const char *path, t_env *env)
 {
 	int		path_size;
 	char	*env;
 	char	*ret;
 	t_env	*tmp;
 
-	tmp = info->env;
+	tmp = env;
 	env = ft_strjoin(path, "=");
 	path_size = ft_strlen(env);
 	while (tmp)

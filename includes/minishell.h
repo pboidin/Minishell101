@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/07 13:03:42 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/10 17:01:13 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ void	ft_blti(t_info *info, t_cmd *cmd);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
-int		ft_env_loc(t_info *info);
+int		ft_env_loc(t_env *head);
 int		ft_go_to_home(t_info *info);
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);

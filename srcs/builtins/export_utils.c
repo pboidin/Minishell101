@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:37 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:39 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:20:07 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	ft_export_var(char **new_env, char *env, char *env2, t_info *info)
 	while (new_env[++i])
 	{
 		tmp = ft_substr(new_env[i], 0, ft_lenvar(new_env[i]));
-		env = ft_genv(tmp, info);
+		env = ft_genv(tmp, info->env);
 		if (!env)
 		{
 			if (new_env[i][ft_lenvar(new_env[i])] != '=')

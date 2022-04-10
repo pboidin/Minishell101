@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/05 07:44:59 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:26:29 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	char	*home;
 
 	aux = ft_substr(dir, 1, ft_strlen(dir) - 1);
-	home = ft_genv("HOME", info);
+	home = ft_genv("HOME", info->env);
 	if (!home)
 	{
 		free(aux);
@@ -41,7 +41,7 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	return (0);
 }
 
-void	ft_upd_env(t_info *info)
+void	ft_upd_env(t_env **env) // <-- ICI
 {
 	char	*path;
 
@@ -51,16 +51,16 @@ void	ft_upd_env(t_info *info)
 	if (getcwd(path, PATH_MAX) == NULL)
 	{
 		free(path);
-		path = ft_genv("PWD", info);
+		path = ft_genv("PWD", env);
 		if (!path)
 			return ;
 	}
-	free(info->env->value);
-	info->env->value = path;
+	free((*env)->value);
+	(*env)->value = ft_strjoin("PWD=", path);
 	free(path);
 }
 
-static int	ft_go_to_pwd(t_info *info)
+static int	ft_go_to_oldpwd(t_info *info)
 {
 	char	*tmp;
 	char	*old;
@@ -74,16 +74,17 @@ static int	ft_go_to_pwd(t_info *info)
 		write(STDERR_FILENO, "cd: OLDPWD not set\n", 19);
 		return (1);
 	}
-	if (chdir(pwd) == -1)
+	if (chdir(old) == -1)
 	{
 		write(STDERR_FILENO, "cd: ", 4);
 		write(STDERR_FILENO, old, ft_strlen(old));
 		write(STDERR_FILENO, ": No such file or directory\n", 28);
+		free(old);
 		return (1);
 	}
 	free(old);
 	ft_set_old(info, pwd, tmp);
-	ft_env_loc(info);
+	ft_env_loc(info->env);
 	return (0);
 }
 
@@ -95,7 +96,7 @@ int	ft_ch_dir(char **dir, t_info *info)
 	pwd = NULL;
 	tmp = NULL;
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
-		return (ft_go_to_pwd(info));
+		return (ft_go_to_oldpwd(info));
 	ft_set_old(info, pwd, tmp);
 	if (!dir[1] || (!ft_strncmp(dir[1], "~\0", 2)
 			|| !ft_strncmp(dir[1], "~/", 2)))

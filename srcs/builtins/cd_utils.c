@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:46:39 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/05 07:39:11 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:26:15 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,31 @@
 int	ft_go_to_home(t_info *info)
 {
 	char	*home;
+	t_env	*head;
 
-	home = ft_genv("HOME", info);
+	home = ft_genv("HOME", info->env);
+	head = info->env;
 	if (!home || chdir(home) == -1)
 	{
 		ft_print_err_cd(home);
 		free(home);
 		return (0);
 	}
-	ft_env_loc(info);
+	ft_env_loc(head);
 	free(home);
 	return (0);
 }
 
-int	ft_env_loc(t_info *info)
+int	ft_env_loc(t_env *head)
 {
 	t_env	*aux;
 
-	aux = info->env;
+	aux = head;
 	while (aux != NULL)
 	{
 		if (ft_strncmp("PWD=", (char *)aux->value, 4) == 0)
 		{
-			ft_upd_env(info);
+			ft_upd_env(&aux);
 			return (0);
 		}
 		aux = aux->next;
@@ -45,15 +47,15 @@ int	ft_env_loc(t_info *info)
 	return (1);
 }
 
-void	ft_set_val(t_info *info, const char *val, int c)
+void	ft_set_val(t_env **env, const char *val, int c)
 {
 	if (c == 0)
 	{
-		free(info->env->value);
-		info->env->value = (void *)ft_strdup(val);
+		free((*env)->value);
+		(*env)->value = (void *)ft_strdup(val);
 	}
 	else
-		ft_lstadd_back(&info->env, ft_lstnew((void *) ft_strdup(val)));
+		ft_lstadd_back(env, ft_lstnew((void *) ft_strdup(val)));
 }
 
 int	ft_try_go_oldpwd(t_env **env)
@@ -78,8 +80,8 @@ int	ft_set_old(t_info *info, char *pwd, char *val)
 	int		ret;
 	t_env	*tmp;
 
+	pwd = ft_genv("PWD", info->env);
 	tmp = info->env;
-	pwd = ft_genv("PWD", info);
 	ret = ft_try_go_oldpwd(&tmp);
 	if (tmp == NULL)
 	{
