@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/10 19:43:37 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:53:17 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ size_t	ft_strlen(const char *s);
 
 t_env	*ft_lstnew(void *data);
 
-void	ft_env_set(t_info *info);
+void	ft_env_set(t_env *env);
 void	ft_export_var(char **new_env, char *env, char *env2, t_info *info);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);

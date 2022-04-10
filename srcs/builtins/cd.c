@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:46:52 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:52:22 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,6 @@ int	ft_ch_dir(char **dir, t_info *info)
 	else if (dir[1][0] != '\0' && chdir(dir[1]) == -1)
 		return (ft_print_err_cd(dir[1]));
 	else
-		ft_env_set(info);
+		ft_env_set(info->env);
 	return (0);
 }
