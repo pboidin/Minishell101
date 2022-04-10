@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:26:29 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:42:59 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	ft_go_to_oldpwd(t_info *info)
 
 	tmp = NULL;
 	pwd = NULL;
-	old = ft_genv("OLDPWD", info);
+	old = ft_genv("OLDPWD", info->env);
 	if (!old)
 	{
 		write(STDERR_FILENO, "cd: OLDPWD not set\n", 19);
