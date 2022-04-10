@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:42:59 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:46:52 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_upd_env(t_env **env) // <-- ICI
 	if (getcwd(path, PATH_MAX) == NULL)
 	{
 		free(path);
-		path = ft_genv("PWD", env);
+		path = ft_genv("PWD", *env);
 		if (!path)
 			return ;
 	}
