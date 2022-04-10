@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:55 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:35:16 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:38:26 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_genv(const char *path, t_env *info)
 	char	*ret;
 	t_env	*tmp;
 
-	tmp = env;
+	tmp = info;
 	env = ft_strjoin(path, "=");
 	path_size = ft_strlen(env);
 	while (tmp)
@@ -57,7 +57,7 @@ int	ft_working_dir(char **n, t_info *info)
 		pwd = NULL;
 	}
 	if (pwd == NULL)
-		pwd = ft_genv("PWD", info);
+		pwd = ft_genv("PWD", info->env);
 	if (pwd == NULL)
 		return (1);
 	ft_print_pwd(pwd);
