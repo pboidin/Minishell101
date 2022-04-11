@@ -51,7 +51,7 @@ static int	ft_cd_relative(char *str, t_env *env)
 		if (!ft_has_env("$HOME", env))
 			return (ft_home_err_prt());
 		if (str[1] == '/')
-			tmp = ft_strjoin(ft_getvalue(env, "$HOME"), str + 1);
+			tmp = ft_strjoin(ft_getvalue("$HOME", env), str + 1);
 		else
 			tmp = ft_strdup(str);
 		if (chdir(tmp) < 0)
@@ -90,7 +90,7 @@ int	ft_cd(char **dir, t_info *info)
 	int	res;
 
 	if (!dir[1] || ft_strcmp(dir[1], "") || ft_strcmp(dir[1], "~"))
-		res = ft_go_home(dir[1], info->env);
+		res = ft_goto_home(dir[1], info->env);
 	else if (*(dir[1]) == '/')
 		res = ft_cd_absolute(dir[1]);
 	else
