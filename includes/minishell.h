@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/08 13:41:55 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:28:56 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@
 # endif
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
+# endif
+# ifndef TMP_PATH
+#  define TMP_PATH "/tmp/minishell-"
 # endif
 
 typedef struct s_redirect
@@ -145,6 +148,14 @@ int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 void	move_upward(t_cmd *cmd, int i, int mv);
+t_block	**add_args_word(char *str, t_info *info, int expand);
+void	free_t_block_tab(t_block **block_tab);
+char	*create_tmp(void);
+void	get_exit_status(t_info *info);
+char	**t_block_tab_to_char_tab(t_block **tab);
+void	free_char_tab(char **tab);
+size_t	t_block_tab_size(t_block **tab);
+
 
 extern t_info	g_info;
 

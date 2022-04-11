@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/08 18:26:21 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/11 12:29:27 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,6 @@ static void	logical_controller(t_info *info, t_cmd *cmd)
 		}
 		i++;
 	}
-}
-
-void	get_exit_status(t_info *info)
-{
-	int		status;
-	t_pid	*current;
-
-	current = info->running_processes;
-	while (current)
-	{
-		waitpid(current->pid, &status, 0);
-		if (WIFEXITED(status))
-			info->status = WEXITSTATUS(status);
-		current = current->next;
-	}
-	free_pid(info);
 }
 
 static void	pipe_controller(t_info *info, t_cmd *cmd)
@@ -415,19 +399,6 @@ void	free_t_block_tab(t_block **block_tab)
 	free(block_tab);
 }
 
-void	free_char_tab(char **tab)
-{
-	size_t	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
 t_block	*expand_redirect_var(char *str, t_info *info)
 {
 	size_t	word_count;
@@ -644,18 +615,6 @@ size_t	char_tab_size(char **tab)
 	return (i);
 }
 
-size_t	t_block_tab_size(t_block **tab)
-{
-	size_t	i;
-
-	if (!tab)
-		return (0);
-	i = 0;
-	while (tab[i])
-		i++;
-	return (i);
-}
-
 t_block	*cpy_t_blocks(t_block *line, long long max, char *new_var)
 {
 	t_block	*new_line;
@@ -760,7 +719,7 @@ void	print_t_block_tab(t_block **tab)
 	}
 }
 
-t_block	**add_args_word(char *str, t_info *info)
+t_block	**add_args_word(char *str, t_info *info, int expand)
 {
 	size_t	word_count;
 	t_block	**words_tab;
@@ -789,7 +748,7 @@ t_block	**add_args_word(char *str, t_info *info)
 	i = 0;
 	while (words_tab[j][i].str)
 	{
-		if (words_tab[j][i].str[0] == '$')
+		if (words_tab[j][i].str[0] == '$' && expand)
 		{
 			words_tab[j][i].var = 1;
 			var = replace_redirect_var(words_tab[j], i, info);
@@ -824,7 +783,7 @@ t_block	**add_args_word(char *str, t_info *info)
 		else if (words_tab[j][i].str[0] == '"')
 		{
 			words_tab[j][i].dbl_qu = 1;
-			if (expand_dbl_qu_var(words_tab[j], i, info))
+			if (expand && expand_dbl_qu_var(words_tab[j], i, info))
 				return (free_t_block_tab(words_tab), NULL);
 			if (remove_qu(words_tab[j], i))
 				return (free_t_block_tab(words_tab), NULL);
@@ -870,7 +829,7 @@ t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
 	nb_args = 0;
 	while (cmd->cmd_args[nb_args])
 	{
-		ret = add_args_word(cmd->cmd_args[nb_args], info);
+		ret = add_args_word(cmd->cmd_args[nb_args], info, 1);
 		if (!ret)
 			return (perror("Malloc error"), NULL);
 		t_block_tab = add_block_to_tab(t_block_tab, ret);
@@ -893,38 +852,6 @@ void	move_t_block_tab_upward(t_block **tab, size_t i, int mv)
 		tab[i - mv] = NULL;
 		mv--;
 	}
-}
-
-char	**t_block_tab_to_char_tab(t_block **tab)
-{
-	size_t	tab_size;
-	size_t	i;
-	char	**new_args;
-	char	*arg;
-
-	tab_size = t_block_tab_size(tab);
-	new_args = (char **)ft_calloc((tab_size + 1), sizeof(char *));
-	if (!new_args)
-		return (NULL);
-	tab_size = 0;
-	while (tab[tab_size])
-	{
-		new_args[tab_size] = ft_strdup(tab[tab_size][0].str);
-		if (!new_args[tab_size])
-			return (free_char_tab(new_args), perror("Malloc error"), NULL);
-		i = 1;
-		while (tab[tab_size][i].str)
-		{
-			arg = ft_strjoin(new_args[tab_size], tab[tab_size][i].str);
-			if (!arg)
-				return (free_char_tab(new_args), perror("Malloc error"), NULL);
-			free(new_args[tab_size]);
-			new_args[tab_size] = arg;
-			i++;
-		}
-		tab_size++;
-	}
-	return (new_args);
 }
 
 int	get_final_cmd(t_cmd *cmd, t_info *info)

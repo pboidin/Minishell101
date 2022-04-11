@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/08 18:29:12 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/11 11:51:12 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,42 +193,34 @@ static int	has_illegal_char(char *str)
 	return (0);
 }
 
+/*
 char	*get_cmd_val(char *str)
 {
-	int		spl_qu;
-	int		dbl_qu;
-	char	*dupped;
 	size_t	i;
+	t_block	**word_blocks;
 	char	*word;
+	char	*tmp;
 
-	dupped = ft_strdup(str);
-	if (!dupped)
-		return (perror("Malloc error"), NULL);
-	i = 0;
-	spl_qu = 0;
-	dbl_qu = 0;
-	while (dupped[i])
+	word_blocks = add_args_word(str, NULL, 0);
+	if (!word_blocks || !word_blocks[0] || word_blocks[1])
+		return (NULL);
+	word = ft_strdup(word_blocks[0][0].str);
+	if (!word)
+		return (free_t_block_tab(word_blocks), NULL);
+	i = 1;
+	while (word_blocks[0][i].str)
 	{
-		if (dupped[i] == 39 && !dbl_qu)
-		{
-			dupped[i] = ' ';
-			spl_qu ^= 1;
-		}
-		else if (dupped[i] == '"' && !spl_qu)
-		{
-			dupped[i] = ' ';
-			dbl_qu ^= 1;
-		}
+		tmp = ft_strjoin(word, word_blocks[0][i].str);
+		if (!tmp)
+			return (free_t_block_tab(word_blocks), free(word), NULL);
+		free(word);
+		word = tmp;
 		i++;
 	}
-	word = ft_del_spaces(dupped);
-	free(dupped);
-	if (!word)
-		return (NULL);
-	printf("cmd %s\n", word);
+	printf("Command found: %s\n", word);
 	return (word);
 }
-
+*/
 static void	clean_previous_args(t_cmd *cmd, int *i)
 {
 	int	j;
@@ -248,7 +240,6 @@ static int	check_cmd(t_cmd *cmd)
 	int		i;
 	int		has_cmd;
 	int		is_export;
-	char	*cmd_val;
 
 	has_cmd = 0;
 	i = 0;
@@ -271,12 +262,8 @@ static int	check_cmd(t_cmd *cmd)
 		{
 			if(!has_cmd)
 			{
-				cmd_val = get_cmd_val(cmd->cmd_args[i]);
-				if (!cmd_val)
-					return (perror("Malloc error"), 1);
-				if (!strcmp("export", cmd_val))
+				if (!strcmp("export", cmd->cmd_args[i]))
 					is_export = 1;
-				free(cmd_val);
 				clean_previous_args(cmd, &i);
 			}
 			has_cmd = 1;

@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/08 13:42:41 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/11 12:26:55 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,9 @@ SRCS = main.c \
 	   srcs/parsing/heredoc.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
+	   srcs/execution/exit_status.c \
 	   srcs/utils/env.c \
+	   srcs/utils/create_tmp.c \
 	   srcs/utils/move_upward.c \
 	   srcs/utils/ft_utils_numbers.c \
 	   srcs/execution/pipex_utils.c \
@@ -42,6 +44,8 @@ SRCS = main.c \
 	   srcs/utils/ft_utils_lst.c \
 	   srcs/utils/ft_utils_lst2.c \
 	   srcs/utils/ft_atoi.c \
+	   srcs/utils/t_block_utils.c \
+	   srcs/utils/free2.c \
 	   srcs/builtins/echo.c \
 	   srcs/builtins/pwd.c \
 	   srcs/builtins/cd.c \
