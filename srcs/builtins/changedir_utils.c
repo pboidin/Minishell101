@@ -34,7 +34,7 @@ void	ft_error_print(int err, char *str)
 {
 	ft_putstr_fd(str, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
-	ft_putendl_fd(stderror(err), STDERR_FILENO);
+	ft_putendl_fd(strerror(err), STDERR_FILENO);
 }
 
 char	*ft_getvalue(char *str, t_env *env)

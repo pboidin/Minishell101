@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 23:31:00 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/11 23:38:28 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,8 @@ void	ft_error_print(int err, char *str);
 int		ft_home_err_prt(void);
 void	ft_modify_env(char *name, char *value, t_env *env);
 int		ft_cd(char **dir, t_info *info);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putendl_fd(char *str, int fd);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
