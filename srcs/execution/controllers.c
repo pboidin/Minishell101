@@ -467,7 +467,7 @@ t_block	*cpy_t_blocks(t_block *line, long long max, char *new_var)
 	else
 	{
 		line_size = 0;
-		while (line[line_size].str)
+		while (line && line[line_size].str)
 			line_size++;
 		if (max == -2)
 			line_size++;
@@ -476,6 +476,7 @@ t_block	*cpy_t_blocks(t_block *line, long long max, char *new_var)
 	if (!new_line)
 		return (perror("Malloc error"), NULL);
 	i = 0;
+	line_size = 0;
 	if (max == -2)
 	{
 		new_line[i].str = ft_strdup(new_var);
@@ -483,12 +484,15 @@ t_block	*cpy_t_blocks(t_block *line, long long max, char *new_var)
 			return (free_t_block(new_line), NULL);
 		i++;
 	}
-	while (line[i].str && i < (size_t)max)
+	if (!line)
+		return (new_line);
+	while (line[line_size].str && line_size < (size_t)max)
 	{
-		new_line[line_size].str = ft_strdup(line[line_size].str);
-		if (!new_line[line_size].str)
+		new_line[i].str = ft_strdup(line[line_size].str);
+		if (!new_line[i].str)
 			return (free_t_block(new_line), NULL);
 		i++;
+		line_size++;
 	}
 	if (max >= 0)
 	{
@@ -507,6 +511,7 @@ size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
 	t_block	**new_words_tab;
 
 	nb_var = char_tab_size(var);
+	write(1, "OK\n", 3);
 	new_words_tab =	(t_block **)ft_calloc((t_block_tab_size(*words_tab) + nb_var), sizeof(t_block *));
 	if (!new_words_tab)
 		return (perror("Malloc error"), free_char_tab(var), 0);
@@ -525,13 +530,12 @@ size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
 	x = 1;
 	while ((x + 1) < nb_var)
 	{
-		new_words_tab[y] = cpy_t_blocks(words_tab[0][y], 0, var[x]);
-		if (!new_words_tab[y])
+		new_words_tab[y + x - 1] = cpy_t_blocks(NULL, 0, var[x]);
+		if (!new_words_tab[y + x - 1])
 			return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
-		y++;
 		x++;
 	}
-	new_words_tab[y] = cpy_t_blocks(words_tab[0][y], -2, var[x]);
+	new_words_tab[y + x - 1] = cpy_t_blocks(words_tab[0][y], -2, var[x]);
 	if (!new_words_tab[y])
 		return (free_t_block_tab(new_words_tab), free_char_tab(var), 0);
 	free_t_block_tab(*words_tab);
