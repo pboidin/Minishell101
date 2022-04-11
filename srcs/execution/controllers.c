@@ -355,7 +355,7 @@ char *get_path(char *str, t_info *info)
 	if (!word)
 		return (perror("Malloc error"), NULL);
 	printf("path: %s\n", word);
-	return (free_t_block(path), word);
+	return (word);
 }
 
 int	handle_redirections(t_cmd *cmd, t_info *info)
