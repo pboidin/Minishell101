@@ -89,12 +89,14 @@ int	ft_cd(char **dir, t_info *info)
 {
 	int	res;
 
+	write(1, "Je rentre dans CD\n", 18);
 	if (!dir[1] || ft_strcmp(dir[1], "") || ft_strcmp(dir[1], "~"))
 		res = ft_goto_home(dir[1], info->env);
 	else if (*(dir[1]) == '/')
 		res = ft_cd_absolute(dir[1]);
 	else
 		res = ft_cd_relative(dir[1], info->env);
+	write(1, "ICI\n", 4);
 	if (res == 0)
 		ft_env_pwd_upd(info->env);
 	return (res);
