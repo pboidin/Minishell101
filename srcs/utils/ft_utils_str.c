@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils_str.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:29:55 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/24 13:18:14 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/11 23:04:18 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,15 @@ void	ft_putchar(char c)
 
 void	ft_putendl_fd(char *str, int fd)
 {
-	char	nline;
-
-	nline = '\n';
-	write(fd, str, ft_strlen(str));
-	write(fd, &nline, 1);
+	if (!str)
+		return ;
+	while (*str)
+	{
+		write(fd, str, 1);
+		str++;
+	}
+	write(fd, "\n", 1);
+	return ;
 }
 
 void	ft_putstr(char *str)

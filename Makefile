@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
+#    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/07 13:04:50 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/11 23:24:16 by piboidin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,9 @@ SRCS = main.c \
 	   srcs/builtins/export_utils_2.c \
 	   srcs/builtins/exit.c \
 	   srcs/builtins/init_built.c \
-	   srcs/utils/ft_utils_str_2.c
+	   srcs/utils/ft_utils_str_2.c \
+	   srcs/builtins/changedir.c \
+	   srcs/builtins/changedir_utils.c
 
 OBJS := ${SRCS:.c=.o}
 
