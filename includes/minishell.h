@@ -155,7 +155,10 @@ void	get_exit_status(t_info *info);
 char	**t_block_tab_to_char_tab(t_block **tab);
 void	free_char_tab(char **tab);
 size_t	t_block_tab_size(t_block **tab);
-
+size_t	count_words_var_expansion(char *str);
+int		expand_dbl_qu_var(t_block *tab, size_t i, t_info *info);
+char	*find_var(char *var, t_info *info);
+char	*t_block_to_str(t_block *block);
 
 extern t_info	g_info;
 

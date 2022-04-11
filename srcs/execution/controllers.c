@@ -101,64 +101,6 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	get_exit_status(info);
 }
 
-size_t	count_words_var_expansion(char *str)
-{
-	size_t	nb_words;
-	size_t	i;
-
-	i = 0;
-	nb_words = 0;
-	while (str[i])
-	{
-		if (str[i] == '"')
-		{
-			i++;
-			while (str[i] && str[i] != '"')
-				i++;
-			nb_words++;
-		}
-		else if(str[i] == 39)
-		{
-			i++;
-			while (str[i] && str[i] != 39)
-				i++;
-			nb_words++;
-		}
-		else if (str[i] == '$' && str[i] != '\0')
-		{
-			nb_words++;
-			if (str[i + 1] == '?')
-				i++;
-			else if (ft_isdigit(str[i + 1]))
-				i++;
-			else
-			{
-				i++;
-				while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
-					i++;
-				if (str[i] == '\0')
-					break ;
-				else
-					i--;
-			}
-		}
-		else
-		{
-			nb_words++;
-			while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
-				i++;
-			if (str[i] == '$' && str[i + 1] == '\0')
-				i++;
-			if (!str[i])
-				break ;
-			else
-				i--;
-		}
-		i++;
-	}
-	return (nb_words);
-}
-
 char	*add_redirect_word(char *str, size_t *index)
 {
 	char	*word;
@@ -213,35 +155,6 @@ char	*add_redirect_word(char *str, size_t *index)
 	return (word);
 }
 
-char	*find_variable(char	*var, t_info *info)
-{
-	char	*value;
-	t_env	*current_env;
-	t_var	*current_var;
-
-	current_env = info->env;
-	while (current_env)
-	{
-		if (!ft_strcmp(&var[1], current_env->name))
-		{
-			value = ft_strdup(current_env->value);
-			return (value);
-		}
-		current_env = current_env->next;
-	}
-	current_var = info->local_var;
-	while (current_var)
-	{
-		if (!ft_strcmp(&var[1], current_var->name))
-		{
-			value = ft_strdup(current_var->value);
-			return (value);
-		}
-		current_var = current_var->next;
-	}
-	return ((char *)ft_calloc(1, sizeof(char)));
-}
-
 char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 {
 	char	**var_val;
@@ -263,7 +176,7 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 	}
 	else
 	{
-		var_found = find_variable(words[i].str, info);
+		var_found = find_var(words[i].str, info);
 		if (!var_found)
 			return (NULL);
 		if (!ft_strlen(var_found))
@@ -309,67 +222,6 @@ int	is_whitespace(char c)
 {
 	if ((c >= '\t' && c <= '\r') || c == ' ')
 		return (1);
-	return (0);
-}
-
-int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
-{
-	size_t	len;
-	char	*tmp1;
-	char	*tmp2;
-	char	holder;
-	int		j;
-
-	j = 0;
-	tmp1 = NULL;
-	tmp2 = NULL;
-	while (tab[i].str[j])
-	{
-		if (tab[i].str[j] == '$' && (ft_isalnum(tab[i].str[j + 1]) || tab[i].str[j + 1] == '?' || tab[i].str[j + 1] == '_'))
-		{
-			len = 0;
-			if (tab[i].str[j + 1] == '?')
-			{
-				tmp1 = ft_itoa(info->status);
-				len = 1;
-			}
-			else if (ft_isdigit(tab[i].str[j + 1]))
-			{
-				tmp1 = (char *)ft_calloc(1, sizeof(char));
-				if (!tmp1)
-					return (perror("Malloc error"), 1);
-				len = 1;
-			}
-			else
-			{
-				j++;
-				while (tab[i].str[j + len] && (ft_isalnum(tab[i].str[j + len]) || tab[i].str[j + len] == '_'))
-						len++;
-				holder = tab[i].str[j + len];
-				tab[i].str[j + len] = '\0';
-				j--;
-				tmp1 = find_variable(&tab[i].str[j], info);
-				tab[i].str[j + len + 1] = holder;
-			}
-			if (!tmp1)
-				return (perror("Malloc error"), 1);
-			tab[i].str[j] = '\0';
-			tmp2 = ft_strjoin(tab[i].str, tmp1);
-			free(tmp1);
-			if (!tmp2)
-				return (perror("Malloc error"), 1);
-			tmp1 = ft_strjoin(tmp2, &tab[i].str[j + len + 1]);
-			j = ft_strlen(tmp2) - 1;
-			free(tmp2);
-			if (!tmp1)
-				return (perror("Malloc error"), 1);
-			free(tab[i].str);
-			tab[i].str = tmp1;
-			tmp1 = NULL;
-			tmp2 = NULL;
-		}
-		j++;
-	}
 	return (0);
 }
 
@@ -487,9 +339,7 @@ int	is_empty_var(t_block *word)
 char *get_path(char *str, t_info *info)
 {
 	t_block	*path;
-	size_t	i;
 	char	*word;
-	char	*new_word;
 
 	path = expand_redirect_var(str, info);
 	if (!path)
@@ -500,19 +350,10 @@ char *get_path(char *str, t_info *info)
 		write(2, ": ambiguous redirect\n", 21);
 		return (free_t_block(path), NULL);
 	}
-	word = ft_strdup(path[0].str);
+	word = t_block_to_str(path);
+	free_t_block(path);
 	if (!word)
-		return (free_t_block(path), perror("Malloc error"), NULL);
-	i = 1;
-	while (path[i].str)
-	{
-		new_word = ft_strjoin(word, path[i].str);
-		if (!new_word)
-			return (free_t_block(path), free(word), perror("Malloc error"), NULL);
-		free(word);
-		word = new_word;
-		i++;
-	}
+		return (perror("Malloc error"), NULL);
 	printf("path: %s\n", word);
 	return (free_t_block(path), word);
 }

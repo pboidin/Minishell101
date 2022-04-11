@@ -29,6 +29,9 @@ SRCS = main.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/pid.c \
 	   srcs/execution/exit_status.c \
+	   srcs/execution/var_expansion.c \
+	   srcs/execution/var_expansion2.c \
+	   srcs/execution/inline_expansion.c \
 	   srcs/utils/env.c \
 	   srcs/utils/create_tmp.c \
 	   srcs/utils/move_upward.c \
