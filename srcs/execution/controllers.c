@@ -534,6 +534,7 @@ t_block	*insert_front_t_block(t_block *line, size_t i, char *var)
 	size_t	len;
 
 	j = i + 1;
+	len = 0;
 	while (line[j].str)
 	{
 		j++;
@@ -544,7 +545,7 @@ t_block	*insert_front_t_block(t_block *line, size_t i, char *var)
 		return (NULL);
 	new_line[0].str = var;
 	j = 1;
-	len = i + 1;;
+	len = i + 1;
 	while (line[len].str)
 	{
 		new_line[j] = line[len];
@@ -554,7 +555,7 @@ t_block	*insert_front_t_block(t_block *line, size_t i, char *var)
 	return (new_line);
 }
 
-size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
+size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var)
 {
 	size_t	x;
 	size_t	y;
@@ -562,8 +563,8 @@ size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
 	t_block	**new_words_tab;
 
 	nb_var = char_tab_size(var);
-	write(1, "OK\n", 3);
-	new_words_tab =	(t_block **)ft_calloc((t_block_tab_size(*words_tab) + nb_var), sizeof(t_block *));
+	printf("nb var: %lu\n", nb_var);
+	new_words_tab =	(t_block **)ft_calloc((j + nb_var + 1), sizeof(t_block *));
 	if (!new_words_tab)
 		return (perror("Malloc error"), free_char_tab(var), 0);
 	y = 0;
@@ -602,7 +603,8 @@ size_t	split_tab_var(t_block ***words_tab, size_t i, size_t j, char **var)
 		}
 		return (free(new_words_tab[y]), free(new_words_tab), free_char_tab(var), 0);
 	}
-	free((*words_tab)[y]);
+	free((*words_tab)[j][i].str);
+	free((*words_tab)[j]);
 	free(*words_tab);
 	free(var);
 	*words_tab = new_words_tab;
@@ -682,7 +684,7 @@ t_block	**add_args_word(char *str, t_info *info, int expand)
 				if (!word_count)
 					return (free_t_block_tab(words_tab), NULL);
 				j += (word_count - 1);
-				i = 1;
+				i = 0;
 			}
 		}
 		else if (words_tab[j][i].str[0] == 39)
@@ -774,8 +776,6 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 	t_block_tab = expand_cmd_var(cmd, info);
 	if (!t_block_tab)
 		return (1);
-	printf("After variable expansion:\n");
-	print_t_block_tab(t_block_tab);
 	i = 0;
 	while (t_block_tab[i])
 	{
@@ -788,6 +788,8 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 		}
 		i++;
 	}
+	printf("After variable expansion:\n");
+	print_t_block_tab(t_block_tab);
 	new_args = t_block_tab_to_char_tab(t_block_tab);
 	free_t_block_tab(t_block_tab);
 	if (!new_args)
