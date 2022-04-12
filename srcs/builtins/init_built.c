@@ -30,7 +30,7 @@ void	ft_blti(t_info *info, t_cmd *cmd)
 	if (ft_strcmp(cmd->cmd_args[0], "echo") == 0)
 		info->status = ft_echo(cmd->cmd_args);
 	else if (ft_strcmp(cmd->cmd_args[0], "cd") == 0)
-		info->status = ft_cd(cmd->cmd_args, info);
+		info->status = ft_ch_dir(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "env") == 0)
 	 	info->status = ft_env(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "exit") == 0)

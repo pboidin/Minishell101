@@ -14,20 +14,17 @@
 
 char	*ft_genv(const char *path, t_env *info)
 {
-	int		path_size;
 	char	*env;
 	char	*ret;
 	t_env	*tmp;
 
 	tmp = info;
 	env = ft_strjoin(path, "=");
-	path_size = ft_strlen(env);
 	while (tmp)
 	{
-		if (ft_strncmp(env, (char *)tmp->value, path_size) == 0)
+		if (!ft_strcmp((char *)path, tmp->name))
 		{
-			ret = ft_substr((char *)tmp->value, path_size,
-					ft_strlen((char *)tmp->value) - path_size);
+			ret = ft_strdup(tmp->value);
 			free(env);
 			return (ret);
 		}

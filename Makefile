@@ -55,8 +55,6 @@ SRCS = main.c \
 	   srcs/builtins/exit.c \
 	   srcs/builtins/init_built.c \
 	   srcs/utils/ft_utils_str_2.c \
-	   srcs/builtins/changedir.c \
-	   srcs/builtins/changedir_utils.c
 
 OBJS := ${SRCS:.c=.o}
 

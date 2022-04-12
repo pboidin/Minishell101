@@ -39,7 +39,7 @@ int	ft_env_loc(t_env *head)
 	{
 		if (ft_strncmp("PWD=", (char *)aux->value, 4) == 0)
 		{
-			ft_upd_env(&aux);
+			ft_upd_env(aux);
 			return (0);
 		}
 		aux = aux->next;
@@ -58,31 +58,31 @@ void	ft_set_val(t_env **env, const char *val, int c)
 		ft_lstadd_back(env, ft_lstnew((void *) ft_strdup(val)));
 }
 
-int	ft_try_go_oldpwd(t_env **env)
+int	ft_try_go_oldpwd(t_env *env)
 {
 	t_env	*aux;
 
-	aux = *env;
-	if (!*env)
+	aux = env;
+	if (!env)
 		return (1);
-	while (*env)
+	while (env)
 	{
-		if (ft_strncmp("OLDPWD=", (char *)(*env)->value, 7) == 0)
+		if (ft_strncmp("OLDPWD=", (char *)env->value, 7) == 0)
 			return (0);
-		*env = (*env)->next;
+		env = env->next;
 	}
-	*env = aux;
+	env = aux;
 	return (1);
 }
 
-int	ft_set_old(t_info *info, char *pwd, char *val)
+int	ft_set_old(t_env *env, char *pwd, char *val)
 {
 	int		ret;
 	t_env	*tmp;
 
-	pwd = ft_genv("PWD", info->env);
-	tmp = info->env;
-	ret = ft_try_go_oldpwd(&tmp);
+	pwd = ft_genv("PWD", env);
+	tmp = env;
+	ret = ft_try_go_oldpwd(tmp);
 	if (tmp == NULL)
 	{
 		free(pwd);

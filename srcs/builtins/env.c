@@ -33,8 +33,8 @@ static void	ft_print(t_info *info)
 			write(1, "\n", 1);
 		}
 		env = env->next;
-		i++;
 	}
+	write(1, "\0", 1);
 }
 
 int	ft_env(char **tab, t_info *info)
