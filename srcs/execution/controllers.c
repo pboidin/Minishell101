@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/12 12:34:35 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:10:27 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,39 +218,6 @@ int	remove_qu(t_block *tab, size_t i)
 	return (0);
 }
 
-int	is_whitespace(char c)
-{
-	if ((c >= '\t' && c <= '\r') || c == ' ')
-		return (1);
-	return (0);
-}
-
-void	free_t_block(t_block *block)
-{
-	size_t	i;
-
-	i = 0;
-	while (block[i].str)
-	{
-		free(block[i].str);
-		i++;
-	}
-	free(block);
-}
-
-void	free_t_block_tab(t_block **block_tab)
-{
-	size_t	i;
-
-	i = 0;
-	while (block_tab[i])
-	{
-		free_t_block(block_tab[i]);
-		i++;
-	}
-	free(block_tab);
-}
-
 t_block	*expand_redirect_var(char *str, t_info *info)
 {
 	size_t	word_count;
@@ -306,7 +273,7 @@ t_block	*expand_redirect_var(char *str, t_info *info)
 		else if (words[i].str[0] == '"')
 		{
 			words[i].dbl_qu = 1;
-			if (expand_dbl_qu_var(words, i, info))
+			if (inline_expansion(words, i, info))
 				return (free_t_block(words), NULL);
 			if (remove_qu(words, i))
 				return (free_t_block(words), NULL);
@@ -445,69 +412,6 @@ void	fork_controller(t_info *info, t_cmd *cmd)
 		get_exit_status(info);
 	}
 }
-
-size_t	char_tab_size(char **tab)
-{
-	size_t	i;
-
-	i = 0;
-	while (tab[i])
-		i++;
-	return (i);
-}
-/*
-t_block	*cpy_t_blocks(t_block *line, size_t max, char *new_var, int pos)
-{
-	t_block	*new_line;
-	size_t	line_size;
-	size_t	i;
-
-	if (pos >= 0)
-		line_size = max + 1;
-	else
-	{
-		i = max + 1;
-		line_size = 0;
-		while (line && line[i].str)
-		{
-			i++;
-			line_size++;
-		}
-		line_size++;
-	}
-	new_line = (t_block *)ft_calloc((line_size + 1), sizeof(t_block));
-	if (!new_line)
-		return (perror("Malloc error"), NULL);
-	i = 0;
-	line_size = 0;
-	if (pos == -1)
-	{
-		new_line[i].str = ft_strdup(new_var);
-		if (!new_line[i].str)
-			return (free(new_line), NULL);
-		i++;
-		line_size = max + 1;
-		max = 
-	}
-	if (!line)
-		return (new_line);
-	line_size = max + 1;
-	while (line[line_size].str && line_size < (size_t)max)
-	{
-		new_line[i].str = ft_strdup(line[line_size].str);
-		if (!new_line[i].str)
-			return (free_t_block(new_line), NULL);
-		i++;
-		line_size++;
-	}
-	if (max >= 0)
-	{
-		new_line[i].str = ft_strdup(new_var);
-		if (!new_line[i].str)
-			return (free_t_block(new_line), NULL);
-	}
-	return (new_line);
-}*/
 
 t_block	*insert_back_t_block(t_block *line, size_t i, char *var)
 {
@@ -696,7 +600,7 @@ t_block	**add_args_word(char *str, t_info *info, int expand)
 		else if (words_tab[j][i].str[0] == '"')
 		{
 			words_tab[j][i].dbl_qu = 1;
-			if (expand && expand_dbl_qu_var(words_tab[j], i, info))
+			if (expand && inline_expansion(words_tab[j], i, info))
 				return (free_t_block_tab(words_tab), NULL);
 			if (remove_qu(words_tab[j], i))
 				return (free_t_block_tab(words_tab), NULL);

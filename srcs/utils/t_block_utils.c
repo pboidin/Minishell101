@@ -6,11 +6,37 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 12:15:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 12:28:29 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:13:03 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_t_block(t_block *block)
+{
+	size_t	i;
+
+	i = 0;
+	while (block[i].str)
+	{
+		free(block[i].str);
+		i++;
+	}
+	free(block);
+}
+
+void	free_t_block_tab(t_block **block_tab)
+{
+	size_t	i;
+
+	i = 0;
+	while (block_tab[i])
+	{
+		free_t_block(block_tab[i]);
+		i++;
+	}
+	free(block_tab);
+}
 
 size_t	t_block_tab_size(t_block **tab)
 {
@@ -29,7 +55,7 @@ char	*t_block_to_str(t_block *block)
 	size_t	i;
 	char	*ret;
 	char	*tmp;
-	
+
 	if (!block || !block[0].str)
 		return (NULL);
 	ret = ft_strdup(block[0].str);

@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/11 12:26:55 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/13 11:54:50 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,11 +16,13 @@ NAME		= minishell
 SRCS = main.c \
 	   srcs/init.c \
 	   srcs/utils/free.c \
+	   srcs/utils/free2.c \
 	   srcs/parsing/tokens.c \
 	   srcs/parsing/parse_pipes.c \
 	   srcs/parsing/delim.c \
 	   srcs/parsing/parse_logical.c \
 	   srcs/utils/ft_utils_str.c \
+	   srcs/utils/ft_utils_str2.c \
 	   srcs/parsing/parse_fork.c \
 	   srcs/parsing/parse_cmd.c \
 	   srcs/parsing/parse_simple_cmd.c \
@@ -48,7 +50,8 @@ SRCS = main.c \
 	   srcs/utils/ft_utils_lst2.c \
 	   srcs/utils/ft_atoi.c \
 	   srcs/utils/t_block_utils.c \
-	   srcs/utils/free2.c \
+	   srcs/utils/char_tab_utils.c \
+	   srcs/utils/throw_error.c \
 	   srcs/builtins/echo.c \
 	   srcs/builtins/pwd.c \
 	   srcs/builtins/cd.c \

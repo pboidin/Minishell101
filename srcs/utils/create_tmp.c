@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 11:55:26 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 12:00:56 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:29:47 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ static void	increase_nb(char *nb, int index)
 		increase_nb(nb, (index - 1));
 	}
 }
-
 
 char	*create_tmp(void)
 {

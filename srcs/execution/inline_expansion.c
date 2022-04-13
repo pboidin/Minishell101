@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inline_expansion.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/13 10:50:59 by bdetune           #+#    #+#             */
+/*   Updated: 2022/04/13 10:51:01 by bdetune          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	handle_one_char_var(char c, char **dst, size_t *len, t_info *info)
@@ -42,7 +54,7 @@ static int	insert_var_inline(t_block *tab, int *j, char *var, size_t len)
 	return (0);
 }
 
-int	expand_dbl_qu_var(t_block *tab, size_t i, t_info *info)
+int	inline_expansion(t_block *tab, size_t i, t_info *info)
 {
 	size_t	len;
 	char	*tmp;

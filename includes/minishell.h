@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 12:28:56 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:54:27 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ typedef struct s_info
 extern t_info	g_info;
 
 void	free_env(t_info *info);
+void	free_var(t_info *info);
+void	free_running_processes(t_info *info);
 int		create_info(t_info *info, char **envp, char *name);
 int		parse_cmd(t_cmd *cmd);
 void	init_tokens(t_tokens *tokens);
@@ -135,6 +137,7 @@ int		is_delim(char *str, int delim);
 void	save_delim(t_cmd *new_cmd, char c);
 int		parse_logical(t_cmd *cmd);
 void	skip_whitespaces(char *cmd, int *i);
+int		is_whitespace(char c);
 int		fork_cmd(t_cmd *cmd);
 int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
@@ -149,6 +152,7 @@ char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 void	move_upward(t_cmd *cmd, int i, int mv);
 t_block	**add_args_word(char *str, t_info *info, int expand);
+void	free_t_block(t_block *block);
 void	free_t_block_tab(t_block **block_tab);
 char	*create_tmp(void);
 void	get_exit_status(t_info *info);
@@ -156,11 +160,12 @@ char	**t_block_tab_to_char_tab(t_block **tab);
 void	free_char_tab(char **tab);
 size_t	t_block_tab_size(t_block **tab);
 size_t	count_words_var_expansion(char *str);
-int		expand_dbl_qu_var(t_block *tab, size_t i, t_info *info);
+int		inline_expansion(t_block *tab, size_t i, t_info *info);
 char	*find_var(char *var, t_info *info);
 char	*t_block_to_str(t_block *block);
-
-extern t_info	g_info;
+size_t	char_tab_size(char **tab);
+char	**create_char_tab(size_t size);
+void	parsing_error(char *str);
 
 /* BUILT-IN */
 

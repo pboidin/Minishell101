@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:29:55 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/24 13:18:14 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 11:02:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,39 +48,4 @@ void	ft_putstr(char *str)
 		write(1, &str[i], 1);
 		i++;
 	}
-}
-
-char	*ft_trim(char *cmd)
-{
-	int		i;
-	int		j;
-	int		z;
-	char	*new_cmd;
-
-	i = 0;
-	skip_whitespaces(cmd, &i);
-	if (!cmd || !cmd[i])
-		return (NULL);
-	j = i;
-	while (cmd[j + 1])
-		j++;
-	while (j >= i
-		&& ((cmd[i + j] >= '\t' && cmd[i + j] <= '\r') || cmd[i + j] == ' ' ))
-		j--;
-	new_cmd = (char *)malloc(sizeof(char) * (j - i + 2));
-	if (!new_cmd)
-		return (NULL);
-	z = 0;
-	while (i <= j)
-		new_cmd[z++] = cmd[i++];
-	new_cmd[z] = '\0';
-	return (new_cmd);
-}
-
-void	skip_whitespaces(char *cmd, int *i)
-{
-	if (!cmd)
-		return ;
-	while (cmd[*i] && ((cmd[*i] >= '\t' && cmd[*i] <= '\r') || cmd[*i] == ' '))
-		*i += 1;
 }
