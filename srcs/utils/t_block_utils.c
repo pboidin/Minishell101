@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 12:15:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:13:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 20:04:45 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	free_t_block(t_block *block)
 {
 	size_t	i;
 
+	if (!block)
+		return ;
 	i = 0;
 	while (block[i].str)
 	{
@@ -30,6 +32,8 @@ void	free_t_block_tab(t_block **block_tab)
 	size_t	i;
 
 	i = 0;
+	if (!block_tab)
+		return ;
 	while (block_tab[i])
 	{
 		free_t_block(block_tab[i]);
@@ -84,7 +88,7 @@ char	**t_block_tab_to_char_tab(t_block **tab)
 	tab_size = t_block_tab_size(tab);
 	new_args = (char **)ft_calloc((tab_size + 1), sizeof(char *));
 	if (!new_args)
-		return (NULL);
+		return (perror("Malloc error"), NULL);
 	tab_size = 0;
 	while (tab[tab_size])
 	{

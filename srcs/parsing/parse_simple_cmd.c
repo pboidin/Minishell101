@@ -6,87 +6,11 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 17:52:21 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 21:27:45 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	is_assignation(char	*str)
-{
-	size_t	j;
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '=')
-			break ;
-		i++;
-	}
-	if (str[i] != '=')
-		return (0);
-	if (!(ft_isalpha(str[0]) || str[0] == '_'))
-		return (0);
-	j = 1;
-	while (j < i)
-	{
-		if (!(ft_isalnum(str[i]) || str[i] == '_'))
-			return (0);
-		j++;
-	}
-	return (1);
-}
-
-static int	is_valid_assignation(char *str)
-{
-	size_t	i;
-	size_t	j;
-	int		spl_qu;
-	int		dbl_qu;
-
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	i++;
-	j = i;
-	spl_qu = 0;
-	dbl_qu = 0;
-	if (str[j] == '(')
-	{
-		j++;
-		while (str[j])
-		{
-			if (str[j] == 39 && !dbl_qu)
-				spl_qu ^= 1;
-			else if (str[j] == '"' && !spl_qu)
-				dbl_qu ^= 1;
-			else if (!dbl_qu && !spl_qu && (str[j] == '<' || str[j] == '>'
-				|| str[j] == '|' || str[j] == '&' || str[j] == '('))
-				return (write(2, "Assignation error\n", 18), 0);
-			else if(!dbl_qu && !spl_qu && str[j] == ')')
-				break ;
-			j++;
-		}
-		if (str[j] != ')' || dbl_qu || spl_qu)
-			return (write(2, "Assignation error\n", 18), 0);
-		j++;
-	}
-	while (str[j])
-	{
-		if (str[j] == 39 && !dbl_qu)
-			spl_qu ^= 1;
-		else if (str[j] == '"' && !spl_qu)
-			dbl_qu ^= 1;
-		else if (!dbl_qu && !spl_qu && (str[j] == '<' || str[j] == '>'
-			|| str[j] == '|' || str[j] == '&' || str[j] == '(' || str[j] == ')'))
-			return (write(2, "Assignation error\n", 18), 0);
-		j++;
-	}
-	if (dbl_qu || spl_qu)
-		return (write(2, "Assignation error\n", 18), 0);
-	return (1);
-}
 
 static int	parse_redirections(t_cmd *cmd, int *i)
 {
@@ -125,7 +49,7 @@ int	is_valid_arg(char *str)
 			dbl_qu ^= 1;
 		else if (!dbl_qu && !spl_qu && (str[i] == '(' || str[i] == ')'
 				|| str[i] == '|' || (str[i] == '&' && str[i + 1] == '&')
-				|| str[i] == '<' || str[i] =='>'))
+				|| str[i] == '<' || str[i] == '>'))
 			return (0);
 		i++;
 	}
@@ -160,7 +84,7 @@ static int	check_cmd(t_cmd *cmd)
 		if ((!has_cmd || is_export) && is_assignation(cmd->cmd_args[i]))
 		{
 			if (!is_valid_assignation(cmd->cmd_args[i]))
-				return (write(2, "Invalid assignation\n", 20), 1);
+				return (1);
 		}
 		else if (cmd->cmd_args[i][0] == '>' || cmd->cmd_args[i][0] == '<')
 		{
@@ -171,7 +95,7 @@ static int	check_cmd(t_cmd *cmd)
 			return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);
 		else
 		{
-			if(!has_cmd)
+			if (!has_cmd)
 			{
 				if (!strcmp("export", cmd->cmd_args[i]))
 					is_export = 1;
@@ -181,7 +105,7 @@ static int	check_cmd(t_cmd *cmd)
 		}
 		i++;
 	}
-	return (0); 
+	return (0);
 }
 
 int	parse_simple_cmd(t_cmd *cmd)
@@ -191,7 +115,7 @@ int	parse_simple_cmd(t_cmd *cmd)
 	nb_args = parse_args(cmd, cmd->cmd);
 	if (!nb_args)
 		return (1);
-	if(check_cmd(cmd))
+	if (check_cmd(cmd))
 		return (1);
 	return (0);
 }

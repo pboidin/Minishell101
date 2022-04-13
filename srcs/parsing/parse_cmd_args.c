@@ -6,11 +6,35 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 16:56:39 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 20:23:00 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	end_of_arg(char *str, int i)
+{
+	t_tokens	toks;
+
+	if ((str[i] == '>' && str[i + 1] == '>')
+		|| (str[i] == '<' && str[i + 1] == '<'))
+		return (i + 2);
+	else if (str[i] == '>' || str[i] == '<')
+		return (++i);
+	else
+	{
+		init_tokens(&toks);
+		while (str[i])
+		{
+			save_token(str[i], &toks);
+			if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
+						|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
+				break ;
+			i++;
+		}
+	}
+	return (i);
+}
 
 static int	count_args(char *str)
 {
@@ -26,21 +50,7 @@ static int	count_args(char *str)
 		skip_whitespaces(str, &i);
 		if (str[i])
 			nb_command++;
-		if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i + 1] == '<'))
-			i += 2;
-		else if (str[i] == '>' || str[i] == '<')
-			i++;
-		else
-		{
-			while (str[i])
-			{
-				save_token(str[i], &toks);
-				if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
-						|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
-					break ;
-				i++;
-			}
-		}
+		i = end_of_arg(str, i);
 	}
 	return (nb_command);
 }
@@ -49,27 +59,10 @@ static char	*save_arg(char *str, int *index)
 {
 	char		tmp;
 	char		*arg;
-	t_tokens	toks;
 	int			i;
 
-	init_tokens(&toks);
 	skip_whitespaces(str, index);
-	i = *index;
-	if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i + 1] == '<'))
-		i += 2;
-	else if (str[i] == '>' || str[i] == '<')
-		i++;
-	else
-	{
-		while (str[i])
-		{
-			save_token(str[i], &toks);
-			if (!has_tokens(toks) && (((str[i] >= '\t' && str[i] <= '\r')
-				|| str[i] == ' ') || str[i] == '<' || str[i] == '>'))
-				break ;
-			i++;
-		}
-	}
+	i = end_of_arg(str, *index);
 	tmp = str[i];
 	str[i] = '\0';
 	arg = ft_trim(&str[*index]);

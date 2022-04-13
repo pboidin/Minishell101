@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 17:47:11 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 21:02:54 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,11 +144,15 @@ void	save_delim(t_cmd *new_cmd, char *c, int prev_delim, int next_delim);
 int		parse_logical(t_cmd *cmd);
 void	skip_whitespaces(char *cmd, int *i);
 int		is_whitespace(char c);
+void	skip_closing_parenth(char *str, int *i);
 int		fork_cmd(t_cmd *cmd);
 int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd, char *str);
 int		is_valid_arg(char *str);
+int		is_valid_assignation(char *str);
+void	throw_assignation_error(char *str);
+int		is_assignation(char *str);
 int		get_redirect_type(char *str);
 int		add_redirect(char *str, t_cmd *cmd, int redirect);
 void	free_cmd(t_cmd *cmd);
