@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 13:07:35 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/08 18:26:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 16:56:39 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,14 @@ static char	**split_args(char *str, int nb_args)
 	return (tab);
 }
 
-int	parse_args(t_cmd *cmd)
+int	parse_args(t_cmd *cmd, char *str)
 {
 	int	nb_args;
 
-	nb_args = count_args(cmd->cmd);
+	nb_args = count_args(str);
 	if (nb_args == 0)
 		return (write(2, "Empty command\n", 14), 0);
-	cmd->cmd_args = split_args(cmd->cmd, nb_args);
+	cmd->cmd_args = split_args(str, nb_args);
 	if (!cmd->cmd_args)
 		return (0);
 	return (nb_args);

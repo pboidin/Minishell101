@@ -1,0 +1,11 @@
+includes
+main.c
+main.o
+Makefile
+minishell
+README.md
+srcs
+test1
+path: hi
+After variable expansion:
+ls

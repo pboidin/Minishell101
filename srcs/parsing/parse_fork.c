@@ -6,12 +6,12 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 16:03:34 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 17:50:17 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 int	add_redirect(char *str, t_cmd *cmd, int redirect)
 {
 	t_redirect	*current;
@@ -31,7 +31,7 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 			current = current->next;
 		current->next = new_redirect;
 	}
-	new_redirect->str = ft_trim(str);
+	new_redirect->str = ft_strdup(str);
 	if (!new_redirect->str)
 		return (perror("Malloc error"), 1);
 	if (new_redirect->type == -2)
@@ -42,80 +42,80 @@ int	add_redirect(char *str, t_cmd *cmd, int redirect)
 	return (0);
 }
 
-int	save_redirect(char *str, int i, t_cmd *cmd)
+int	get_redirect_type(char *str)
 {
-	int		j;
-	int		redirect;
-	char	tmp;
+	int	redirect;
 
-	skip_whitespaces(str, &i);
-	if (str[i] == '\0')
-		return (0);
-	if (!(str[i] == '<' || str[i] == '>'))
+	redirect = 0;
+	if (ft_strlen(str) == 2)
 	{
-		write(2, "Syntax error near unexpected token `", 36);
-		write(2, &str[i], 1);
-		return (write(2, "'\n", 2), 1);
-	}
-	if (str[i] == '<')
-	{
-		redirect = -1;
-		if (str[i + 1] == '<')
-		{
+		if (str[0] == '<')
 			redirect = -2;
-			i++;
-		}
-		else if (str[i + 1] == '>')
-			return (write(2, "Syntax error near unexpected token `>'\n", 39), 1);
-		i++;
-	}
-	else if (str[i] == '>')
-	{
-		redirect = 1;
-		if (str[i + 1] == '>')
-		{
+		else
 			redirect = 2;
-			i++;
-		}
-		else if (str[i + 1] == '<')
-			return (write(2, "Syntax error near unexpected token `<'\n", 39), 1);
+	}
+	else
+	{
+		if (str[0] == '<')
+			redirect = -1;
+		else
+			redirect = 1;
+	}
+	return (redirect);
+}
+
+int	is_valid_redirect(char *str)
+{
+	size_t	i;
+	int		spl_qu;
+	int		dbl_qu;
+
+	i = 0;
+	spl_qu = 0;
+	dbl_qu = 0;
+	while (str[i])
+	{
+		if (str[i] == 39 && !dbl_qu)
+			spl_qu ^= 1;
+		else if (str[i] == '"' && !spl_qu)
+			dbl_qu ^= 1;
+		else if (!dbl_qu && !spl_qu && (str[i] == '(' || str[i] == ')'
+				|| str[i] == '|' || (str[i] == '&' && str[i + 1] == '&')
+				|| str[i] == '<' || str[i] =='>'))
+			return (0);
 		i++;
 	}
+	return (1);
+}
+*/
+static int	save_redirect(t_cmd *cmd, char *str)
+{
+	int	i;
+	int	redirect;
+
+	i = 0;
 	skip_whitespaces(str, &i);
-	j = i;
-	while (str[i] > 32 && str[i] < 127)
+	if (!str[i])
+		return (0);
+	if (!parse_args(cmd, str))
+		return (1);
+	i = 0;
+	while (cmd->cmd_args[i])
 	{
-		if (str[i] == '"')
-		{
-			i++;
-			while (str[i] && str[i] != '"')
-				i++;
-		}
-		else if (str[i] == 39)
-		{
-			i++;
-			while (str[i] && str[i] != 39)
-				i++;
-		}
-		else if (str[i] == '<' || str[i] == '>' || str[i] == ')'
-				|| str[i] == '(' || str[i] == '&' || str[i] == '|')
-				break ;
+		if (!(cmd->cmd_args[i][0] == '<' || cmd->cmd_args[i][0] == '>'))
+			return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);
+		else
+			redirect = get_redirect_type(cmd->cmd_args[i]);
+		i++;
+		if (!cmd->cmd_args[i])
+			return (parsing_error(cmd->next_delim, NULL, NULL), 1);
+		if (!is_valid_arg(cmd->cmd_args[i]))
+			return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);
+		if (add_redirect(cmd->cmd_args[i], cmd, redirect))
+			return (1);
 		i++;
 	}
-	if (str[i] == ')' || str[i] == '(' || str[i] == '&' || str[i] == '|')
-		return (write(2, "Syntax error near unexpected token\n", 35), 1);
-	tmp = str[i];
-	str[i] = '\0';
-	if (!ft_strlen(&str[j]))
-	{
-		write(2, "Syntax error near unexpected token `", 36);
-		write(2, &tmp, 1);
-		return (write(2, "'\n", 2), 1);
-	}
-	if (add_redirect(&str[j], cmd, redirect))
-		return (1);
-	str[i] = tmp;
-	return (save_redirect(str, i, cmd));
+	return (0);
 }
 
 static void	skip_closing_parenth(char *str, int *i)
@@ -156,7 +156,7 @@ int	fork_cmd(t_cmd *cmd)
 	if (parse_cmd(new_cmd))
 		return (2);
 	i++;
-	if (save_redirect(cmd->cmd, i, cmd))
+	if (save_redirect(cmd, &cmd->cmd[i]))
 		return (2);
 	return (1);
 }

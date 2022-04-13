@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:42:23 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 17:02:58 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	free_cmd(t_cmd *cmd)
 		free_cmd(cmd->fork);
 		free(cmd->fork);
 	}
-	else if (cmd->cmd_args)
+	if (cmd->cmd_args)
 		free_char_tab(cmd->cmd_args);
 	if (cmd->cmd_name)
 		free(cmd->cmd_name);

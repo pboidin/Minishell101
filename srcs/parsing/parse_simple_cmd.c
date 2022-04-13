@@ -6,41 +6,11 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 16:07:33 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 17:52:21 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	add_redirect(char *str, t_cmd *cmd, int redirect)
-{
-	t_redirect	*current;
-	t_redirect	*new_redirect;
-
-	new_redirect = (t_redirect *)ft_calloc(1, sizeof(t_redirect));
-	if (!new_redirect)
-		return (perror("Malloc error"), 1);
-	new_redirect->type = redirect;
-	new_redirect->fd = -1;
-	if (!cmd->redirections)
-		cmd->redirections = new_redirect;
-	else
-	{
-		current = cmd->redirections;
-		while (current->next)
-			current = current->next;
-		current->next = new_redirect;
-	}
-	new_redirect->str = ft_trim(str);
-	if (!new_redirect->str)
-		return (perror("Malloc error"), 1);
-	if (new_redirect->type == -2)
-	{
-		if (save_heredoc(new_redirect))
-			return (1);
-	}
-	return (0);
-}
 
 static int	is_assignation(char	*str)
 {
@@ -120,45 +90,14 @@ static int	is_valid_assignation(char *str)
 
 static int	parse_redirections(t_cmd *cmd, int *i)
 {
-	char	*str;
 	int		redirect;
-	int		j;
-	int		spl_qu;
-	int		dbl_qu;
 
-	if (ft_strlen(cmd->cmd_args[*i]) == 2)
-	{
-		if (cmd->cmd_args[*i][0] == '<')
-			redirect = -2;
-		else
-			redirect = 2;
-	}
-	else
-	{
-		if (cmd->cmd_args[*i][0] == '<')
-			redirect = -1;
-		else
-			redirect = 1;
-	}
+	redirect = get_redirect_type(cmd->cmd_args[*i]);
 	if (!cmd->cmd_args[*i + 1])
-		return (write(2, "No file given to redirect\n", 26), 1);
-	str = cmd->cmd_args[*i + 1];
-	if (str[0] == '>' || str[0] == '<')
-		return (write(2, "Unexpected character in redirect\n", 33), 1);
-	spl_qu = 0;
-	dbl_qu = 0;
-	j = 0;
-	while (str[j])
-	{
-		if (str[j] == 39 && !dbl_qu)
-			spl_qu ^= 1;
-		else if (str[j] == '"' && !spl_qu)
-			dbl_qu ^= 1;
-		else if (!dbl_qu && !spl_qu && (str[j] == '(' || str[j] == ')' || str[j] == '|' || str[j] == '&'))
-			return (write(2, "Unexpected character in redirect\n", 33), 1);
-		j++;
-	}
-	if (add_redirect(str, cmd, redirect))
+		return (parsing_error(cmd->next_delim, NULL, NULL), 1);
+	if (!is_valid_arg(cmd->cmd_args[*i + 1]))
+		return (parsing_error(-1, cmd->cmd_args[*i + 1], NULL), 1);
+	if (add_redirect(cmd->cmd_args[*i + 1], cmd, redirect))
 		return (1);
 	free(cmd->cmd_args[*i]);
 	free(cmd->cmd_args[*i + 1]);
@@ -169,11 +108,11 @@ static int	parse_redirections(t_cmd *cmd, int *i)
 	return (0);
 }
 
-static int	has_illegal_char(char *str)
+int	is_valid_arg(char *str)
 {
 	size_t	i;
-	int		dbl_qu;
 	int		spl_qu;
+	int		dbl_qu;
 
 	i = 0;
 	spl_qu = 0;
@@ -184,13 +123,13 @@ static int	has_illegal_char(char *str)
 			spl_qu ^= 1;
 		else if (str[i] == '"' && !spl_qu)
 			dbl_qu ^= 1;
-		else if (!spl_qu && !dbl_qu && (str[i] == '(' || str[i] == ')' || str[i] == '|' || str[i] == '&'))
-			return (write(2, "Unexpected character\n", 21), 1);
+		else if (!dbl_qu && !spl_qu && (str[i] == '(' || str[i] == ')'
+				|| str[i] == '|' || (str[i] == '&' && str[i + 1] == '&')
+				|| str[i] == '<' || str[i] =='>'))
+			return (0);
 		i++;
 	}
-	if (spl_qu || dbl_qu)
-		return (perror("Unclosed quotes"), 1);
-	return (0);
+	return (1);
 }
 
 static void	clean_previous_args(t_cmd *cmd, int *i)
@@ -228,8 +167,8 @@ static int	check_cmd(t_cmd *cmd)
 			if (parse_redirections(cmd, &i))
 				return (1);
 		}
-		else if (has_illegal_char(cmd->cmd_args[i]))
-			return (1);
+		else if (!is_valid_arg(cmd->cmd_args[i]))
+			return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);
 		else
 		{
 			if(!has_cmd)
@@ -249,7 +188,7 @@ int	parse_simple_cmd(t_cmd *cmd)
 {
 	int	nb_args;
 
-	nb_args = parse_args(cmd);
+	nb_args = parse_args(cmd, cmd->cmd);
 	if (!nb_args)
 		return (1);
 	if(check_cmd(cmd))
