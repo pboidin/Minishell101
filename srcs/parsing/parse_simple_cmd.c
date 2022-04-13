@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 11:51:12 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 16:07:33 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,34 +193,6 @@ static int	has_illegal_char(char *str)
 	return (0);
 }
 
-/*
-char	*get_cmd_val(char *str)
-{
-	size_t	i;
-	t_block	**word_blocks;
-	char	*word;
-	char	*tmp;
-
-	word_blocks = add_args_word(str, NULL, 0);
-	if (!word_blocks || !word_blocks[0] || word_blocks[1])
-		return (NULL);
-	word = ft_strdup(word_blocks[0][0].str);
-	if (!word)
-		return (free_t_block_tab(word_blocks), NULL);
-	i = 1;
-	while (word_blocks[0][i].str)
-	{
-		tmp = ft_strjoin(word, word_blocks[0][i].str);
-		if (!tmp)
-			return (free_t_block_tab(word_blocks), free(word), NULL);
-		free(word);
-		word = tmp;
-		i++;
-	}
-	printf("Command found: %s\n", word);
-	return (word);
-}
-*/
 static void	clean_previous_args(t_cmd *cmd, int *i)
 {
 	int	j;

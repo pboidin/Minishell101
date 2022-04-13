@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/30 18:03:55 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 15:04:01 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int main(int argc, char **argv, char **envp)
 				if (!parse_cmd(&info.cmd))
 					general_controller(&info, &info.cmd);
 				else
-					write(2, "Error\n", 6);
+					info.status = 2;
 				free_cmd(&info.cmd);
 				init_cmd(&info.cmd);
 			}

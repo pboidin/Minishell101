@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/01 17:14:25 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 16:03:34 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,58 +118,41 @@ int	save_redirect(char *str, int i, t_cmd *cmd)
 	return (save_redirect(str, i, cmd));
 }
 
-int	skip_closing_parenth(char *str, int *i)
+static void	skip_closing_parenth(char *str, int *i)
 {
-	int	dbl_qu;
-	int	spl_qu;
-	int	parenth;
+	int			j;
+	t_tokens	toks;
 
-	dbl_qu = 0;
-	spl_qu = 0;
-	parenth = 0;
+	j = *i;
+	init_tokens(&toks);
 	while (str[*i])
 	{
-		if (str[*i] == '"' && !spl_qu)
-			dbl_qu ^= 1;
-		else if (str[*i] == 39 && !dbl_qu)
-			spl_qu ^= 1;
-		else if (!spl_qu && !dbl_qu && str[*i] == '(')
-			parenth++;
-		else if (!spl_qu && !dbl_qu && str[*i] == ')')
-		{
-			parenth--;
-			if (parenth == 0)
-				break ;
-		}
+		if (save_token(str[*i], &toks) && !has_tokens(toks) && str[*i] == ')')
+			break ;
 		*i += 1;
 	}
-	if (str[*i] != ')')
-		return (write(2, "Syntax error near unexpected token `('\n", 39), 1);
-	return (0);
+	str[j] = ' ';
+	str[*i] = '\0';
 }
 
 int	fork_cmd(t_cmd *cmd)
 {
 	int		i;
-	int		j;
 	t_cmd	*new_cmd;
 
 	i = 0;
 	skip_whitespaces(cmd->cmd, &i);
 	if (cmd->cmd[i] != '(')
 		return (0);
-	j = i;
-	if (skip_closing_parenth(cmd->cmd, &i))
-		return (2);
-	cmd->cmd[i] = '\0';
-	cmd->cmd[j] = ' ';
-	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	skip_closing_parenth(cmd->cmd, &i);
+	new_cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
 	if (!new_cmd)
 		return (perror("Malloc error"), 2);
 	cmd->fork = new_cmd;
 	new_cmd->cmd = ft_trim(cmd->cmd);
 	if (!new_cmd->cmd)
-		return (write(2, "Syntax error near unexpected token `)'\n", 39), 2);
+		return (parsing_error(PARENTH, NULL, NULL), 2);
+	save_delim(new_cmd, &cmd->cmd[i], PARENTH, PARENTH);
 	if (parse_cmd(new_cmd))
 		return (2);
 	i++;

@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:54:27 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 14:52:47 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@
 # endif
 # ifndef AND
 #  define AND 2
+# endif
+# ifndef PIPE
+#  define PIPE 1
+# endif
+# ifndef PARENTH
+#  define PARENTH 4
 # endif
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
@@ -134,7 +140,7 @@ char	*ft_trim(char *cmd);
 int		parse_pipe(t_cmd *cmd);
 int		has_tokens(t_tokens toks);
 int		is_delim(char *str, int delim);
-void	save_delim(t_cmd *new_cmd, char c);
+void	save_delim(t_cmd *new_cmd, char *c, int prev_delim, int next_delim);
 int		parse_logical(t_cmd *cmd);
 void	skip_whitespaces(char *cmd, int *i);
 int		is_whitespace(char c);
@@ -165,7 +171,7 @@ char	*find_var(char *var, t_info *info);
 char	*t_block_to_str(t_block *block);
 size_t	char_tab_size(char **tab);
 char	**create_char_tab(size_t size);
-void	parsing_error(char *str);
+void	parsing_error(int delim, char *str, t_tokens *toks);
 
 /* BUILT-IN */
 
