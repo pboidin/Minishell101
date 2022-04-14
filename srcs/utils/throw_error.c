@@ -6,11 +6,18 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:47:31 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 18:42:08 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 22:06:45 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	sys_call_error(t_info *info)
+{
+	perror("Error");
+	free_info(info);
+	exit(EXIT_FAILURE);
+}
 
 void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute)
 {

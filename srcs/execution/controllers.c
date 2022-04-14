@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 18:11:50 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 23:08:19 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,128 +34,32 @@ static void	logical_controller(t_info *info, t_cmd *cmd)
 
 static void	pipe_controller(t_info *info, t_cmd *cmd)
 {
-	int		fd[2];
+	int		fd[3];
 	size_t	i;
 	int		ret;
-	int		old_fd;
 
 	i = 0;
 	while (cmd->pipe[i])
 	{
-		if (cmd->pipe[i + 1])
-		{
-			if (pipe(fd))
-			{
-				write(2, "Pipe error\n", 11);
-				free_info(info);
-				exit (1);
-			}
-		}
+		if (cmd->pipe[i + 1] && pipe(fd))
+				sys_call_error(info);
 		ret = fork();
 		if (ret == -1)
-		{
-			write(2, "Fork error\n", 11);
-			free_info(info);
-			exit (1);
-		}
+			sys_call_error(info);
 		else if (!ret)
-		{
-			free_pid(info);
-			info->is_child = TRUE;
-			if (i == 0)
-			{
-				dup2(fd[1], 1);
-				close(fd[0]);
-			}
-			else if (!cmd->pipe[i + 1])
-				dup2(old_fd, 0);
-			else
-			{
-				dup2(old_fd, 0);
-				dup2(fd[1], 1);
-				close(fd[0]);
-			}
-			general_controller(info, cmd->pipe[i]);
-			free_info(info);
-			exit (info->status);
-		}
+			pipe_child(info, cmd, i, fd);
 		else
 		{
 			if (add_pid(info, ret))
-				exit (1);
-			if (i == 0)
-			{
-				close(fd[1]);
-				old_fd = fd[0];
-			}
-			else if (!cmd->pipe[i + 1])
-			   close(old_fd);
-			else
-			{
-				old_fd = fd[0];
-				close(fd[1]);
-			}
+				sys_call_error(info);
+			fd[2] = pipe_parent(cmd, i, fd);
 		}
 		i++;
 	}
 	get_exit_status(info);
 }
 
-char	*add_redirect_word(char *str, size_t *index)
-{
-	char	*word;
-	size_t	i;
-	size_t	j;
-
-	i = *index;
-	if (str[i] == '"')
-	{
-		i++;
-		while (str[i] && str[i] != '"')
-			i++;
-		i++;
-	}
-	else if(str[i] == 39)
-	{
-		i++;
-		while (str[i] && str[i] != 39)
-			i++;
-		i++;
-	}
-	else if (str[i] == '$' && str[i] != '\0')
-	{
-		i++;
-		if (str[i] == '?')
-			i++;
-		else if (ft_isdigit(str[i + 1]))
-				i++;
-		else
-		{
-			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
-				i++;
-		}
-	}
-	else
-	{
-		while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
-			i++;
-		if (str[i] == '$' && str[i + 1] == '\0')
-			i++;
-	}
-	word = (char *)ft_calloc((i - *index + 1), sizeof(char));
-	if (!word)
-		return (perror("Malloc error"), NULL);
-	j = 0;
-	while (*index < i)
-	{
-		word[j] = str[*index];
-		j++;
-		*index += 1;
-	}
-	return (word);
-}
-
-char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
+char	**replace_var(t_block *words, size_t i, t_info *info)
 {
 	char	**var_val;
 	char	*var_found;
@@ -164,7 +68,7 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 	{
 		var_val = (char **)ft_calloc(2, sizeof(char *));
 		if (!var_val)
-			return (perror("malloc error"), NULL);
+			return (NULL);
 		if (words[i].str[1] == '?')
 			var_val[0] = ft_itoa(info->status);
 		else if (words[i + 1].str && (words[i + 1].str[0] == '"' || words[i + 1].str[0] == 39))
@@ -172,7 +76,7 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 		else
 			var_val[0] = ft_strdup(words[i].str);
 		if (!var_val[0])
-			return (perror("Malloc error"), free(var_val), NULL);
+			return (free(var_val), NULL);
 	}
 	else
 	{
@@ -183,7 +87,7 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 		{
 			var_val = (char **)ft_calloc(2, sizeof(char *));
 			if (!var_val)
-				return (free(var_found), perror("malloc error"), NULL);
+				return (free(var_found), NULL);
 			var_val[0] = var_found; 
 		}
 		else
@@ -191,96 +95,10 @@ char	**replace_redirect_var(t_block *words, size_t i, t_info *info)
 			var_val = ft_split_charset(var_found, "\t\n\r\v\f ");
 			free(var_found);
 			if (!var_val)
-				return (perror("Malloc error"), NULL);
+				return (NULL);
 		}
 	}
 	return (var_val);
-}
-
-int	remove_qu(t_block *tab, size_t i)
-{
-	size_t	j;
-	size_t	len;
-	char	*word;
-
-	len = ft_strlen(tab[i].str);
-	word = (char *)ft_calloc((len - 1), sizeof(char));
-	if (!word)
-		return (perror("Malloc error"), 1);
-	j = 0;
-	while (j < (len - 2))
-	{
-		word[j] = tab[i].str[j + 1];
-		j++;
-	}
-	free(tab[i].str);
-	tab[i].str = word;
-	return (0);
-}
-
-t_block	*expand_redirect_var(char *str, t_info *info)
-{
-	size_t	word_count;
-	t_block	*words;
-	size_t	i;
-	size_t	index;
-	char	**var;
-
-	word_count = count_words_var_expansion(str);
-	words = (t_block *)ft_calloc((word_count + 1), sizeof(t_block));
-	if (!words)
-		return (perror("Malloc error"), NULL);
-	i = 0;
-	index = 0;
-	while (i < word_count)
-	{
-		words[i].str = add_redirect_word(str, &index);
-		if (!words[i].str)
-			return (free_t_block(words), NULL);
-		i++;
-	}
-	i = 0;
-	while (words[i].str)
-	{
-		if (words[i].str[0] == '$')
-		{
-			words[i].var = 1;
-			var = replace_redirect_var(words, i, info);
-			if (!var || !var[0])
-			{
-				i = 0;
-				free_t_block(words);
-				if (var)
-					free(var);
-				return (NULL);
-			}
-			else if (var[1])
-			{
-				write(2, str, ft_strlen(str));
-				write(2, ": ambiguous redirect\n", 21);
-				return (free_t_block(words), free_char_tab(var), NULL);
-			}
-			free(words[i].str);
-			words[i].str = var[0];
-			free(var);
-		}
-		else if (words[i].str[0] == 39)
-		{
-			words[i].spl_qu = 1;
-			if (remove_qu(words, i))
-				return (free_t_block(words), NULL);
-		}
-		else if (words[i].str[0] == '"')
-		{
-			words[i].dbl_qu = 1;
-			if (inline_expansion(words, i, info))
-				return (free_t_block(words), NULL);
-			if (remove_qu(words, i))
-				return (free_t_block(words), NULL);
-		}
-		i++;
-	}
-	return (words);
 }
 
 int	is_empty_var(t_block *word)
@@ -305,22 +123,23 @@ int	is_empty_var(t_block *word)
 
 char *get_path(char *str, t_info *info)
 {
-	t_block	*path;
+	t_block	**path;
 	char	*word;
 
-	path = expand_redirect_var(str, info);
+	path = add_args_word(str, info, 1);
 	if (!path)
-		return (NULL);
-	if (is_empty_var(path))
+		return (sys_call_error(info), NULL);
+	if (t_block_tab_size(path) != 1 || is_empty_var(path[0]))
 	{
+		write(2, "Minishell: ", 11);
 		write(2, str, ft_strlen(str));
 		write(2, ": ambiguous redirect\n", 21);
-		return (free_t_block(path), NULL);
+		return (free_t_block_tab(path), NULL);
 	}
-	word = t_block_to_str(path);
-	free_t_block(path);
+	word = t_block_to_str(path[0]);
+	free_t_block_tab(path);
 	if (!word)
-		return (perror("Malloc error"), NULL);
+		return (sys_call_error(info), NULL);
 	printf("path: %s\n", word);
 	return (word);
 }
@@ -346,8 +165,9 @@ int	handle_redirections(t_cmd *cmd, t_info *info)
 			current->fd = open(current->path, O_RDONLY);
 			if (current->fd == -1)
 			{
+				write(2, "Minishell: ", 11);
 				write(2, current->path, ft_strlen(current->path));
-				return (perror(""), 1);
+				return (perror(" "), 1);
 			}
 			cmd->in = current;
 		}
@@ -470,7 +290,7 @@ size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var)
 	printf("nb var: %lu\n", nb_var);
 	new_words_tab =	(t_block **)ft_calloc((j + nb_var + 1), sizeof(t_block *));
 	if (!new_words_tab)
-		return (perror("Malloc error"), free_char_tab(var), 0);
+		return (free_char_tab(var), 0);
 	y = 0;
 	while (y < j)
 	{
@@ -536,80 +356,6 @@ void	print_t_block_tab(t_block **tab)
 	}
 }
 
-t_block	**add_args_word(char *str, t_info *info, int expand)
-{
-	size_t	word_count;
-	t_block	**words_tab;
-	size_t	i;
-	size_t	j;
-	size_t	index;
-	char	**var;
-
-	words_tab = (t_block **)ft_calloc(2, sizeof(t_block *));
-	if (!words_tab)
-		return (perror("Malloc error"), NULL);
-	word_count = count_words_var_expansion(str);
-	words_tab[0] = (t_block *)ft_calloc((word_count + 1), sizeof(t_block));
-	if (!words_tab[0])
-		return (perror("Malloc error"), free_t_block_tab(words_tab), NULL);
-	i = 0;
-	j = 0;
-	index = 0;
-	while (i < word_count)
-	{
-		words_tab[j][i].str = add_redirect_word(str, &index);
-		if (!words_tab[j][i].str)
-			return (free_t_block_tab(words_tab), NULL);
-		i++;
-	}
-	i = 0;
-	while (words_tab[j][i].str)
-	{
-		if (words_tab[j][i].str[0] == '$' && expand)
-		{
-			words_tab[j][i].var = 1;
-			var = replace_redirect_var(words_tab[j], i, info);
-			if (!var || !var[0])
-			{
-				free_t_block_tab(words_tab);
-				if (var)
-					free(var);
-				return (NULL);
-			}
-			if (char_tab_size(var) == 1)
-			{
-				free(words_tab[j][i].str);
-				words_tab[j][i].str = var[0];
-				free(var);
-			}
-			else
-			{
-				word_count = split_tab_var(&words_tab, j, i, var);
-				if (!word_count)
-					return (free_t_block_tab(words_tab), NULL);
-				j += (word_count - 1);
-				i = 0;
-			}
-		}
-		else if (words_tab[j][i].str[0] == 39)
-		{
-			words_tab[j][i].spl_qu = 1;
-			if (remove_qu(words_tab[j], i))
-				return (free_t_block_tab(words_tab), NULL);
-		}
-		else if (words_tab[j][i].str[0] == '"')
-		{
-			words_tab[j][i].dbl_qu = 1;
-			if (expand && inline_expansion(words_tab[j], i, info))
-				return (free_t_block_tab(words_tab), NULL);
-			if (remove_qu(words_tab[j], i))
-				return (free_t_block_tab(words_tab), NULL);
-		}
-		i++;
-	}
-	return (words_tab);
-}
-
 t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add)
 {
 	size_t	i;
@@ -648,27 +394,13 @@ t_block	**expand_cmd_var(t_cmd *cmd, t_info *info)
 	{
 		ret = add_args_word(cmd->cmd_args[nb_args], info, 1);
 		if (!ret)
-			return (perror("Malloc error"), NULL);
+			return (execution_error(info, cmd, EXIT_FAILURE, 0), NULL);
 		t_block_tab = add_block_to_tab(t_block_tab, ret);
 		if (!t_block_tab)
 			return (NULL);
 		nb_args++;
 	}
 	return (t_block_tab);
-}
-
-void	move_t_block_tab_upward(t_block **tab, size_t i, int mv)
-{
-	while (tab[i])
-	{
-		tab[i - mv] = tab[i];
-		i++;
-	}
-	while (mv)
-	{
-		tab[i - mv] = NULL;
-		mv--;
-	}
 }
 
 int	get_final_cmd(t_cmd *cmd, t_info *info)
@@ -694,6 +426,7 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 	}
 	printf("After variable expansion:\n");
 	print_t_block_tab(t_block_tab);
+	printf("-------------------------------------------\n");
 	new_args = t_block_tab_to_char_tab(t_block_tab);
 	free_t_block_tab(t_block_tab);
 	if (!new_args)
@@ -705,14 +438,7 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 
 void	simple_controller(t_info *info, t_cmd *cmd)
 {
-	int	ret;
-
-	if (handle_redirections(cmd, info))
-	{
-		info->status = 1;
-		return ;
-	}
-	if (get_final_cmd(cmd, info))
+	if (handle_redirections(cmd, info) || get_final_cmd(cmd, info))
 	{
 		info->status = 1;
 		return ;
@@ -727,40 +453,7 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		ft_blti(info, cmd);
 	    return ;
 	}
-	ret = fork();
-	if (ret == -1)
-	{
-		write(2, "Fork error\n", 13);
-		exit (1);
-	}
-	if (!ret)
-	{
-		free_pid(info);
-		if (cmd->in)
-			dup2(cmd->in->fd, 0);
-		if (cmd->out)
-			dup2(cmd->out->fd, 1);
-		ft_execute(info, cmd);
-	}
-	else
-	{
-		if (cmd->in)
-		{
-			close(cmd->in->fd);
-			cmd->in->fd = -1;
-		}
-		if (cmd->out)
-		{
-			close(cmd->out->fd);
-			cmd->out->fd = -1;
-		}
-		if (add_pid(info, ret))
-		{
-			perror("Malloc error");
-			exit (1);
-		}
-			get_exit_status(info);
-	}
+	simple_cmd_child(info, cmd);
 }
 
 void	general_controller(t_info *info, t_cmd *cmd)

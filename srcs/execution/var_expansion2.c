@@ -1,39 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_expansion2.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/14 19:27:33 by bdetune           #+#    #+#             */
+/*   Updated: 2022/04/14 22:00:25 by bdetune          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char	*find_var(char *var, t_info *info)
+char	*add_t_block_str(char *str, size_t *index)
 {
-	char	*value;
-	t_env	*current_env;
-	t_var	*current_var;
+	char	*word;
+	size_t	i;
+	size_t	j;
 
-	current_env = info->env;
-	while (current_env)
+	i = *index;
+	if (str[i] == '"' || str[i] == 39)
+		skip_englobing_char(str, &i, str[i]);
+	else if (str[i] == '$' && str[i] != '\0')
+		skip_to_end_var(str, &i);
+	else
 	{
-		if (!ft_strcmp(&var[1], current_env->name))
-		{
-			value = ft_strdup(current_env->value);
-			return (value);
-		}
-		current_env = current_env->next;
+		while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
+			i++;
 	}
-	current_var = info->local_var;
-	while (current_var)
+	word = (char *)ft_calloc((i - *index + 1), sizeof(char));
+	if (!word)
+		return (NULL);
+	j = 0;
+	while (*index < i)
 	{
-		if (!ft_strcmp(&var[1], current_var->name))
-		{
-			value = ft_strdup(current_var->value);
-			return (value);
-		}
-		current_var = current_var->next;
+		word[j] = str[*index];
+		j++;
+		*index += 1;
 	}
-	return ((char *)ft_calloc(1, sizeof(char)));
+	return (word);
 }
-/*
+
 t_block	**create_t_tab(char *str)
 {
+	size_t	word_count;
+	size_t	index;
 	size_t	i;
 	t_block	**words_tab;
 
+	word_count = 0;
 	words_tab = (t_block **)ft_calloc(2, sizeof(t_block *));
 	if (!words_tab)
 		return (NULL);
@@ -45,7 +60,7 @@ t_block	**create_t_tab(char *str)
 	index = 0;
 	while (i < word_count)
 	{
-		words_tab[0][i].str = add_redirect_word(str, &index);
+		words_tab[0][i].str = add_t_block_str(str, &index);
 		if (!words_tab[0][i].str)
 			return (free_t_block_tab(words_tab), NULL);
 		i++;
@@ -53,63 +68,69 @@ t_block	**create_t_tab(char *str)
 	return (words_tab);
 }
 
+int	remove_qu(t_block *tab, size_t i)
+{
+	size_t	j;
+	size_t	len;
+	char	*word;
+
+	len = ft_strlen(tab[i].str);
+	word = (char *)ft_calloc((len - 1), sizeof(char));
+	if (!word)
+		return (1);
+	j = 0;
+	while (j < (len - 2))
+	{
+		word[j] = tab[i].str[j + 1];
+		j++;
+	}
+	free(tab[i].str);
+	tab[i].str = word;
+	return (0);
+}
+
+int	handle_qu(t_info *info, t_block *word, size_t i, int expand)
+{
+	if (word[i].str[0] == 39)
+	{
+		word[i].spl_qu = 1;
+		if (remove_qu(word, i))
+			return (1);
+	}
+	else if (word[i].str[0] == '"')
+	{
+		word[i].dbl_qu = 1;
+		if ((expand && inline_expansion(word, i, info))
+			|| remove_qu(word, i))
+			return (1);
+	}
+	return (0);
+}
+
 t_block	**add_args_word(char *str, t_info *info, int expand)
 {
-	size_t	word_count;
 	t_block	**words_tab;
 	size_t	i;
 	size_t	j;
-	size_t	index;
-	char	**var;
 
 	words_tab = create_t_tab(str);
 	if (!words_tab)
-		return (perror("Malloc error"), NULL);
+		return (NULL);
 	j = 0;
 	i = 0;
 	while (words_tab[j][i].str)
 	{
 		if (words_tab[j][i].str[0] == '$' && expand)
 		{
-			words_tab[j][i].var = 1;
-			var = replace_redirect_var(words_tab[j], i, info);
-			if (!var || !var[0])
-			{
-				free_t_block_tab(words_tab);
-				if (var)
-					free(var);
-				return (NULL);
-			}
-			if (char_tab_size(var) == 1)
-			{
-				free(words_tab[j][i].str);
-				words_tab[j][i].str = var[0];
-				free(var);
-			}
-			else
-			{
-				word_count = split_tab_var(&words_tab, j, i, var);
-				if (!word_count)
-					return (free_t_block_tab(words_tab), NULL);
-				j += (word_count - 1);
-				i = 1;
-			}
-		}
-		else if (words_tab[j][i].str[0] == 39)
-		{
-			words_tab[j][i].spl_qu = 1;
-			if (remove_qu(words_tab[j], i))
+			if (expand_var(info, &words_tab, &j, &i))
 				return (free_t_block_tab(words_tab), NULL);
 		}
-		else if (words_tab[j][i].str[0] == '"')
+		else if (words_tab[j][i].str[0] == 39 || words_tab[j][i].str[0] == '"')
 		{
-			words_tab[j][i].dbl_qu = 1;
-			if (expand && expand_dbl_qu_var(words_tab[j], i, info))
-				return (free_t_block_tab(words_tab), NULL);
-			if (remove_qu(words_tab[j], i))
+			if (handle_qu(info, words_tab[j], i, expand))
 				return (free_t_block_tab(words_tab), NULL);
 		}
 		i++;
 	}
 	return (words_tab);
-}*/
+}

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils.c                                      :+:      :+:    :+:   */
+/*   ft_execute.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 11:22:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/14 19:06:01 by bdetune          ###   ########.fr       */
+/*   Created: 2022/04/14 19:27:00 by bdetune           #+#    #+#             */
+/*   Updated: 2022/04/14 19:27:19 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*ft_path(t_info *info, t_cmd *cmd)
 
 	paths = get_path(info);
 	if (!paths)
-		return (execution_error(info, cmd, 127, 0), NULL);;
+		return (execution_error(info, cmd, 127, 0), NULL);
 	i = -1;
 	while (paths[++i])
 	{

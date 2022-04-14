@@ -6,7 +6,7 @@
 #    By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/14 17:36:04 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/14 22:31:35 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRCS = main.c \
 	   srcs/parsing/redirections.c \
 	   srcs/parsing/assignation.c \
 	   srcs/execution/controllers.c \
+	   srcs/execution/childs.c \
 	   srcs/execution/pid.c \
 	   srcs/execution/exit_status.c \
 	   srcs/execution/var_expansion.c \
@@ -41,7 +42,7 @@ SRCS = main.c \
 	   srcs/utils/create_tmp.c \
 	   srcs/utils/move_upward.c \
 	   srcs/utils/ft_utils_numbers.c \
-	   srcs/execution/pipex_utils.c \
+	   srcs/execution/ft_execute.c \
 	   srcs/utils/ft_utils_function.c \
 	   srcs/utils/ft_utils_function2.c \
 	   srcs/utils/ft_utils_mem.c \

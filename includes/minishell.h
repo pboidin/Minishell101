@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 18:43:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 23:02:50 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ typedef struct s_info
 
 extern t_info	g_info;
 
+void	skip_englobing_char(char *str, size_t *i, char delim);
+void	skip_to_end_var(char *str, size_t *i);
 void	free_env(t_info *info);
 void	free_var(t_info *info);
 void	free_running_processes(t_info *info);
@@ -150,7 +152,7 @@ int		fork_cmd(t_cmd *cmd);
 int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd, char *str);
-void	clean_previous_args(t_cmd *cmd, int *i);
+int		clean_previous_args(t_cmd *cmd, int *i);
 int		is_valid_arg(char *str);
 int		is_valid_assignation(char *str);
 void	throw_assignation_error(char *str);
@@ -166,10 +168,17 @@ int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 void	move_upward(t_cmd *cmd, int i, int mv);
+int		expand_var(t_info *info, t_block ***words_tab, size_t *j, size_t *i);
 t_block	**add_args_word(char *str, t_info *info, int expand);
+size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
+int		remove_qu(t_block *tab, size_t i);	
+char	*add_t_block_str(char *str, size_t *index);
+void	sys_call_error(t_info *info);
+char	**replace_var(t_block *words, size_t i, t_info *info);
 void	free_t_block(t_block *block);
 void	free_t_block_tab(t_block **block_tab);
 char	*create_tmp(void);
+t_block	**create_t_tab(char *str);
 void	get_exit_status(t_info *info);
 char	**t_block_tab_to_char_tab(t_block **tab);
 void	free_char_tab(char **tab);
@@ -182,6 +191,10 @@ size_t	char_tab_size(char **tab);
 char	**create_char_tab(size_t size);
 void	parsing_error(int delim, char *str, t_tokens *toks);
 void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute);
+void	simple_cmd_child(t_info *info, t_cmd *cmd);
+void	move_t_block_tab_upward(t_block **tab, size_t i, int mv);
+void	pipe_child(t_info *info, t_cmd *cmd, size_t i, int fd[3]);
+int		pipe_parent(t_cmd *cmd, size_t i, int fd[3]);
 
 /* BUILT-IN */
 

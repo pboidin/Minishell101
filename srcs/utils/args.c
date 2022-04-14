@@ -6,13 +6,13 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 17:33:50 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 17:35:57 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 19:32:08 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	clean_previous_args(t_cmd *cmd, int *i)
+int	clean_previous_args(t_cmd *cmd, int *i)
 {
 	int	j;
 
@@ -24,6 +24,7 @@ void	clean_previous_args(t_cmd *cmd, int *i)
 	}
 	move_upward(cmd, *i, *i);
 	*i = 0;
+	return (1);
 }
 
 int	is_valid_arg(char *str)
