@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/28 15:07:31 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 18:09:25 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	init_cmd(t_cmd *cmd)
 	cmd->cmd_args = NULL;
 	cmd->pipe = NULL;
 	cmd->sub_cmd = NULL;
+	cmd->joined_env = NULL;
 	cmd->next_delim = 0;
 }
 

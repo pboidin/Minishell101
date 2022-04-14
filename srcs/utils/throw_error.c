@@ -6,11 +6,39 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:47:31 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 15:44:23 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 18:42:08 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute)
+{
+	if (exit_code == 127)
+	{
+		if (absolute)
+		{
+			write(2, "Minishell: ", 11);
+			write(2, cmd->cmd_args[0], ft_strlen(cmd->cmd_args[0]));
+			write(2, ": No such file or directory\n", 28);
+		}
+		else
+		{
+			write(2, cmd->cmd_args[0], ft_strlen(cmd->cmd_args[0]));
+			write(2, ": command not found\n", 20);
+		}
+	}
+	else if (exit_code == 126)
+	{
+		write(2, "Minishell: ", 11);
+		write(2, cmd->cmd_args[0], ft_strlen(cmd->cmd_args[0]));
+		write(2, ": Permission denied\n", 20);
+	}
+	else
+		perror("Error");
+	free_info(info);
+	exit(exit_code);
+}
 
 void	parsing_error(int delim, char *str, t_tokens *toks)
 {

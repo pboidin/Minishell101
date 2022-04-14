@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:10:27 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 18:11:50 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -740,7 +740,7 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 			dup2(cmd->in->fd, 0);
 		if (cmd->out)
 			dup2(cmd->out->fd, 1);
-		ft_execute(info, cmd->cmd_args);
+		ft_execute(info, cmd);
 	}
 	else
 	{

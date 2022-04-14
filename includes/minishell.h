@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 21:02:54 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 18:43:03 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_cmd
 	char			**cmd_args;
 	struct s_cmd	**pipe;
 	struct s_cmd	**sub_cmd;
+	char			**joined_env;
 	int				next_delim;
 }	t_cmd;
 
@@ -149,6 +150,7 @@ int		fork_cmd(t_cmd *cmd);
 int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd, char *str);
+void	clean_previous_args(t_cmd *cmd, int *i);
 int		is_valid_arg(char *str);
 int		is_valid_assignation(char *str);
 void	throw_assignation_error(char *str);
@@ -179,6 +181,7 @@ char	*t_block_to_str(t_block *block);
 size_t	char_tab_size(char **tab);
 char	**create_char_tab(size_t size);
 void	parsing_error(int delim, char *str, t_tokens *toks);
+void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute);
 
 /* BUILT-IN */
 
@@ -192,7 +195,7 @@ int		ft_unset(char **unset, t_info *info);
 int		ft_blt(t_cmd *cmd);
 void	ft_blti(t_info *info, t_cmd *cmd);
 
-void	ft_execute(t_info *info, char **cmd_args);
+void	ft_execute(t_info *info, t_cmd *cmd);
 char	**ft_split(char const *s, char c);
 int		ft_env_loc(t_env *env, t_info *info);
 int		ft_go_to_home(t_info *info);

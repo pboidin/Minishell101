@@ -6,97 +6,100 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:22:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/22 14:24:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 19:06:01 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	free_split(char **tab)
+static char	**get_path(t_info *info)
 {
-	size_t	i;
-
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
-char	*ft_path(t_info *info, char *cmd)
-{
-	t_env	*current;
 	char	**paths;
-	char	*path;
-	char	*path_dir;
-	int		i;
+	t_env	*current;
 
 	if (!info->env)
 		return (NULL);
 	current = info->env;
 	while (current)
 	{
-		if (!ft_strncmp(current->name, "PATH", 5))
+		if (!ft_strcmp(current->name, "PATH"))
 			break ;
 		current = current->next;
 	}
-	if (!current)
+	if (!current || !current->value || current->value[0] == '\0')
 		return (NULL);
 	paths = ft_split(current->value, ':');
 	if (!paths)
-		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		path_dir = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(path_dir, cmd);
-		free(path_dir);
-		if (access(path, F_OK) == 0)
-			return (free_split(paths), path);
-		free(path);
-		i++;
-	}
-	return (free_split(paths), NULL);
+		return (execution_error(info, NULL, EXIT_FAILURE, 0), NULL);
+	return (paths);
 }
 
-void	ft_error(t_info *info, char *cmd, char **envp)
+char	*ft_path(t_info *info, t_cmd *cmd)
+{
+	char	**paths;
+	char	*path;
+	char	*path_dir;
+	int		i;
+
+	paths = get_path(info);
+	if (!paths)
+		return (execution_error(info, cmd, 127, 0), NULL);;
+	i = -1;
+	while (paths[++i])
+	{
+		path_dir = ft_strjoin(paths[i], "/");
+		if (!path_dir)
+			return (free_char_tab(paths), \
+				execution_error(info, NULL, EXIT_FAILURE, 0), NULL);
+		path = ft_strjoin(path_dir, cmd->cmd_args[0]);
+		free(path_dir);
+		if (!path)
+			return (free_char_tab(paths), \
+				execution_error(info, NULL, EXIT_FAILURE, 0), NULL);
+		if (!access(path, F_OK))
+			return (free_char_tab(paths), path);
+		free(path);
+	}
+	return (free_char_tab(paths), NULL);
+}
+
+static int	is_absolute(t_info *info, t_cmd *cmd)
 {
 	size_t	i;
 
-	free_info(info);
-	if (cmd)
-		free(cmd);
-	if (envp)
+	i = 0;
+	if (!cmd->cmd_args[0][0])
+		return (execution_error(info, cmd, 127, 0), 0);
+	while (cmd->cmd_args[0][i])
 	{
-		i = 0;
-		while (envp[i])
-		{
-			free(envp[i]);
-			i++;
-		}
-		free(envp);
+		if (cmd->cmd_args[0][i] == '/')
+			return (1);
+		i++;
 	}
-	perror("Error");
-	exit(EXIT_FAILURE);
+	return (0);
 }
 
-void	ft_execute(t_info *info, char **cmd_args)
+void	ft_execute(t_info *info, t_cmd *cmd)
 {
-	char	**envp;
-	char	*cmd;
-
-	cmd = NULL;
-	envp = NULL;
-	cmd = ft_path(info, cmd_args[0]);
-	if (!cmd)
-		ft_error(info, NULL, NULL);
-	envp = join_env(info);
-	if (!envp)
-		ft_error(info, cmd, NULL);
-	if (execve(cmd, cmd_args, envp) == -1)
-		ft_error(info, cmd, envp);
+	if (is_absolute(info, cmd))
+	{
+		cmd->cmd_name = ft_strdup(cmd->cmd_args[0]);
+		if (!cmd->cmd_name)
+			execution_error(info, cmd, EXIT_FAILURE, 1);
+		if (access(cmd->cmd_name, F_OK))
+			execution_error(info, cmd, 127, 1);
+	}
+	else
+	{
+		cmd->cmd_name = ft_path(info, cmd);
+		if (!cmd->cmd_name)
+			execution_error(info, cmd, 127, 0);
+	}
+	if (access(cmd->cmd_name, X_OK))
+		execution_error(info, cmd, 126, 0);
+	cmd->joined_env = join_env(info);
+	if (!cmd->joined_env)
+		execution_error(info, cmd, EXIT_FAILURE, 0);
+	if (execve(cmd->cmd_name, cmd->cmd_args, cmd->joined_env) == -1)
+		execution_error(info, cmd, EXIT_FAILURE, 0);
 }

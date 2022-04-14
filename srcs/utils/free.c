@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:19:29 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 17:02:58 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 18:10:23 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ void	free_cmd(t_cmd *cmd)
 		free_char_tab(cmd->cmd_args);
 	if (cmd->cmd_name)
 		free(cmd->cmd_name);
+	if (cmd->joined_env)
+		free_char_tab(cmd->joined_env);
 	free_redirect(cmd);
 }
 
