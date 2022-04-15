@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/11 23:38:28 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/15 17:00:58 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ typedef struct s_var
 }	t_var;
 
 typedef struct s_env
-{Variable expansion
+{
 	char			*name;
 	char			*value;
 	struct s_env	*next;

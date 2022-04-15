@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/11 23:24:16 by piboidin         ###   ########.fr        #
+#    Updated: 2022/04/15 17:02:11 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,8 +73,7 @@ SRCS = main.c \
 	   srcs/builtins/export_utils.c \
 	   srcs/builtins/export_utils_2.c \
 	   srcs/builtins/exit.c \
-	   srcs/builtins/init_built.c \
-	   srcs/utils/ft_utils_str_2.c \
+	   srcs/builtins/init_built.c
 
 OBJS := ${SRCS:.c=.o}
 
