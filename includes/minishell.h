@@ -180,7 +180,7 @@ int		ft_lenvar(const char *s);
 int		ft_lstsize(t_env *lst);
 int		ft_print_err_cd(const char *dir);
 int		ft_ret_home(t_info *info);
-int		ft_set_old(t_env *env, char *pwd, char *val);
+int		ft_set_old(t_env *env, char *pwd);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
 int		ft_atoi(const char *str);

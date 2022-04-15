@@ -14,23 +14,23 @@
 
 char	*ft_genv(const char *path, t_env *info)
 {
-	char	*env;
-	char	*ret;
+	// char	*env;
+	// char	*ret;
 	t_env	*tmp;
 
 	tmp = info;
-	env = ft_strjoin(path, "=");
+	// env = ft_strjoin(path, "=");
 	while (tmp)
 	{
 		if (!ft_strcmp((char *)path, tmp->name))
 		{
-			ret = ft_strdup(tmp->value);
-			free(env);
-			return (ret);
+			// ret = ft_strdup(tmp->value);
+			// free(env);
+			return (ft_strdup(tmp->value));
 		}
 		tmp = tmp->next;
 	}
-	free(env);
+	// free(env);
 	return (NULL);
 }
 

@@ -51,23 +51,21 @@ void	ft_upd_env(t_env *env)
 	if (getcwd(path, PATH_MAX) == NULL)
 	{
 		free(path);
-		path = ft_genv("PWD", env);
-		if (!path)
-			return ;
+		return ;
 	}
 	free(env->value);
 	printf("Path %s\n", path);
-	env->value = ft_strjoin("PWD=", path);
-	free(path);
+	env->value = path;
+	// free(path);
 }
 
 static int	ft_go_to_oldpwd(t_env *env)
 {
-	char	*tmp;
+	// char	*tmp;
 	char	*old;
 	char	*pwd;
 
-	tmp = NULL;
+	// tmp = NULL;
 	pwd = NULL;
 	old = ft_genv("OLDPWD", env);
 	if (!old)
@@ -84,7 +82,7 @@ static int	ft_go_to_oldpwd(t_env *env)
 		return (1);
 	}
 	free(old);
-	ft_set_old(env, pwd, tmp);
+	ft_set_old(env, pwd);
 	ft_env_loc(env);
 	return (0);
 }
@@ -92,13 +90,13 @@ static int	ft_go_to_oldpwd(t_env *env)
 int	ft_ch_dir(char **dir, t_info *info)
 {
 	char	*pwd;
-	char	*tmp;
+	// char	*tmp;
 
 	pwd = NULL;
-	tmp = NULL;
+	// tmp = NULL;
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
 		return (ft_go_to_oldpwd(info->env));
-	ft_set_old(info->env, pwd, tmp);
+	ft_set_old(info->env, pwd);
 	if (!dir[1] || (!ft_strncmp(dir[1], "~\0", 2)
 			|| !ft_strncmp(dir[1], "~/", 2)))
 	{
