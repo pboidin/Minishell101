@@ -3,37 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:55 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:57 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:38:26 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_genv(const char *path, t_info *info)
+char	*ft_genv(const char *path, t_env *info)
 {
-	int		path_size;
-	char	*env;
-	char	*ret;
+	// char	*env;
+	// char	*ret;
 	t_env	*tmp;
 
-	tmp = info->env;
-	env = ft_strjoin(path, "=");
-	path_size = ft_strlen(env);
+	tmp = info;
+	// env = ft_strjoin(path, "=");
 	while (tmp)
 	{
-		if (ft_strncmp(env, (char *)tmp->value, path_size) == 0)
+		if (!ft_strcmp((char *)path, tmp->name))
 		{
-			ret = ft_substr((char *)tmp->value, path_size,
-					ft_strlen((char *)tmp->value) - path_size);
-			free(env);
-			return (ret);
+			// ret = ft_strdup(tmp->value);
+			// free(env);
+			return (ft_strdup(tmp->value));
 		}
 		tmp = tmp->next;
 	}
-	free(env);
+	// free(env);
 	return (NULL);
 }
 
@@ -57,7 +54,7 @@ int	ft_working_dir(char **n, t_info *info)
 		pwd = NULL;
 	}
 	if (pwd == NULL)
-		pwd = ft_genv("PWD", info);
+		pwd = ft_genv("PWD", info->env);
 	if (pwd == NULL)
 		return (1);
 	ft_print_pwd(pwd);

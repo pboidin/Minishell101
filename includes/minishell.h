@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/07 13:03:42 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/11 23:38:28 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,18 @@ int		ft_working_dir(char **n, t_info *info);
 int		ft_unset(char **unset, t_info *info);
 int		ft_blt(t_cmd *cmd);
 void	ft_blti(t_info *info, t_cmd *cmd);
+int		ft_has_env(char *str, t_env *env);
+char	*ft_getvalue(char *str, t_env *env);
+void	ft_error_print(int err, char *str);
+int		ft_home_err_prt(void);
+void	ft_modify_env(char *name, char *value, t_env *env);
+int		ft_cd(char **dir, t_info *info);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putendl_fd(char *str, int fd);
 
 void	ft_execute(t_info *info, char **cmd_args);
 char	**ft_split(char const *s, char c);
-int		ft_env_loc(t_env *env, t_info *info);
+int		ft_env_loc(t_env *head);
 int		ft_go_to_home(t_info *info);
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
@@ -172,7 +180,7 @@ int		ft_lenvar(const char *s);
 int		ft_lstsize(t_env *lst);
 int		ft_print_err_cd(const char *dir);
 int		ft_ret_home(t_info *info);
-int		ft_set_old(t_env *env, t_info *info, char *pwd, char *val);
+int		ft_set_old(t_env *env, char *pwd);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_unset_handle(char *new_env);
 int		ft_atoi(const char *str);
@@ -181,7 +189,7 @@ int		add_pid(t_info *info, int pid);
 void	free_pid(t_info *info);
 int		ft_abs(int nb);
 
-char	*ft_genv(const char *path, t_info *info);
+char	*ft_genv(const char *path, t_env *info);
 char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
@@ -195,12 +203,12 @@ size_t	ft_strlen(const char *s);
 
 t_env	*ft_lstnew(void *data);
 
-void	ft_env_set(t_env *env, t_info *info);
+void	ft_env_set(t_env *env);
 void	ft_export_var(char **new_env, char *env, char *env2, t_info *info);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);
 void	ft_lstdelone(t_env *lst, void (*del)(void*));
-void	ft_upd_env(t_env **env, t_info *info);
+void	ft_upd_env(t_env *env);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);

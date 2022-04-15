@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <dirent.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include <minishell.h>
 
 int	ft_strchr(char *str, char c)
 {
@@ -20,98 +14,99 @@ int	ft_strchr(char *str, char c)
 	return (0);
 }
 
-void	ft_putstr(char *str)
+int	ft_has_wildcards(char *str)
 {
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		write(1, &str[i], 1);
-		i++;
-	}
-	write(1, "\n", 1);
+	if (ft_strchr(str, '*') && !ft_strchr(str, '/'))
+		return (1);
+	return (0);
 }
 
-int		ft_strlen(char *str)
+char	**ft_wildcards(char *cmd, ??)
 {
-	int	i;
+	struct dirent	*de;
+  	DIR				*dr;
+	char			*pwd;
+	char			**ret;
 
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-char	*ft_strreturn(char *str, int i)
-{
-	char	*ret;
-	int		size;
-
-	size = ft_strlen(str);
-	printf("%i", i);
-
-	ret = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
-	if (str == NULL || ret == NULL)
-		return (NULL);
-	while (str[i] != ' ' || str[i] != '\n' || str[i] != '\0')
+	ret = NULL;
+	pwd = get_env(cmd, "PWD");
+	dr = opendir(pwd);
+  
+    if (dr == NULL)
+    {
+        printf("Could not open current directory" );
+        return 0;
+    }
+	if (dr)
 	{
-		write(1, "str = ", 6);
-		write(1, &str[i], 1);
-		write(1, "\n", 1);
-		ret[i] = str[i];
-		i++;
-	}
-	write(1, "Ici\n", 4);
-	ret[i] = '\n';
-	i = 0;
-	while (ret[i])
-	{
-		write(1, &ret[i], 1);
-		i++;
-	}
-	return (ret);
-}
-
-int main(int argc, char **argv)
-{
-	char	*cmd;
-	struct	dirent *de;
-	(void)	argc;
-	int		i;
-
-	DIR *dr = opendir(".");
-	i = 0;
-	if (dr == NULL)
-	{
-		printf("Could not open current directory");
-		return (0);
-	}
-	cmd = argv[1];
-	if (argv[1] == NULL)
-		return (0);
-	while (cmd[i])
-	{
-		write(1, &cmd[i], 1);
-		i++;
-	}
-	write(1, "\n", 1);
-	i = 0;
-	if (cmd == NULL)
-        return (0);
-	if (ft_strchr(argv[1], '*') == 1)
-	{
-		while ((de = readdir(dr)) != NULL)
+		de = readdir(dr);
+		while (de)
 		{
-			while (argv[1][i] == '*')
-				i++;
-			if (ft_strreturn(argv[1], i) != NULL)
-			{
-				ft_putstr(ft_strreturn(argv[1], i));
-				ft_putstr(de->d_name);
-			}
+			if ()
+				-->
+			de = readdir (dr);
 		}
-    	closedir(dr);    
-    	return 0;
 	}
+    closedir(dr);
+    return (ret);
 }
+
+
+//Get the wildcard lists object
+
+char    get_wildcard_files(char *wildcard, t_shell *shell)
+{
+    char            *pwd;
+    DIR                *dir;
+    struct dirent    *entry;
+    t_automaton        *au;
+    char            **lists;
+
+    //lists = 0;
+    au = automaton_wildcard_factory(wildcard);
+    if (!au)
+        return (0);
+    //pwd = get_env(shell, "PWD");
+    //dir = opendir(pwd);
+    if (dir)
+    {
+        entry = readdir(dir);
+        while (entry)
+        {
+            if (automaton_validator(au, entry->d_name))
+                push_array(entry->d_name, &lists);
+            entry = readdir(dir);
+        }
+    }
+    closedir(dir);
+    automaton_dispose(au);
+    return (lists);
+}
+
+void    wildcard_cmds(t_shell *shell)
+{
+    t_cmd    *cmd;
+    int        i;
+    char    lists;
+
+    cmd = shell->cmds;
+    while (cmd)
+    {
+        i = -1;
+        while (cmd->args && cmd->args[++i])
+        {
+            if (has_wildcard(cmd->args[i]))
+            {
+                lists = get_wildcard_files(cmd->args[i], shell);
+                if (lists)
+                {
+                    insert_array(lists, cmd->args[i], &cmd->args);
+                    remove_str_array(cmd->args[i], &cmd->args);
+                    free_array(lists);
+                }
+            }
+        }
+        cmd = cmd->next;
+    }
+}
+
