@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/28 15:07:31 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/14 19:36:24 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char	*get_str(char *line, char sep, size_t *index)
 	j = 0;
 	while (line[i + j] && line[i + j] != sep)
 		j++;
-	str = (char *)malloc(sizeof(char) * (j + 1));
+	str = (char *)ft_calloc((j + 1), sizeof(char));
 	if (!str)
 		return (NULL);
 	j = 0;
@@ -32,7 +32,6 @@ static char	*get_str(char *line, char sep, size_t *index)
 		str[j] = line[i + j];
 		j++;
 	}
-	str[j] = '\0';
 	*index += j + 1;
 	return (str);
 }
@@ -43,13 +42,9 @@ static int	add_to_env(t_info *info, char *line)
 	t_env	*new_var;
 
 	index = 0;
-	new_var = NULL;
-	new_var = (t_env *)malloc(sizeof(t_env));
+	new_var = (t_env *)ft_calloc(1, sizeof(t_env));
 	if (!new_var)
 		return (1);
-	new_var->name = NULL;
-	new_var->value = NULL;
-	new_var->next = NULL;
 	new_var->name = get_str(line, '=', &index);
 	if (!new_var->name)
 		return (free(new_var), 1);
@@ -73,6 +68,7 @@ void	init_cmd(t_cmd *cmd)
 	cmd->cmd_args = NULL;
 	cmd->pipe = NULL;
 	cmd->sub_cmd = NULL;
+	cmd->joined_env = NULL;
 	cmd->next_delim = 0;
 }
 
@@ -85,6 +81,8 @@ int	create_info(t_info *info, char **envp, char *name)
 	info->running_processes = NULL;
 	info->status = 0;
 	info->env = NULL;
+	info->is_child = FALSE;
+	init_cmd(&info->cmd);
 	if (envp)
 	{
 		i = 0;
@@ -96,6 +94,5 @@ int	create_info(t_info *info, char **envp, char *name)
 				return (free_env(info), 1);
 		}
 	}
-	init_cmd(&info->cmd);
 	return (0);
 }

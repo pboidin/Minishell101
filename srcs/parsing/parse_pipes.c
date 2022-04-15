@@ -6,99 +6,94 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 15:06:08 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 20:56:44 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 15:09:36 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_cmd	*add_pipe(char *cmd, int *i)
+static t_cmd	*add_pipe(char *cmd, size_t *i, int prev_delim, t_cmd *father)
 {
-	int			is_tok;
 	t_tokens	toks;
-	int			j;
+	size_t		j;
 	t_cmd		*new_cmd;
 
-	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	new_cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
 	if (!new_cmd)
-		return (NULL);
+		return (perror("Malloc error"), NULL);
 	init_tokens(&toks);
-	skip_whitespaces(cmd, i);
 	j = 0;
 	while (cmd[*i + j])
 	{
-		is_tok = save_token(cmd[*i + j], &toks);
-		if (is_tok == 2)
-			return (NULL);
-		else if (!is_tok && cmd[*i + j] == '|' && !has_tokens(toks))
+		if (!save_token(cmd[*i + j], &toks) && cmd[*i + j] == '|'
+			&& !has_tokens(toks))
 			break ;
 		j++;
 	}
+	save_delim(new_cmd, &cmd[*i + j], prev_delim, father->next_delim);
 	cmd[*i + j] = '\0';
 	new_cmd->cmd = ft_trim(&cmd[*i]);
 	if (!new_cmd->cmd)
-		return (free(new_cmd), write(2, "Parsing error\n", 14), NULL);
+		return (free(new_cmd), parsing_error(father->next_delim, NULL, NULL), \
+		NULL);
 	*i += j + 1;
 	return (new_cmd);
 }
 
-static long long	count_pipes(char *cmd)
+static size_t	count_pipes(char *cmd)
 {
-	int			is_tok;
 	t_tokens	toks;
 	size_t		i;
-	long long	nb_cmds;
+	size_t		nb_cmds;
 
 	init_tokens(&toks);
 	nb_cmds = 0;
 	i = 0;
 	while (cmd[i])
 	{
-		is_tok = save_token(cmd[i], &toks);
-		if (is_tok == 2)
-			return (0);
-		else if (!is_tok && cmd[i] == '|' && !toks.par && !toks.dbl_qu
-			&& !toks.spl_qu)
+		if (!save_token(cmd[i], &toks) && cmd[i] == '|' && !has_tokens(toks))
 			nb_cmds++;
 		i++;
 	}
-	if (has_tokens(toks) || cmd[i - 1] == '|' || cmd[i - 1] == '&')
-		return (0);
 	nb_cmds++;
 	return (nb_cmds);
 }
 
-int	parse_pipe(t_cmd *cmd)
+static int	create_pipe_tab(t_cmd *cmd, size_t i)
 {
-	int			index;
-	long long	i;
-	long long	j;
+	int		prev_delim;
+	size_t	j;
+	size_t	index;
 
-	if (!cmd || !cmd->cmd)
-		return (1);
-	i = count_pipes(cmd->cmd);
-	if (!i)
-		return (write(2, "Parsing error\n", 14), 1);
-	else if (i == 1)
-		return (0);
-	cmd->pipe = (t_cmd **)malloc(sizeof(t_cmd *) * (i + 1));
-	if (!cmd->pipe)
-		return (1);
 	j = 0;
 	index = 0;
+	prev_delim = cmd->prev_delim;
 	while (j < i)
 	{
-		cmd->pipe[j] = add_pipe(cmd->cmd, &index);
+		cmd->pipe[j] = add_pipe(cmd->cmd, &index, prev_delim, cmd);
 		if (!cmd->pipe[j])
 			return (1);
-		cmd->pipe[j]->prev_delim = 1;
-		cmd->pipe[j]->next_delim = 1;
+		prev_delim = PIPE;
 		if (parse_cmd(cmd->pipe[j]))
 			return (1);
 		j++;
 	}
-	cmd->pipe[0]->prev_delim = 0;
-	cmd->pipe[i - 1]->next_delim = 0;
-	cmd->pipe[i] = NULL;
+	return (0);
+}
+
+int	parse_pipe(t_cmd *cmd)
+{
+	size_t	i;
+
+	if (!cmd || !cmd->cmd)
+		return (1);
+	i = count_pipes(cmd->cmd);
+	if (i == 1)
+		return (0);
+	cmd->pipe = (t_cmd **)ft_calloc((i + 1), sizeof(t_cmd *));
+	if (!cmd->pipe)
+		return (1);
+	if (create_pipe_tab(cmd, i))
+		return (1);
 	return (i);
 }

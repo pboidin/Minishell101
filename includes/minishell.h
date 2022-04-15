@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdint.h>
+# include <stddef.h>
+# include <sys/uio.h>
 # include <stdbool.h>
 # include <limits.h>
 # include <readline/readline.h>
@@ -25,6 +27,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 500
+# endif
 # ifndef TRUE
 #  define TRUE 1
 # endif
@@ -37,8 +42,17 @@
 # ifndef AND
 #  define AND 2
 # endif
+# ifndef PIPE
+#  define PIPE 1
+# endif
+# ifndef PARENTH
+#  define PARENTH 4
+# endif
 # ifndef PATH_MAX
 #  define PATH_MAX 4096
+# endif
+# ifndef TMP_PATH
+#  define TMP_PATH "/tmp/minishell-"
 # endif
 
 typedef struct s_redirect
@@ -63,6 +77,7 @@ typedef struct s_cmd
 	char			**cmd_args;
 	struct s_cmd	**pipe;
 	struct s_cmd	**sub_cmd;
+	char			**joined_env;
 	int				next_delim;
 }	t_cmd;
 
@@ -87,7 +102,7 @@ typedef struct s_var
 }	t_var;
 
 typedef struct s_env
-{
+{Variable expansion
 	char			*name;
 	char			*value;
 	struct s_env	*next;
@@ -118,7 +133,11 @@ typedef struct s_info
 
 extern t_info	g_info;
 
+void	skip_englobing_char(char *str, size_t *i, char delim);
+void	skip_to_end_var(char *str, size_t *i);
 void	free_env(t_info *info);
+void	free_var(t_info *info);
+void	free_running_processes(t_info *info);
 int		create_info(t_info *info, char **envp, char *name);
 int		parse_cmd(t_cmd *cmd);
 void	init_tokens(t_tokens *tokens);
@@ -129,13 +148,22 @@ char	*ft_trim(char *cmd);
 int		parse_pipe(t_cmd *cmd);
 int		has_tokens(t_tokens toks);
 int		is_delim(char *str, int delim);
-void	save_delim(t_cmd *new_cmd, char c);
+void	save_delim(t_cmd *new_cmd, char *c, int prev_delim, int next_delim);
 int		parse_logical(t_cmd *cmd);
 void	skip_whitespaces(char *cmd, int *i);
+int		is_whitespace(char c);
+void	skip_closing_parenth(char *str, int *i);
 int		fork_cmd(t_cmd *cmd);
 int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
-int		parse_args(t_cmd *cmd);
+int		parse_args(t_cmd *cmd, char *str);
+int		clean_previous_args(t_cmd *cmd, int *i);
+int		is_valid_arg(char *str);
+int		is_valid_assignation(char *str);
+void	throw_assignation_error(char *str);
+int		is_assignation(char *str);
+int		get_redirect_type(char *str);
+int		add_redirect(char *str, t_cmd *cmd, int redirect);
 void	free_cmd(t_cmd *cmd);
 char	**join_env(t_info *info);
 int		save_heredoc(t_redirect *new_redirect);
@@ -144,8 +172,40 @@ char	*ft_strdup(const char *s);
 int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
-
-extern t_info	g_info;
+void	move_upward(t_cmd *cmd, int i, int mv);
+int		expand_var(t_info *info, t_block ***words_tab, size_t i[2]);
+t_block	**add_args_word(char *str, t_info *info, int expand);
+size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
+int		remove_qu(t_block *tab, size_t i);	
+char	*add_t_block_str(char *str, size_t *index);
+void	sys_call_error(t_info *info);
+char	**replace_var(t_block *words, size_t i, t_info *info);
+void	free_t_block(t_block *block);
+void	free_t_block_tab(t_block **block_tab);
+char	*create_tmp(void);
+t_block	**create_t_tab(char *str);
+void	get_exit_status(t_info *info);
+char	**t_block_tab_to_char_tab(t_block **tab);
+void	free_char_tab(char **tab);
+size_t	t_block_tab_size(t_block **tab);
+size_t	count_words_var_expansion(char *str);
+int		inline_expansion(t_block *tab, size_t i, t_info *info);
+char	*find_var(char *var, t_info *info);
+char	*t_block_to_str(t_block *block);
+size_t	char_tab_size(char **tab);
+char	**create_char_tab(size_t size);
+void	parsing_error(int delim, char *str, t_tokens *toks);
+void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute);
+void	simple_cmd_child(t_info *info, t_cmd *cmd);
+void	move_t_block_tab_upward(t_block **tab, size_t i, int mv);
+void	pipe_child(t_info *info, t_cmd *cmd, size_t i, int fd[3]);
+int		pipe_parent(t_cmd *cmd, size_t i, int fd[3]);
+void	fork_child(t_info *info, t_cmd *cmd);
+void	open_error(t_redirect *current);
+int		handle_redirections(t_cmd *cmd, t_info *info);
+int		is_empty_var(t_block *word);
+void	ambiguous_redirect(char *str);
+size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
 
 /* BUILT-IN */
 
@@ -167,7 +227,7 @@ int		ft_cd(char **dir, t_info *info);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *str, int fd);
 
-void	ft_execute(t_info *info, char **cmd_args);
+void	ft_execute(t_info *info, t_cmd *cmd);
 char	**ft_split(char const *s, char c);
 int		ft_env_loc(t_env *head);
 int		ft_go_to_home(t_info *info);
@@ -212,5 +272,12 @@ void	ft_upd_env(t_env *env);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);
+
+int		get_next_line(int fd, char **line);
+char	*internal_get_str(int fd, char *remainer, int start_index, int *nl_pos);
+char	*internal_join(char *dst, char *src);
+char	*internal_getremainer(char *remainer, int nl_pos);
+char	*internal_get_line(char *remainer, int *nl_pos);
+int		internal_hasnl(char *str, int *start_index, int *nl_pos);
 
 #endif

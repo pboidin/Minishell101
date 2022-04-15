@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:28:52 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/24 13:16:50 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 12:42:29 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_strcpy(char *dst, const char *src)
 	char	*save;
 
 	save = dst;
-	while (*src)
+	while (src && *src)
 		*dst++ = *src++;
 	*dst = '\0';
 	return (save);

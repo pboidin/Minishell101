@@ -31,8 +31,7 @@ static int	ft_exit_code(char *const *tab, int i, t_info *info)
 			write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
 			info->status = 2;
-			ft_lstclear(&info->env, free);
-			free(info->env);
+			free_info(info);
 			exit(2);
 		}
 	}
@@ -53,14 +52,14 @@ int	ft_exit(char **tab, t_info *info)
 	{
 		exit_code = ft_atoi(tab[1]);
 		info->status = (unsigned char)exit_code;
-		ft_lstclear(&info->env, free);
-		free(info->env);
+//		ft_lstclear(&info->env, free);
+		free_info(info);
 		if (info->is_child == FALSE)
 			write(STDERR_FILENO, "exit\n", 5);
 		exit((unsigned char)exit_code);
 	}
-	ft_lstclear(&info->env, free);
-	free(info->env);
+//	ft_lstclear(&info->env, free);
+	free_info(info);
 	if (info->is_child == FALSE)
 		write(STDERR_FILENO, "exit\n", 5);
 	exit(info->status);

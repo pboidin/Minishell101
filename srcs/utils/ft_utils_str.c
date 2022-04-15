@@ -53,30 +53,3 @@ void	ft_putstr(char *str)
 		i++;
 	}
 }
-
-char	*ft_trim(char *cmd)
-{
-	int		i;
-	int		j;
-	int		z;
-	char	*new_cmd;
-
-	i = 0;
-	skip_whitespaces(cmd, &i);
-	if (!cmd || !cmd[i])
-		return (NULL);
-	j = i;
-	while (cmd[j + 1])
-		j++;
-	while (j >= i
-		&& ((cmd[i + j] >= '\t' && cmd[i + j] <= '\r') || cmd[i + j] == ' ' ))
-		j--;
-	new_cmd = (char *)malloc(sizeof(char) * (j - i + 2));
-	if (!new_cmd)
-		return (NULL);
-	z = 0;
-	while (i <= j)
-		new_cmd[z++] = cmd[i++];
-	new_cmd[z] = '\0';
-	return (new_cmd);
-}

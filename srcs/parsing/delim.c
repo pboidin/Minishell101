@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:28:57 by bdetune           #+#    #+#             */
-/*   Updated: 2022/03/16 16:39:27 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/13 14:53:05 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,21 @@ int	is_delim(char *str, int delim)
 	return (0);
 }
 
-void	save_delim(t_cmd *new_cmd, char c)
+void	save_delim(t_cmd *new_cmd, char *c, int prev_delim, int next_delim)
 {
 	if (!c)
-		new_cmd->next_delim = 0;
-	else if (c == '|')
-		new_cmd->next_delim = 3;
-	else
-		new_cmd->next_delim = 2;
+		return ;
+	if (!c[0])
+		new_cmd->next_delim = next_delim;
+	else if (c[0] == '|')
+	{
+		new_cmd->next_delim = PIPE;
+		if (c[1] == '|')
+			new_cmd->next_delim = OR;
+	}
+	else if (c[0] == '&' && c[1] == '&')
+		new_cmd->next_delim = AND;
+	else if (c[0] == ')')
+		new_cmd->next_delim = PARENTH;
+	new_cmd->prev_delim = prev_delim;
 }
