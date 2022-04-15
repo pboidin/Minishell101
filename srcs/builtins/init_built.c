@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_built.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:47 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:49 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/11 23:29:38 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_blti(t_info *info, t_cmd *cmd)
 	else if (ft_strcmp(cmd->cmd_args[0], "cd") == 0)
 		info->status = ft_ch_dir(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "env") == 0)
-		info->status = ft_env(cmd->cmd_args, info);
+	 	info->status = ft_env(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "exit") == 0)
 		info->status = ft_exit(cmd->cmd_args, info);
 	else if (ft_strcmp(cmd->cmd_args[0], "export") == 0)
