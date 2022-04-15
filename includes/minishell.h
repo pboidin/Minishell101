@@ -210,11 +210,11 @@ size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
 /* BUILT-IN */
 
 int		ft_ch_dir(char **dir, t_info *info);
-int		ft_echo(char **tab);
-int		ft_env(char **tab, t_info *info);
+int		ft_echo(char **tab, t_cmd *cmd);
+int		ft_env(char **tab, t_info *info, t_cmd *cmd);
 int		ft_exit(char **tab, t_info *info);
 int		ft_export(char **new_env, t_info *info);
-int		ft_working_dir(char **n, t_info *info);
+int		ft_working_dir(char **n, t_info *info, t_cmd *cmd);
 int		ft_unset(char **unset, t_info *info);
 int		ft_blt(t_cmd *cmd);
 void	ft_blti(t_info *info, t_cmd *cmd);

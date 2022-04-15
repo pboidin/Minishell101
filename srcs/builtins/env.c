@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	ft_print(t_info *info)
+static void	ft_print(t_info *info, int fd)
 {
 	char	*values;
 	char	*t_name;
@@ -27,27 +27,32 @@ static void	ft_print(t_info *info)
 		t_name = (char *)env->name; 
 		if (values[i] && t_name[i])
 		{
-			write(1, env->name, ft_strlen((char *)env->name));
-			write(1, "=", 1);
-			write(1, env->value, ft_strlen((char *)env->value));
-			write(1, "\n", 1);
+			write(fd, env->name, ft_strlen((char *)env->name));
+			write(fd, "=", 1);
+			write(fd, env->value, ft_strlen((char *)env->value));
+			write(fd, "\n", 1);
 		}
 		env = env->next;
 	}
-	write(1, "\0", 1);
 }
 
-int	ft_env(char **tab, t_info *info)
+int	ft_env(char **tab, t_info *info, t_cmd *cmd)
 {
+	int	fd;
+
+	fd = 1;
+	if (cmd->out)
+		fd = cmd->out->fd;
 	if (!info->env)
 		return (0);
 	if (tab[1] == NULL)
-		ft_print(info);
+		ft_print(info, fd);
 	else
 	{
 		write(STDERR_FILENO, "env: ", 5);
 		write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
 		write(STDERR_FILENO, ": No such file or directory\n", 28);
+		return (127);
 	}
 	return (0);
 }

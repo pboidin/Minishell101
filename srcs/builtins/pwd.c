@@ -14,36 +14,32 @@
 
 char	*ft_genv(const char *path, t_env *info)
 {
-	// char	*env;
-	// char	*ret;
 	t_env	*tmp;
 
 	tmp = info;
-	// env = ft_strjoin(path, "=");
 	while (tmp)
 	{
 		if (!ft_strcmp((char *)path, tmp->name))
-		{
-			// ret = ft_strdup(tmp->value);
-			// free(env);
 			return (ft_strdup(tmp->value));
-		}
 		tmp = tmp->next;
 	}
-	// free(env);
 	return (NULL);
 }
 
-static void	ft_print_pwd(const char *pwd)
+static void	ft_print_pwd(const char *pwd, int fd)
 {
-	write(STDOUT_FILENO, pwd, ft_strlen(pwd));
-	write(STDOUT_FILENO, "\n", 1);
+	write(fd, pwd, ft_strlen(pwd));
+	write(fd, "\n", 1);
 }
 
-int	ft_working_dir(char **n, t_info *info)
+int	ft_working_dir(char **n, t_info *info, t_cmd *cmd)
 {
 	char	*pwd;
+	int		fd;
 
+	fd = 1;
+	if (cmd->out)
+		fd = cmd->out->fd;
 	pwd = (char *)malloc(sizeof(char) * PATH_MAX);
 	if (!pwd)
 		return (1);
@@ -57,7 +53,7 @@ int	ft_working_dir(char **n, t_info *info)
 		pwd = ft_genv("PWD", info->env);
 	if (pwd == NULL)
 		return (1);
-	ft_print_pwd(pwd);
+	ft_print_pwd(pwd, fd);
 	free(pwd);
 	return (0);
 }

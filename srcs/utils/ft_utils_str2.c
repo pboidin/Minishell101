@@ -53,3 +53,15 @@ int	is_whitespace(char c)
 		return (1);
 	return (0);
 }
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	if (!s)
+		return ;
+	while (*s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
+	return ;
+}

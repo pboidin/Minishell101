@@ -12,30 +12,30 @@
 
 #include "minishell.h"
 
-static void	ft_putstr_nnl(char *const *tab, int i)
+static void	ft_putstr_nnl(char *const *tab, int i, int fd)
 {
 	while (tab[i])
 	{
-		write(1, tab[i], ft_strlen(tab[i]));
+		write(fd, tab[i], ft_strlen(tab[i]));
 		if (tab[i + 1])
-			write(STDOUT_FILENO, " ", 1);
+			write(fd, " ", 1);
 		i++;
 	}
 }
 
-static void	ft_putstr_nl(char *const *tab)
+static void	ft_putstr_nl(char *const *tab, int fd)
 {
 	int	i;
 
 	i = 1;
 	while (tab[i])
 	{
-		write(1, tab[i], ft_strlen(tab[i]));
+		write(fd, tab[i], ft_strlen(tab[i]));
 		if (tab[i + 1])
-			write(STDOUT_FILENO, " ", 1);
+			write(fd, " ", 1);
 		i++;
 	}
-	write(1, "\n", 1);
+	write(fd, "\n", 1);
 }
 
 static int	ft_check_flag(char *tab)
@@ -57,14 +57,18 @@ static int	ft_check_flag(char *tab)
 	return (0);
 }
 
-int	ft_echo(char **tab)
+int	ft_echo(char **tab, t_cmd *cmd)
 {
 	int	i;
+	int	fd;
 
+	fd = 1;
 	i = 1;
+	if (cmd->out)
+		fd = cmd->out->fd;
 	if (!tab[i])
-	{
-		write(STDOUT_FILENO, "\n", 1);
+	{	
+		write(fd, "\n", 1);
 		return (0);
 	}
 	if (ft_check_flag(tab[i]) == 0)
@@ -74,9 +78,9 @@ int	ft_echo(char **tab)
 			i++;
 		if (!tab[i])
 			return (0);
-		ft_putstr_nnl(tab, i);
+		ft_putstr_nnl(tab, i, fd);
 	}
 	else
-		ft_putstr_nl(tab);
+		ft_putstr_nl(tab, fd);
 	return (0);
 }
