@@ -41,7 +41,7 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	return (0);
 }
 
-void	ft_upd_env(t_env *env) 
+void	ft_upd_env(t_env *env)
 {
 	char	*path;
 
@@ -56,23 +56,20 @@ void	ft_upd_env(t_env *env)
 	free(env->value);
 	printf("Path %s\n", path);
 	env->value = path;
-	// free(path);
 }
 
 static int	ft_go_to_oldpwd(t_env *env)
 {
-	// char	*tmp;
 	char	*old;
 	char	*pwd;
 
-	// tmp = NULL;
 	pwd = NULL;
 	old = ft_genv("OLDPWD", env);
 	if (!old)
 	{
 		write(STDERR_FILENO, "cd: OLDPWD not set\n", 19);
 		return (1);
-	}     
+	}
 	if (chdir(old) == -1)
 	{
 		write(STDERR_FILENO, "cd: ", 4);
@@ -90,10 +87,8 @@ static int	ft_go_to_oldpwd(t_env *env)
 int	ft_ch_dir(char **dir, t_info *info)
 {
 	char	*pwd;
-	// char	*tmp;
 
 	pwd = NULL;
-	// tmp = NULL;
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
 		return (ft_go_to_oldpwd(info->env));
 	ft_set_old(info->env, pwd);

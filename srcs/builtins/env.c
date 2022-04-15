@@ -24,7 +24,7 @@ static void	ft_print(t_info *info, int fd)
 	{
 		i = 0;
 		values = (char *)env->value;
-		t_name = (char *)env->name; 
+		t_name = (char *)env->name;
 		if (values[i] && t_name[i])
 		{
 			write(fd, env->name, ft_strlen((char *)env->name));

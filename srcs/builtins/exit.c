@@ -52,13 +52,11 @@ int	ft_exit(char **tab, t_info *info)
 	{
 		exit_code = ft_atoi(tab[1]);
 		info->status = (unsigned char)exit_code;
-//		ft_lstclear(&info->env, free);
 		free_info(info);
 		if (info->is_child == FALSE)
 			write(STDERR_FILENO, "exit\n", 5);
 		exit((unsigned char)exit_code);
 	}
-//	ft_lstclear(&info->env, free);
 	free_info(info);
 	if (info->is_child == FALSE)
 		write(STDERR_FILENO, "exit\n", 5);

@@ -60,9 +60,6 @@ void	ft_set_val(t_env **env, char *val, int c)
 
 int	ft_try_go_oldpwd(t_env **env)
 {
-	// t_env	*aux;
-
-	// aux = env;
 	if (!*env)
 		return (1);
 	while (*env)
@@ -71,7 +68,6 @@ int	ft_try_go_oldpwd(t_env **env)
 			return (0);
 		*env = (*env)->next;
 	}
-	// env = aux;
 	return (1);
 }
 
@@ -97,9 +93,6 @@ int	ft_set_old(t_env *env, char *pwd)
 			return (1);
 		}
 	}
-	// val = ft_strjoin("OLDPWD=", pwd);
 	ft_set_val(&tmp, pwd, ret);
-	// free(pwd);
-	// free(val);
 	return (0);
 }
