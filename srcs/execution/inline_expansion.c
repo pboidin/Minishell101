@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 10:50:59 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 10:51:01 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 15:12:16 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	insert_var_inline(t_block *tab, int *j, char *var, size_t len)
 	if (!tmp)
 		return (1);
 	var = ft_strjoin(tmp, &tab[0].str[*j + len + 1]);
-	*j = ft_strlen(var) - 1;
+	*j = ft_strlen(tmp) - 1;
 	free(tmp);
 	if (!var)
 		return (1);
@@ -73,9 +73,9 @@ int	inline_expansion(t_block *tab, size_t i, t_info *info)
 			else
 				get_var_inline(&tab[i].str[j], &tmp, &len, info);
 			if (!tmp)
-				return (perror("Malloc error"), 1);
+				return (sys_call_error(info), 1);
 			if (insert_var_inline(&tab[i], &j, tmp, len))
-				return (perror("Malloc error"), 1);
+				return (sys_call_error(info), 1);
 		}
 		j++;
 	}

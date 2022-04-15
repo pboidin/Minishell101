@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 19:27:33 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 22:00:25 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 12:59:01 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,27 +110,27 @@ int	handle_qu(t_info *info, t_block *word, size_t i, int expand)
 t_block	**add_args_word(char *str, t_info *info, int expand)
 {
 	t_block	**words_tab;
-	size_t	i;
-	size_t	j;
+	size_t	i[2];
 
 	words_tab = create_t_tab(str);
 	if (!words_tab)
 		return (NULL);
-	j = 0;
-	i = 0;
-	while (words_tab[j][i].str)
+	i[0] = 0;
+	i[1] = 0;
+	while (words_tab[i[0]][i[1]].str)
 	{
-		if (words_tab[j][i].str[0] == '$' && expand)
+		if (words_tab[i[0]][i[1]].str[0] == '$' && expand)
 		{
-			if (expand_var(info, &words_tab, &j, &i))
+			if (expand_var(info, &words_tab, i))
 				return (free_t_block_tab(words_tab), NULL);
 		}
-		else if (words_tab[j][i].str[0] == 39 || words_tab[j][i].str[0] == '"')
+		else if (words_tab[i[0]][i[1]].str[0] == 39
+			|| words_tab[i[0]][i[1]].str[0] == '"')
 		{
-			if (handle_qu(info, words_tab[j], i, expand))
+			if (handle_qu(info, words_tab[i[0]], i[1], expand))
 				return (free_t_block_tab(words_tab), NULL);
 		}
-		i++;
+		i[1] += 1;
 	}
 	return (words_tab);
 }

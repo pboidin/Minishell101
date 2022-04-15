@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 22:25:03 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 23:09:18 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 15:29:05 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,22 @@ int	pipe_parent(t_cmd *cmd, size_t i, int fd[3])
 		close(fd[1]);
 		return (fd[0]);
 	}
+}
+
+void	fork_child(t_info *info, t_cmd *cmd)
+{
+	free_pid(info);
+	info->is_child = TRUE;
+	if (!handle_redirections(cmd, info))
+	{
+		if (cmd->in)
+			dup2(cmd->in->fd, 0);
+		if (cmd->out)
+			dup2(cmd->out->fd, 1);
+		general_controller(info, cmd->fork);
+	}
+	else
+		info->status = 1;
+	free_info(info);
+	exit(info->status);
 }

@@ -6,11 +6,25 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:47:31 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 22:06:45 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 12:37:51 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	ambiguous_redirect(char *str)
+{
+	write(2, "Minishell: ", 11);
+	write(2, str, ft_strlen(str));
+	write(2, ": ambiguous redirect\n", 21);
+}
+
+void	open_error(t_redirect *current)
+{
+	write(2, "Minishell: ", 11);
+	write(2, current->path, ft_strlen(current->path));
+	perror(" ");
+}
 
 void	sys_call_error(t_info *info)
 {

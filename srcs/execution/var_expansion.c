@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 12:12:52 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 21:58:30 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 12:55:29 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,27 +55,27 @@ size_t	count_words_var_expansion(char *str)
 	return (nb_words);
 }
 
-int	expand_var(t_info *info, t_block ***words_tab, size_t *j, size_t *i)
+int	expand_var(t_info *info, t_block ***words_tab, size_t i[2])
 {
 	size_t	word_count;
 	char	**var;
 
-	words_tab[0][*j][*i].var = 1;
-	var = replace_var(words_tab[0][*j], *i, info);
+	words_tab[0][i[0]][i[1]].var = 1;
+	var = replace_var(words_tab[0][i[0]], i[1], info);
 	if (!var || !var[0])
 		return (free(var), 1);
 	if (char_tab_size(var) == 1)
 	{
-		free(words_tab[0][*j][*i].str);
-		words_tab[0][*j][*i].str = var[0];
+		free(words_tab[0][i[0]][i[1]].str);
+		words_tab[0][i[0]][i[1]].str = var[0];
 		free(var);
 		return (0);
 	}
-	word_count = split_tab_var(words_tab, *j, *i, var);
+	word_count = split_tab_var(words_tab, i[0], i[1], var);
 	if (!word_count)
 		return (1);
-	*j += (word_count - 1);
-	*i = 0;
+	i[0] += (word_count - 1);
+	i[1] = 0;
 	return (0);
 }
 

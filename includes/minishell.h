@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 23:02:50 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/15 15:44:42 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdint.h>
+# include <stddef.h>
+# include <sys/uio.h>
 # include <stdbool.h>
 # include <limits.h>
 # include <readline/readline.h>
@@ -25,6 +27,9 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 500
+# endif
 # ifndef TRUE
 #  define TRUE 1
 # endif
@@ -168,7 +173,7 @@ int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 void	move_upward(t_cmd *cmd, int i, int mv);
-int		expand_var(t_info *info, t_block ***words_tab, size_t *j, size_t *i);
+int		expand_var(t_info *info, t_block ***words_tab, size_t i[2]);
 t_block	**add_args_word(char *str, t_info *info, int expand);
 size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
 int		remove_qu(t_block *tab, size_t i);	
@@ -195,6 +200,12 @@ void	simple_cmd_child(t_info *info, t_cmd *cmd);
 void	move_t_block_tab_upward(t_block **tab, size_t i, int mv);
 void	pipe_child(t_info *info, t_cmd *cmd, size_t i, int fd[3]);
 int		pipe_parent(t_cmd *cmd, size_t i, int fd[3]);
+void	fork_child(t_info *info, t_cmd *cmd);
+void	open_error(t_redirect *current);
+int		handle_redirections(t_cmd *cmd, t_info *info);
+int		is_empty_var(t_block *word);
+void	ambiguous_redirect(char *str);
+size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
 
 /* BUILT-IN */
 
@@ -253,5 +264,12 @@ void	ft_upd_env(t_env **env, t_info *info);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);
+
+int		get_next_line(int fd, char **line);
+char	*internal_get_str(int fd, char *remainer, int start_index, int *nl_pos);
+char	*internal_join(char *dst, char *src);
+char	*internal_getremainer(char *remainer, int nl_pos);
+char	*internal_get_line(char *remainer, int *nl_pos);
+int		internal_hasnl(char *str, int *start_index, int *nl_pos);
 
 #endif
