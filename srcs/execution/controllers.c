@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/15 15:43:04 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 12:22:07 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 
 void	general_controller(t_info *info, t_cmd *cmd)
 {
+	if (g_signal > 0)
+	{
+		info->status = g_signal;
+		return ;
+	}
 	if (cmd->sub_cmd)
 		logical_controller(info, cmd);
 	else if (cmd->pipe)

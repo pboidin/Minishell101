@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_status.c                                      :+:      :+:    :+:   */
+/*   child_signals.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/11 12:10:15 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:14:05 by bdetune          ###   ########.fr       */
+/*   Created: 2022/04/19 11:59:43 by bdetune           #+#    #+#             */
+/*   Updated: 2022/04/19 12:00:47 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	get_exit_status(t_info *info)
+void	child_signal(int signal)
 {
-	int		status;
-	t_pid	*current;
-
-	current = info->running_processes;
-	while (current)
-	{
-		waitpid(current->pid, &status, 0);
-		if (WIFEXITED(status))
-			info->status = WEXITSTATUS(status);
-		current = current->next;
-	}
-	free_pid(info);
-	if (g_signal > 0)
-		info->status = g_signal;
+	if (signal == SIGINT)
+		g_signal = 130;
+	else if (signal == SIGQUIT)
+		g_signal = 131;
 }

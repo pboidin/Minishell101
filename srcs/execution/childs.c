@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 22:25:03 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/15 15:29:05 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 12:21:45 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	simple_cmd_child(t_info *info, t_cmd *cmd)
 		sys_call_error(info);
 	if (!ret)
 	{
+		signal(SIGINT, child_signal);
+		signal(SIGQUIT, child_signal);
 		free_pid(info);
 		if (cmd->in)
 			dup2(cmd->in->fd, 0);
@@ -51,6 +53,8 @@ void	simple_cmd_child(t_info *info, t_cmd *cmd)
 
 void	pipe_child(t_info *info, t_cmd *cmd, size_t i, int fd[3])
 {
+	signal(SIGINT, child_signal);
+	signal(SIGQUIT, child_signal);
 	free_pid(info);
 	info->is_child = TRUE;
 	if (i == 0)
@@ -92,6 +96,8 @@ int	pipe_parent(t_cmd *cmd, size_t i, int fd[3])
 
 void	fork_child(t_info *info, t_cmd *cmd)
 {
+	signal(SIGINT, child_signal);
+	signal(SIGQUIT, child_signal);
 	free_pid(info);
 	info->is_child = TRUE;
 	if (!handle_redirections(cmd, info))

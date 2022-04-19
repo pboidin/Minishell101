@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/15 17:02:11 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/19 12:01:10 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRCS = main.c \
 	   srcs/parsing/assignation.c \
 	   srcs/execution/controllers.c \
 	   srcs/execution/childs.c \
+	   srcs/execution/child_signals.c \
 	   srcs/execution/pid.c \
 	   srcs/execution/exit_status.c \
 	   srcs/execution/var_expansion.c \

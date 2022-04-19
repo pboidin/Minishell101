@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/15 17:00:58 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 12:05:35 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,10 @@ typedef struct s_info
 	t_bool	is_child;
 }	t_info;
 
+extern volatile sig_atomic_t g_signal;
 extern t_info	g_info;
 
+void	child_signal(int signal);
 void	skip_englobing_char(char *str, size_t *i, char delim);
 void	skip_to_end_var(char *str, size_t *i);
 void	free_env(t_info *info);
