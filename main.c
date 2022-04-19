@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:09:47 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:13:57 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,20 @@ void	handle_signal(int signal)
 	if (signal == SIGINT)
 	{
 		printf("\n");
-		if (g_signal < 0 || g_signal == 130 || g_signal == 131)
+		if (g_signal == -1 || g_signal == 130 || g_signal == 131)
 		{
 
 			rl_replace_line("", 0);
 			rl_on_new_line();
 			rl_redisplay();
 		}
+		if (g_signal == -2)
+			close(0);
 		g_signal = 130;
 	}
 	if (signal == SIGQUIT)
 	{
-		printf("\n");
+		printf("Quit\n");
 		g_signal = 131;
 	}
 }
@@ -73,6 +75,8 @@ int main(int argc, char **argv, char **envp)
 		}
 		else
 			free(cmd);
+		if (g_signal > 0)
+			info.status = g_signal;
 	}
 	return (0);
 }

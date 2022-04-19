@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 19:31:43 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:08:43 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	check_cmd(t_cmd *cmd)
 	has_cmd = 0;
 	i = -1;
 	is_export = 0;
-	while (cmd->cmd_args[++i])
+	while (cmd->cmd_args[++i] && g_signal == 0)
 	{
 		if (((!has_cmd || is_export) && is_assignation(cmd->cmd_args[i]))
 			|| (cmd->cmd_args[i][0] == '>' || cmd->cmd_args[i][0] == '<'))

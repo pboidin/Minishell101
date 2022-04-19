@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:40:49 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 21:23:50 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:01:57 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	save_redirect(t_cmd *cmd, char *str)
 	if (!parse_args(cmd, str))
 		return (1);
 	i = -1;
-	while (cmd->cmd_args[++i])
+	while (cmd->cmd_args[++i] && g_signal <= 0)
 	{
 		if (!(cmd->cmd_args[i][0] == '<' || cmd->cmd_args[i][0] == '>'))
 			return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);

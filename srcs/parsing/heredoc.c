@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 14:16:27 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 20:10:25 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 12:56:49 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ int	get_delimiter(t_redirect *redir)
 	return (0);
 }
 
-char	*write_to_heredoc(t_redirect *new_redirect)
+void	write_to_heredoc(t_redirect *new_redirect)
 {
 	char	*ret;
 
+	signal(SIGQUIT, SIG_IGN);
+	g_signal = -2;
 	ret = readline("> ");
 	while (ret)
 	{
@@ -52,13 +54,20 @@ char	*write_to_heredoc(t_redirect *new_redirect)
 		free(ret);
 		ret = readline("> ");
 	}
-	return (ret);
+	if (!ret && g_signal <= 0)
+	{
+		write (2, \
+		"Warning: here-document delimited by end-of-file (wanted `", 57);
+		write(2, new_redirect->str, ft_strlen(new_redirect->str));
+		write(2, "')\n", 3);
+		g_signal = 0;
+	}
+	signal(SIGQUIT, handle_signal);
+	free(ret);
 }
 
 int	save_heredoc(t_redirect *new_redirect)
 {
-	char	*ret;
-
 	if (get_delimiter(new_redirect))
 		return (1);
 	new_redirect->path = create_tmp();
@@ -67,15 +76,7 @@ int	save_heredoc(t_redirect *new_redirect)
 	new_redirect->fd = open(new_redirect->path, O_CREAT | O_WRONLY, 0644);
 	if (new_redirect->fd == -1)
 		return (perror("Error creating here-document"), 1);
-	ret = write_to_heredoc(new_redirect);
-	if (!ret)
-	{
-		write (2, \
-		"Warning: here-document delimited by end-of-file (wanted `", 57);
-		write(2, new_redirect->str, ft_strlen(new_redirect->str));
-		write(2, "')\n", 3);
-	}
-	free(ret);
+	write_to_heredoc(new_redirect);
 	close(new_redirect->fd);
 	new_redirect->fd = -1;
 	return (0);

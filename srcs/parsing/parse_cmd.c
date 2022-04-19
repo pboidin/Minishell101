@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:18:37 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 14:19:44 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:04:27 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	parse_cmd(t_cmd *cmd)
 {
 	int		ret;
 
+	if (g_signal > 0)
+		return (0);
 	reinit_cmd(cmd);
 	ret = parse_logical(cmd);
 	if (ret == 1)

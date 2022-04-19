@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:27:15 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 15:30:44 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:08:08 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static int	create_logical_tab(t_cmd *cmd, size_t i)
 	prev_delim = cmd->prev_delim;
 	j = 0;
 	index = 0;
-	while (j < i)
+	while (j < i && g_signal == 0)
 	{
 		cmd->sub_cmd[j] = add_cmd(cmd->cmd, &index, prev_delim, cmd);
 		if (!cmd->sub_cmd[j])

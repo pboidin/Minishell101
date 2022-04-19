@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 15:06:08 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 15:09:36 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 13:11:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	create_pipe_tab(t_cmd *cmd, size_t i)
 	j = 0;
 	index = 0;
 	prev_delim = cmd->prev_delim;
-	while (j < i)
+	while (j < i && g_signal == 0)
 	{
 		cmd->pipe[j] = add_pipe(cmd->cmd, &index, prev_delim, cmd);
 		if (!cmd->pipe[j])
