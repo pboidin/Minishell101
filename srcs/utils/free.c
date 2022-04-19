@@ -24,7 +24,7 @@ void	free_redirect(t_cmd *cmd)
 		free(current->str);
 		if (current->fd != -1)
 			close(current->fd);
-		if (current->type == -2)
+		if (current->type == -2 && g_signal != 250)
 			unlink(current->path);
 		free(current->path);
 		free(current);

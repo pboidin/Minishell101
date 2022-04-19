@@ -55,6 +55,8 @@
 #  define TMP_PATH "/tmp/minishell-"
 # endif
 
+typedef int	t_bool;
+
 typedef struct s_redirect
 {
 	int					type;

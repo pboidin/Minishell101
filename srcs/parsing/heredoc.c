@@ -63,6 +63,7 @@ void	write_to_heredoc(t_redirect *new_redirect)
 		write(2, "')\n", 3);
 	}
 	free(ret);
+	g_signal = 250;
 }
 
 int	save_heredoc(t_redirect *new_redirect)

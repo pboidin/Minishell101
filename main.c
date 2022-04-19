@@ -62,7 +62,7 @@ int	main(int argc, char **argv, char **envp)
 			{
 				info.cmd.prev_delim = 0;
 				info.cmd.next_delim = 0;
-				if (!parse_cmd(&info.cmd))
+				if (!parse_cmd(&info.cmd) && g_signal <= 0)
 					general_controller(&info, &info.cmd);
 				else
 					info.status = 2;
