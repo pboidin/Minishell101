@@ -227,6 +227,11 @@ void	simple_controller(t_info *info, t_cmd *cmd)
 		info->status = 1;
 		return ;
 	}
+	if (!cmd->cmd_args[0])
+	{
+		info->status = 0;
+		return ;
+	}
 	if (is_assignation(cmd->cmd_args[0]))
 	{
 		handle_assignation(cmd, info);
