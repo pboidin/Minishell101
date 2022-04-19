@@ -129,7 +129,6 @@ typedef struct s_info
 	t_bool	is_child;
 }	t_info;
 
-typedef int						t_bool;
 extern volatile sig_atomic_t	g_signal;
 
 void	child_signal(int signal);
