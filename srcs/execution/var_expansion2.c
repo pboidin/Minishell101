@@ -121,7 +121,7 @@ t_block	**add_args_word(char *str, t_info *info, int expand)
 	{
 		if (words_tab[i[0]][i[1]].str[0] == '$' && expand)
 		{
-			if (expand_var(info, &words_tab, i))
+			if (expand_var(info, &words_tab, i, expand))
 				return (free_t_block_tab(words_tab), NULL);
 		}
 		else if (words_tab[i[0]][i[1]].str[0] == 39

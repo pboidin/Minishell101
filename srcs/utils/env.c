@@ -71,3 +71,24 @@ char	**join_env(t_info *info)
 	}
 	return (env_tab);
 }
+
+t_env	*find_env_var(t_info *info, char *var_name)
+{
+	t_env	*current;
+
+	current = info->env;
+	while (current)
+	{
+		if (!ft_strcmp(info->env->name, var_name))
+			return (current);
+		current = current->next;
+	}
+	return (NULL);
+}
+
+void	update_env_var(char *var[2], t_env *target)
+{
+	free(target->value);
+	target->value = var[1];
+	free(var[0]);
+}

@@ -1,0 +1,105 @@
+#include "minishell.h"
+
+void	close_redirections(t_cmd *cmd)
+{
+	if (cmd->in)
+	{
+		close(cmd->in->fd);
+		cmd->in->fd = -1;
+	}
+	if (cmd->out)
+	{
+		close(cmd->out->fd);
+		cmd->out->fd = -1;
+	}
+}
+
+char	*get_var_name(char *str, t_info *info)
+{
+	size_t	i;
+	char	*var_name;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	str[i] = '\0';
+	var_name = ft_strdup(str);
+	if (!var_name)
+		return (sys_call_error(info), NULL);
+	str[i] = '=';
+	return (var_name);
+}
+
+char	*get_var_val(char *str)
+{
+	size_t	i;
+	char	*var_value;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	i++;
+	var_value = ft_strdup(&str[i]);
+	if (!var_value)
+		return (NULL);
+	return (var_value);
+}
+
+void	assign(t_cmd *cmd, t_info *info)
+{
+	size_t	i;
+	char	*var[2];
+	t_env	*env_var;
+	t_var	*lcl_var;
+
+	i = 0;
+	while (cmd->cmd_args[i])
+	{
+		var[0] = get_var_name(cmd->cmd_args[i], info);
+		var[1] = get_var_val(cmd->cmd_args[i]);
+		if (!var[1])
+		{
+			free(var[0]);
+			sys_call_error(info);
+		}
+		env_var = find_env_var(info, var[0]);
+		if (!env_var)
+			lcl_var = find_lcl_var(info, var[0]);
+		if (!env_var && !lcl_var)
+			add_lcl_var(info, var);
+		else if (env_var)
+			update_env_var(var, env_var);
+		else
+			update_lcl_var(var, lcl_var);
+		i++;
+	}
+}
+
+int	handle_assignation(t_cmd *cmd, t_info *info)
+{
+	size_t	i;
+	t_block	**ret;
+	t_block	**new_block;
+	char	**new_args;
+
+	i = 0;
+	close_redirections(cmd);
+	ret = NULL;
+	while (cmd->cmd_args[i])
+	{
+		new_block = add_args_word(cmd->cmd_args[i], info, 2);
+		if (!new_block)
+			return (sys_call_error(info), 1);
+		ret = add_block_to_tab(ret, new_block);
+		if (!ret)
+			return (sys_call_error(info), 1);
+		i++;
+	}
+	new_args = t_block_tab_to_char_tab(ret);
+	if (!new_args)
+		return (sys_call_error(info), 1);
+	free_char_tab(cmd->cmd_args);
+	cmd->cmd_args = new_args;
+	assign(cmd, info);
+	return (0);
+}

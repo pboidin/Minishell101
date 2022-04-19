@@ -173,7 +173,7 @@ int		ft_strcmp(char *s1, char *s2);
 char	*ft_itoa(int n);
 char	**ft_split_charset(char const *s, char *set);
 void	move_upward(t_cmd *cmd, int i, int mv);
-int		expand_var(t_info *info, t_block ***words_tab, size_t i[2]);
+int		expand_var(t_info *info, t_block ***words_tab, size_t i[2], int expand);
 t_block	**add_args_word(char *str, t_info *info, int expand);
 size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
 int		remove_qu(t_block *tab, size_t i);	
@@ -206,6 +206,13 @@ int		handle_redirections(t_cmd *cmd, t_info *info);
 int		is_empty_var(t_block *word);
 void	ambiguous_redirect(char *str);
 size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var);
+int		handle_assignation(t_cmd *cmd, t_info *info);
+t_env	*find_env_var(t_info *info, char *var_name);
+void	update_env_var(char *var[2], t_env *target);
+t_var	*find_lcl_var(t_info *info, char *var_name);
+void	add_lcl_var(t_info *info, char *var[2]);
+void	update_lcl_var(char *var[2], t_var *target);
+t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
 
 /* BUILT-IN */
 

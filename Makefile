@@ -39,9 +39,11 @@ SRCS = main.c \
 	   srcs/execution/var_expansion.c \
 	   srcs/execution/var_expansion2.c \
 	   srcs/execution/var_expansion3.c \
+	   srcs/execution/assignation.c \
 	   srcs/execution/inline_expansion.c \
 	   srcs/execution/redirections.c \
 	   srcs/utils/env.c \
+	   srcs/utils/lcl_var.c \
 	   srcs/utils/create_tmp.c \
 	   srcs/utils/move_upward.c \
 	   srcs/utils/ft_utils_numbers.c \

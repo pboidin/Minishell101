@@ -55,12 +55,14 @@ size_t	count_words_var_expansion(char *str)
 	return (nb_words);
 }
 
-int	expand_var(t_info *info, t_block ***words_tab, size_t i[2])
+int	expand_var(t_info *info, t_block ***words_tab, size_t i[2], int expand)
 {
 	size_t	word_count;
 	char	**var;
 
 	words_tab[0][i[0]][i[1]].var = 1;
+	if (expand == 2)
+		return (inline_expansion(words_tab[0][i[0]], i[1], info), 0);
 	var = replace_var(words_tab[0][i[0]], i[1], info);
 	if (!var || !var[0])
 		return (free(var), 1);

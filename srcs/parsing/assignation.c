@@ -66,14 +66,14 @@ void	throw_assignation_error(char *str)
 int	is_valid_assignation(char *str)
 {
 	int	i;
-	int	j;
+//	int	j;
 
 	i = 0;
 	while (str[i] && str[i] != '=')
 		i++;
 	i++;
-	j = i;
-	if (str[j] == '(')
+//	j = i;
+/*	if (str[j] == '(')
 	{
 		skip_closing_parenth(str, &j);
 		if (!is_valid_arg(&str[i]))
@@ -81,8 +81,8 @@ int	is_valid_assignation(char *str)
 		str[i] = '(';
 		str[j] = ')';
 		j++;
-	}
-	if (str[j] && !is_valid_arg(&str[j]))
-		return (throw_assignation_error(&str[j]), 0);
+	}*/
+	if (str[i] && !is_valid_arg(&str[i]))
+		return (throw_assignation_error(&str[i]), 0);
 	return (1);
 }

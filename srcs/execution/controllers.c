@@ -222,7 +222,17 @@ int	get_final_cmd(t_cmd *cmd, t_info *info)
 
 void	simple_controller(t_info *info, t_cmd *cmd)
 {
-	if (handle_redirections(cmd, info) || get_final_cmd(cmd, info))
+	if (handle_redirections(cmd, info))
+	{
+		info->status = 1;
+		return ;
+	}
+	if (is_assignation(cmd->cmd_args[0]))
+	{
+		handle_assignation(cmd, info);
+		return ;
+	}
+	if (get_final_cmd(cmd, info))
 	{
 		info->status = 1;
 		return ;
