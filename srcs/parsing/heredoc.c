@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 14:16:27 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:56:49 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 14:51:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ void	write_to_heredoc(t_redirect *new_redirect)
 {
 	char	*ret;
 
+	g_signal = 0;
 	signal(SIGQUIT, SIG_IGN);
-	g_signal = -2;
+	signal(SIGINT, heredoc_signal);
 	ret = readline("> ");
 	while (ret)
 	{
@@ -60,14 +61,14 @@ void	write_to_heredoc(t_redirect *new_redirect)
 		"Warning: here-document delimited by end-of-file (wanted `", 57);
 		write(2, new_redirect->str, ft_strlen(new_redirect->str));
 		write(2, "')\n", 3);
-		g_signal = 0;
 	}
-	signal(SIGQUIT, handle_signal);
 	free(ret);
 }
 
 int	save_heredoc(t_redirect *new_redirect)
 {
+	int	ret;
+
 	if (get_delimiter(new_redirect))
 		return (1);
 	new_redirect->path = create_tmp();
@@ -76,7 +77,15 @@ int	save_heredoc(t_redirect *new_redirect)
 	new_redirect->fd = open(new_redirect->path, O_CREAT | O_WRONLY, 0644);
 	if (new_redirect->fd == -1)
 		return (perror("Error creating here-document"), 1);
-	write_to_heredoc(new_redirect);
+	signal(SIGQUIT, SIG_IGN);
+	ret = fork();
+	if (ret == -1)
+		return (1);
+	if (!ret)
+		write_to_heredoc(new_redirect);
+	else
+		waitpid(ret, NULL, 0);
+	signal(SIGQUIT, handle_signal);
 	close(new_redirect->fd);
 	new_redirect->fd = -1;
 	return (0);

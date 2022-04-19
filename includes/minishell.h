@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:57:17 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/19 15:36:30 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,10 +116,6 @@ typedef struct s_block
 	int		var;
 }	t_block;
 
-extern t_env	g_env;
-
-typedef	int	t_bool;
-
 typedef struct s_info
 {
 	int		status;
@@ -131,10 +127,11 @@ typedef struct s_info
 	t_bool	is_child;
 }	t_info;
 
-extern volatile sig_atomic_t g_signal;
-extern t_info	g_info;
+typedef int						t_bool;
+extern volatile sig_atomic_t	g_signal;
 
 void	child_signal(int signal);
+void	heredoc_signal(int signal);
 void	handle_signal(int signal);
 void	skip_englobing_char(char *str, size_t *i, char delim);
 void	skip_to_end_var(char *str, size_t *i);
@@ -157,7 +154,6 @@ void	skip_whitespaces(char *cmd, int *i);
 int		is_whitespace(char c);
 void	skip_closing_parenth(char *str, int *i);
 int		fork_cmd(t_cmd *cmd);
-int		parse_cmd(t_cmd *cmd);
 int		parse_simple_cmd(t_cmd *cmd);
 int		parse_args(t_cmd *cmd, char *str);
 int		clean_previous_args(t_cmd *cmd, int *i);
