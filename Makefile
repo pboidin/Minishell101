@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/20 11:53:49 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/20 17:24:01 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCS = main.c \
 	   srcs/execution/assignation.c \
 	   srcs/execution/inline_expansion.c \
 	   srcs/execution/redirections.c \
+	   srcs/execution/export_expansion.c \
 	   srcs/execution/get_final_cmd.c \
 	   srcs/utils/env.c \
 	   srcs/utils/lcl_var.c \

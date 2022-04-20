@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/20 13:15:20 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 17:31:00 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,16 @@ int	simple_controller(t_info *info, t_cmd *cmd)
 		return (0);
 	if (is_assignation(cmd->cmd_args[0]))
 		return (handle_assignation(cmd, info), 0);
-	if (get_final_cmd(cmd, info))
-		return (1);
+	if (!ft_strcmp("export", cmd->cmd_args[0]))
+	{
+		if (export_expansion(info, cmd))
+			return (1);
+	}
+	else
+	{
+		if (get_final_cmd(cmd, info))
+			return (1);
+	}
 	if (!cmd->cmd_args[0])
 		return (0);
 	if (ft_blt(cmd) == 0)

@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/20 11:56:20 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 17:24:34 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,7 @@ void	add_lcl_var(t_info *info, char *var[2]);
 void	update_lcl_var(char *var[2], t_var *target);
 t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
 int		get_final_cmd(t_cmd *cmd, t_info *info);
+int		export_expansion(t_info *info, t_cmd *cmd);
 
 /* BUILT-IN */
 
