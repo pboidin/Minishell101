@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 16:31:41 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 15:37:07 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 13:08:12 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,39 @@ void	handle_signal(int signal)
 	}
 }
 
+static void	exit_minishell(t_info *info)
+{
+	free_info(info);
+	write(2, "exit\n", 5);
+	exit(info->status);
+}
+
+static void	handle_cmd(char *cmd, t_info *info)
+{
+	if (cmd == NULL)
+		exit_minishell(info);
+	if (cmd[0] != '\0')
+	{
+		g_signal = 0;
+		add_history(cmd);
+		info->cmd.cmd = ft_trim(cmd);
+		free(cmd);
+		if (info->cmd.cmd)
+		{
+			info->cmd.prev_delim = 0;
+			info->cmd.next_delim = 0;
+			if (!parse_cmd(&info->cmd) && g_signal <= 0)
+				general_controller(info, &info->cmd);
+			else
+				info->status = 2;
+			free_cmd(&info->cmd);
+			init_cmd(&info->cmd);
+		}
+	}
+	else
+		free(cmd);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char				*cmd;
@@ -50,28 +83,7 @@ int	main(int argc, char **argv, char **envp)
 		signal(SIGQUIT, handle_signal);
 		if (g_signal > 0)
 			info.status = g_signal;
-		if (cmd == NULL)
-			return (free_info(&info), write(2, "exit\n", 5), info.status);
-		if (cmd[0] != '\0')
-		{
-			g_signal = 0;
-			add_history(cmd);
-			info.cmd.cmd = ft_trim(cmd);
-			free(cmd);
-			if (info.cmd.cmd)
-			{
-				info.cmd.prev_delim = 0;
-				info.cmd.next_delim = 0;
-				if (!parse_cmd(&info.cmd) && g_signal <= 0)
-					general_controller(&info, &info.cmd);
-				else
-					info.status = 2;
-				free_cmd(&info.cmd);
-				init_cmd(&info.cmd);
-			}
-		}
-		else
-			free(cmd);
+		handle_cmd(cmd, &info);
 		if (g_signal > 0)
 		{
 			info.status = g_signal;
