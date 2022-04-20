@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:21:10 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/20 11:50:14 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 13:15:20 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	get_exit_status(info);
 }
 
+/*
 char	**replace_var(t_block *words, size_t i, t_info *info)
 {
 	char	**var_val;
@@ -100,7 +101,7 @@ char	**replace_var(t_block *words, size_t i, t_info *info)
 		}
 	}
 	return (var_val);
-}
+}*/
 
 void	fork_controller(t_info *info, t_cmd *cmd)
 {

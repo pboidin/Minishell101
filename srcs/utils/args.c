@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 17:33:50 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 19:32:08 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 15:11:32 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,20 @@ int	clean_previous_args(t_cmd *cmd, int *i)
 {
 	int	j;
 
-	j = 0;
-	while (j < *i)
+	if (*i != 0)
 	{
-		free(cmd->cmd_args[j]);
-		j++;
+		j = 0;
+		while (j < *i)
+		{
+			free(cmd->cmd_args[j]);
+			j++;
+		}
+		move_upward(cmd, *i, *i);
+		*i = 0;
 	}
-	move_upward(cmd, *i, *i);
-	*i = 0;
-	return (1);
+	if (!ft_strcmp("export", cmd->cmd_args[0]))
+		return (1);
+	return (0);
 }
 
 int	is_valid_arg(char *str)

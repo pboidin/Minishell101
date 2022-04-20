@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:26:23 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 14:44:01 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 15:11:56 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	check_cmd(t_cmd *cmd)
 		{
 			if (!is_valid_arg(cmd->cmd_args[i]))
 				return (parsing_error(-1, cmd->cmd_args[i], NULL), 1);
-			if (!has_cmd && !strcmp("export", cmd->cmd_args[i]))
+			if (!has_cmd)
 				is_export = clean_previous_args(cmd, &i);
 			has_cmd = 1;
 		}

@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/15 15:36:14 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/15 19:09:21 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 15:34:50 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_block	*insert_front_t_block(t_block *line, size_t i, char *var)
 	return (new_line);
 }
 
-void	free_new_tab(t_block **new_tab, size_t x, size_t y)
+void	free_new_tab(t_block **new_tab, size_t x, int y)
 {
 	while (x > 0)
 	{
@@ -69,7 +69,7 @@ void	free_new_tab(t_block **new_tab, size_t x, size_t y)
 	free(new_tab);
 }
 
-size_t	ins_vars(t_block **new_words_tab, size_t y, char **var, size_t nb_var)
+size_t	ins_vars(t_block **new_words_tab, int y, char **var, size_t nb_var)
 {
 	size_t	x;
 
@@ -88,20 +88,18 @@ size_t	ins_vars(t_block **new_words_tab, size_t y, char **var, size_t nb_var)
 size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var)
 {
 	size_t	x;
-	size_t	y;
+	int		y;
 	size_t	nb_var;
 	t_block	**new_words_tab;
+	t_block	**f;
 
 	nb_var = char_tab_size(var);
 	new_words_tab = (t_block **)ft_calloc((j + nb_var + 1), sizeof(t_block *));
 	if (!new_words_tab)
 		return (free_char_tab(var), 0);
-	y = 0;
-	while (y < j)
-	{
+	y = -1;
+	while (++y < (int)j)
 		new_words_tab[y] = words_tab[0][y];
-		y++;
-	}
 	new_words_tab[y] = insert_back_t_block(words_tab[0][y], i, var[0]);
 	if (!new_words_tab[y])
 		return (free(new_words_tab), free_char_tab(var), 0);
@@ -111,9 +109,7 @@ size_t	split_tab_var(t_block ***words_tab, size_t j, size_t i, char **var)
 	new_words_tab[y + x] = insert_front_t_block(words_tab[0][y], i, var[x]);
 	if (!new_words_tab[y + x])
 		return (free_new_tab(new_words_tab, x, y), free_char_tab(var), 0);
-	free((*words_tab)[j][i].str);
-	free((*words_tab)[j]);
-	free(*words_tab);
+	f = *words_tab;
 	*words_tab = new_words_tab;
-	return (free(var), nb_var);
+	return (free(var), free(f[j][i].str), free(f[j]), free(f), nb_var);
 }
