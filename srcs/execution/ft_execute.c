@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 19:27:00 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:12:03 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 11:22:36 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,15 @@ char	*ft_path(t_info *info, t_cmd *cmd)
 
 static int	is_absolute(t_info *info, t_cmd *cmd)
 {
+	t_env	*path;
 	size_t	i;
 
 	i = 0;
 	if (!cmd->cmd_args[0][0])
 		return (execution_error(info, cmd, 127, 0), 0);
+	path = find_env_var(info, "PATH");
+	if (!path || !path->value || !path->value[0])
+		return (1);
 	while (cmd->cmd_args[0][i])
 	{
 		if (cmd->cmd_args[0][i] == '/')

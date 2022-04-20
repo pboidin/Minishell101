@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/19 12:01:10 by bdetune          ###   ########.fr        #
+#    Updated: 2022/04/20 11:53:49 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 NAME		= minishell
 
 SRCS = main.c \
-	   srcs/init.c \
+	   srcs/utils/init.c \
 	   srcs/utils/free.c \
 	   srcs/utils/free2.c \
 	   srcs/parsing/tokens.c \
@@ -42,6 +42,7 @@ SRCS = main.c \
 	   srcs/execution/assignation.c \
 	   srcs/execution/inline_expansion.c \
 	   srcs/execution/redirections.c \
+	   srcs/execution/get_final_cmd.c \
 	   srcs/utils/env.c \
 	   srcs/utils/lcl_var.c \
 	   srcs/utils/create_tmp.c \

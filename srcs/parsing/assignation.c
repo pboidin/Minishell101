@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 20:29:03 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 21:28:48 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 11:54:46 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	is_assignation(char	*str)
 	j = 1;
 	while (j < i)
 	{
-		if (!(ft_isalnum(str[i]) || str[i] == '_'))
+		if (!(ft_isalnum(str[j]) || str[j] == '_'))
 			return (0);
 		j++;
 	}
@@ -66,22 +66,11 @@ void	throw_assignation_error(char *str)
 int	is_valid_assignation(char *str)
 {
 	int	i;
-//	int	j;
 
 	i = 0;
 	while (str[i] && str[i] != '=')
 		i++;
 	i++;
-//	j = i;
-/*	if (str[j] == '(')
-	{
-		skip_closing_parenth(str, &j);
-		if (!is_valid_arg(&str[i]))
-			return (throw_assignation_error(&str[i]), 0);
-		str[i] = '(';
-		str[j] = ')';
-		j++;
-	}*/
 	if (str[i] && !is_valid_arg(&str[i]))
 		return (throw_assignation_error(&str[i]), 0);
 	return (1);

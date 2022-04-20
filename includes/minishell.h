@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 15:36:30 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 11:56:20 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@
 #  define TMP_PATH "/tmp/minishell-"
 # endif
 
-typedef int	t_bool;
+extern volatile sig_atomic_t	g_signal;
+typedef int						t_bool;
 
 typedef struct s_redirect
 {
@@ -128,8 +129,6 @@ typedef struct s_info
 	t_cmd	cmd;
 	t_bool	is_child;
 }	t_info;
-
-extern volatile sig_atomic_t	g_signal;
 
 void	child_signal(int signal);
 void	heredoc_signal(int signal);
@@ -213,6 +212,7 @@ t_var	*find_lcl_var(t_info *info, char *var_name);
 void	add_lcl_var(t_info *info, char *var[2]);
 void	update_lcl_var(char *var[2], t_var *target);
 t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
+int		get_final_cmd(t_cmd *cmd, t_info *info);
 
 /* BUILT-IN */
 

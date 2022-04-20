@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 14:23:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:27:08 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/20 11:11:30 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ t_env	*find_env_var(t_info *info, char *var_name)
 	current = info->env;
 	while (current)
 	{
-		if (!ft_strcmp(info->env->name, var_name))
+		if (!ft_strcmp(current->name, var_name))
 			return (current);
 		current = current->next;
 	}
