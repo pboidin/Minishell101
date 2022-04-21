@@ -258,7 +258,6 @@ void	free_pid(t_info *info);
 int		ft_abs(int nb);
 
 char	*ft_genv(const char *path, t_env *info);
-char	*ft_strdup(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
