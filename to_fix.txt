@@ -1,0 +1,69 @@
+CD
+**************************************
+
+Comportement du bash :
+bdetune@e2r13p10:~/42Cursus/coreCurriculum/personal_git/Minishell101/srcs/execution$ cd .. srcs
+bash: cd: too many arguments
+bdetune@e2r13p10:~/42Cursus/coreCurriculum/personal_git/Minishell101/srcs/execution$ echo $?
+1
+
+Comportement de Minishell :
+Minishell: cd .. srcs
+Path /mnt/nfs/homes/bdetune/42Cursus/coreCurriculum/personal_git
+Minishell: echo $?
+0
+
+-------------------------------
+
+Comportement du bash :
+bdetune@e2r13p10:~$ HOME=
+bdetune@e2r13p10:/mnt/nfs/homes/bdetune$ cd /
+bdetune@e2r13p10:/$ cd ~
+bdetune@e2r13p10:/$ pwd
+/
+bdetune@e2r13p10:/$ echo $?
+0
+
+Comportement de Minishell :
+Minishell: HOME=
+Minishell: cd /
+Path /
+Minishell: pwd
+/
+Minishell: cd ~
+cd: : no such file or directory:
+Minishell: echo $?
+0
+
+
+EXIT
+**************************************
+
+Comportement du bash :
+bdetune@e2r13p10:/$ exit 100000000000000000000000000000000000
+exit
+bash: exit: 100000000000000000000000000000000000: numeric argument required
+➜  execution git:(main) ✗ echo $?
+2
+
+Comportement de Minishell :
+Minishell: exit 10000000000000000000000000000000
+exit
+➜  Minishell101 git:(main) ✗ echo $?
+255
+
+-------------------------------
+
+Comportement du bash :
+bdetune@e2r13p10:~/42Cursus/coreCurriculum/personal_git/Minishell101/srcs/execution$ exit +
+exit
+bash: exit: +: numeric argument required
+➜  execution git:(main) ✗ echo $?
+2
+
+Comportement de Minishell :
+Minishell: exit +
+exit
+➜  Minishell101 git:(main) ✗ echo $?
+0
+

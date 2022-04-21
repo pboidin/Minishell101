@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:01 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:02 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/04/21 11:43:58 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@ static void	ft_print(t_info *info, int fd)
 {
 	char	*values;
 	char	*t_name;
-	int		i;
 	t_env	*env;
 
 	env = info->env;
 	while (env)
 	{
-		i = 0;
 		values = (char *)env->value;
 		t_name = (char *)env->name;
-		if (values[i] && t_name[i])
+		if (values && t_name)
 		{
 			write(fd, env->name, ft_strlen((char *)env->name));
 			write(fd, "=", 1);

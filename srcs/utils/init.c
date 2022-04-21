@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 14:17:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/14 19:36:24 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/04/21 11:34:40 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static int	add_to_env(t_info *info, char *line)
 {
 	size_t	index;
 	t_env	*new_var;
+	char	*shlvl;
 
 	index = 0;
 	new_var = (t_env *)ft_calloc(1, sizeof(t_env));
@@ -52,6 +53,14 @@ static int	add_to_env(t_info *info, char *line)
 	if (!new_var->value)
 		return (free(new_var->name), free(new_var), 1);
 	new_var->next = info->env;
+	if (!ft_strcmp("SHLVL", new_var->name))
+	{
+		shlvl = ft_itoa((ft_atoi(new_var->value) + 1));
+		free(new_var->value);
+		if (!shlvl)
+			return (free(new_var->name), free(new_var), 1);
+		new_var->value = shlvl;
+	}
 	info->env = new_var;
 	return (0);
 }
