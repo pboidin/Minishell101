@@ -1,8 +1,8 @@
 #include "../../includes/minishell.h"
 #include <dirent.h>
+#include <string.h>
 
-
-int    test(char *s1, char *s2)
+/*int    test(char *s1, char *s2)
 {
     if (!*s1 && !*s2)
         return (1);
@@ -16,7 +16,7 @@ int    test(char *s1, char *s2)
         return (match(s1, s2 + 1) || match(s1 + 1, s2));
     else
         return (0);
-}
+}*/
 
 size_t	ft_strlen(const char *str)
 {
@@ -83,69 +83,13 @@ int	ft_has_wildcards(char *str)
 	return (0);
 }
 
-int num_dirs(const char* path)
-{
-    int dir_count = 0;
-    struct dirent* dent;
-    DIR* srcdir = opendir(path);
-
-    if (srcdir == NULL)
-    {
-        perror("opendir");
-        return -1;
-    }
-
-    while((dent = readdir(srcdir)) != NULL)
-    {
-        struct stat st;
-
-        if(strcmp(dent->d_name, ".") == 0 || strcmp(dent->d_name, "..") == 0)
-            continue;
-
-        if (fstatat(dirfd(srcdir), dent->d_name, &st, 0) < 0)
-        {
-            perror(dent->d_name);
-            continue;
-        }
-
-        if (S_ISDIR(st.st_mode)) dir_count++;
-    }
-    closedir(srcdir);
-    return dir_count;
-}
-
-void list_dir(char *path, int indent) {
-  DIR *dir;
-  struct dirent *entry;
-  dir = opendir(path);
-  
-  if (dir == NULL) {
-    printf("Failed to open directory.\n");
-    return;
-  }
-  while ((entry = readdir(dir)) != NULL) {
-    if(entry->d_type == DT_DIR) {
-      if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
-        printf("%c%s\n", indent2, '-', entry->d_name);
-        char *new_path = (char *)malloc(strlen(path) + strlen(entry->d_name) + 1);
-        sprintf(new_path, "%s/%s", path, entry->d_name);
-        list_dir(new_path, indent + 1);
-        free(new_path);
-      }
-      } else {
-        printf("%c%s\n", indent2, '-', entry->d_name);
-      }
-    }
-    closedir(dir);
-}
-
-
-int	ft_wildcards(char **tab, char *arg)
+/*int	ft_wildcards(char **tab, char *arg)
 {
 	struct dirent	*de;
   	DIR				*dr;
     int				i;
 	int				j;
+	(void)arg;
 	// char			*pwd;
 	// char			**bef;
 
@@ -178,7 +122,7 @@ int	ft_wildcards(char **tab, char *arg)
 	closedir(dr);
 	free(tab);
     return (1);
-}
+}*/
 
 int main (int argc, char **argv)
 {
@@ -190,66 +134,9 @@ int main (int argc, char **argv)
 	if (ft_has_wildcards(argv[1]) != 0)
 	{
 		ft_wildcards(tab, argv[1]);
+		ft_wild();
 		return (1);
 	}
 	return (0);
 }
 
-/*Get the wildcard lists object
-
-char    get_wildcard_files(char *wildcard, t_shell *shell)
-{
-    char            *pwd;
-    DIR                *dir;
-    struct dirent    *entry;
-    t_automaton        *au;
-    char            **lists;
-
-    //lists = 0;
-    au = automaton_wildcard_factory(wildcard);
-    if (!au)
-        return (0);
-    //pwd = get_env(shell, "PWD");
-    //dir = opendir(pwd);
-    if (dir)
-    {
-        entry = readdir(dir);
-        while (entry)
-        {
-            if (automaton_validator(au, entry->d_name))
-                push_array(entry->d_name, &lists);
-            entry = readdir(dir);
-        }
-    }
-    closedir(dir);
-    automaton_dispose(au);
-    return (lists);
-}
-
-void    wildcard_cmds(t_shell *shell)
-{
-    t_cmd    *cmd;
-    int        i;
-    char    lists;
-
-    cmd = shell->cmds;
-    while (cmd)
-    {
-        i = -1;
-        while (cmd->args && cmd->args[++i])
-        {
-            if (has_wildcard(cmd->args[i]))
-            {
-                lists = get_wildcard_files(cmd->args[i], shell);
-                if (lists)
-                {
-                    insert_array(lists, cmd->args[i], &cmd->args);
-                    remove_str_array(cmd->args[i], &cmd->args);
-                    free_array(lists);
-                }
-            }
-        }
-        cmd = cmd->next;
-    }
-}
-*/
