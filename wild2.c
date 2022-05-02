@@ -13,6 +13,9 @@ typedef struct s_wild {
 	struct s_wild	*next;
 }	t_wild;
 
+t_wild	*print_dirs(const char *path, int recursive);
+
+/* OK */
 void	ft_putstr(char *str)
 {
     int i;
@@ -25,6 +28,7 @@ void	ft_putstr(char *str)
     }
 }
 
+/* OK */
 size_t	ft_strlen(char *str)
 {
     int i;
@@ -35,6 +39,7 @@ size_t	ft_strlen(char *str)
     return (i);
 }
 
+/* OK */
 int		ft_compare(char *s1, char *s2)
 {
     if (!*s1 && !*s2)
@@ -51,6 +56,7 @@ int		ft_compare(char *s1, char *s2)
         return (0);
 }
 
+/* OK */
 void	ft_strcpy(char *dst, const char *src)
 {
 	unsigned int	i;
@@ -64,6 +70,7 @@ void	ft_strcpy(char *dst, const char *src)
 	dst[i] = '\0';
 }
 
+/* OK */
 t_wild	*ft_lstnew(void *content)
 {
 	t_wild	*new_el;
@@ -76,6 +83,7 @@ t_wild	*ft_lstnew(void *content)
 	return (new_el);
 }
 
+/* OK */
 t_wild	*ft_lstlast(t_wild *list)
 {
     t_wild  *current;
@@ -88,62 +96,7 @@ t_wild	*ft_lstlast(t_wild *list)
     return (current);
 }
 
-t_wild	*print_dirs(const char *path, int recursive)
-{
-    t_wild          *tmp;
-    t_wild          *last;
-	struct dirent	*de;
-	DIR				*dr;
-	size_t			path_len;
-	struct stat		fstat;
-	// char			full_name[_POSIX_PATH_MAX + 1];
-    char            *full_name;
-
-    if (!path)
-        return NULL;
-    path_len = strlen(path);  
-    if (!path || !path_len || (path_len > _POSIX_PATH_MAX))
-        return NULL;
-    dr = opendir(path);
-    if (dr == NULL)
-        return NULL;
-    tmp = NULL;
-    while ((de = readdir(dr)) != NULL)
-    {
-        full_name = (char *)calloc((_POSIX_PATH_MAX + 1), sizeof(char));
-        if ((path_len + strlen(de->d_name) + 1) > _POSIX_PATH_MAX)
-            continue;
-        strcpy(full_name, path);
-        if (full_name[path_len - 1] != '/')
-            strcat(full_name, "/");
-        strcat(full_name, de->d_name);
-        if ((strcmp(de->d_name, ".") == 0) || (strcmp(de->d_name, "..") == 0))
-            continue;
-        if (stat(full_name, &fstat) < 0)
-            continue;
-        if (S_ISDIR(fstat.st_mode) || S_ISREG(fstat.st_mode))
-        {
-            if (!tmp)
-            {
-                tmp = ft_lstnew(full_name);
-                last = tmp;
-            }
-            else
-            {
-                last = ft_lstlast(tmp);
-                last->next = ft_lstnew(full_name);
-                last = last->next;
-            }
-            if (recursive)
-                last->next = print_dirs(full_name, 1);
-        }
-        else
-            free(full_name);
-    }
-    (void)closedir(dr);
-    return (tmp);
-}
-
+/* OK */
 int		ft_strchr(char *str, char c)
 {
 	int	i;
@@ -158,6 +111,7 @@ int		ft_strchr(char *str, char c)
 	return (0);
 }
 
+/* OK */
 int		ft_has_wildcards(char *str)
 {
     if (ft_strchr(str, '\'') == 1 || ft_strchr(str, '\"') == 1)
@@ -167,6 +121,7 @@ int		ft_has_wildcards(char *str)
 	return (0);
 }
 
+/* OK */
 char    *ft_delete_wild(char *dst, const char *src)
 {
     int i;
@@ -187,6 +142,7 @@ char    *ft_delete_wild(char *dst, const char *src)
     return (dst);
 }
 
+/* OK */
 char    *ft_strcp(char *dst, const char *src)
 {
     int i;
@@ -207,6 +163,7 @@ char    *ft_strcp(char *dst, const char *src)
     return (dst);
 }
 
+/* OK */
 int		ft_lstlen(t_wild *list, char *str)
 {
     int i;
@@ -221,28 +178,124 @@ int		ft_lstlen(t_wild *list, char *str)
     return (i);
 }
 
-void	ft_wild(char **argv, char **argt, t_wild **list, char ***tab)
+
+DIR		*open_dir(const char *path, size_t *path_len)
 {
-	int	i;
-	int	j;
+	DIR		*dr;
+
+	if (!path)
+        return NULL;
+    *path_len = strlen(path);  
+    if (!path || !*path_len || (*path_len > _POSIX_PATH_MAX))
+        return NULL;
+    dr = opendir(path);
+    if (dr == NULL)
+        return NULL;
+	return (dr);
+}
+
+int		ft_recur_sa_mere(struct dirent *de, t_wild **tmp, char *full_name, int recursive)
+{
+	struct stat		fstat;
+	t_wild			*last;
+	t_wild			*new;
+
+	if (!((strcmp(de->d_name, ".") == 0) || (strcmp(de->d_name, "..") == 0))
+			&& !(stat(full_name, &fstat) < 0) && (S_ISDIR(fstat.st_mode) || S_ISREG(fstat.st_mode)))
+	{
+		new = ft_lstnew(full_name);
+		if (!new)
+			return (free(full_name), 1);
+		if (!(*tmp))
+			*tmp = new;
+		else
+		{
+			last = ft_lstlast(*tmp);
+			last->next = new;
+		}
+		if (recursive)
+		{
+			last = ft_lstlast(*tmp);
+			last->next = print_dirs(full_name, 1);
+		}
+	}
+	else
+		free(full_name);
+	return 0;
+}
+
+t_wild	*print_dirs(const char *path, int recursive)
+{
+    t_wild          *tmp;
+	struct dirent	*de;
+	DIR				*dr;
+	size_t			path_len;
+    char            *full_name;
+
+	dr = open_dir(path, &path_len);
+	if (!dr)
+		return NULL;
+    tmp = NULL;
+    while ((de = readdir(dr)) != NULL)
+    {
+        full_name = (char *)calloc((_POSIX_PATH_MAX + 1), sizeof(char));
+        if ((path_len + strlen(de->d_name) + 1) > _POSIX_PATH_MAX)
+            continue;
+        strcpy(full_name, path);
+        if (full_name[path_len - 1] != '/')
+            strcat(full_name, "/");
+        strcat(full_name, de->d_name);
+		if (ft_recur_sa_mere(de, &tmp, full_name, recursive))
+			return (closedir(dr), NULL);
+    }
+    closedir(dr);
+    return (tmp);
+}
+
+void	ft_putchar_fd(char c, int fd)
+{
+	write(fd, &c, 1);
+}
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	long long int	lli;
+
+	lli = n;
+	if (lli < 0)
+	{
+		ft_putchar_fd('-', fd);
+		lli = -lli;
+	}
+	if (lli > 9)
+	{
+		ft_putnbr_fd(lli / 10, fd);
+		ft_putchar_fd((lli % 10) + '0', fd);
+	}
+	else
+		ft_putchar_fd(lli + '0', fd);
+}
+
+/* OK */
+void	ft_wild(char **argv, char **argt, char ***tab)
+{
+    t_wild  *list;
+	int     i;
 
 	i = 0;
-	j = 0;
+    list = NULL;
 	if (ft_has_wildcards(*argv) == 1)
-        *list = print_dirs (*argt, 1);
-    j = ft_lstlen(*list, *argv);
-    *tab = (char **)malloc(sizeof(char *) * (j + 1));
-    if (!*tab)
-        return;
-	while (*list)
+       list = print_dirs (*argt, 1);
+	while (list)
 	{
-        if (ft_compare((char *)((*list)->path), *argv) == 1)
+        if (ft_compare(list->path, *argv) == 1)
         {
-            *tab[i] = ft_strcp(*tab[i], ((char *)(*list)->path));
-            i++;
+        	(*tab)[i] = ft_strcp((*tab)[i], list->path);
+        	i++;
         }
-		*list = ((*list)->next);
+		list = list->next;
 	}
+    (*tab)[i] = NULL;
 }
 
 int		main(int argc, char **argv)
@@ -251,10 +304,9 @@ int		main(int argc, char **argv)
 	char	**tab;
     t_wild  *list;
     int     i;
-    // int     j;
+    int     j;
 
     i = 0;
-    // j = 0;
 	tab = NULL;
     list = NULL;
     argt = NULL;
@@ -262,26 +314,13 @@ int		main(int argc, char **argv)
 		return (0);
     if (ft_strchr(argv[1], '/'))
         argt = ft_delete_wild(argt, argv[1]);
-    // else
-    //     argt = ft_genv("PWD", info);
-
-    // if (ft_has_wildcards(argv[1]) == 1)
-    //     list = print_dirs (argt, 1);
-    // j = ft_lstlen(list, argv[1]);
-    // tab = (char **)malloc(sizeof(char *) * (j + 1));
-    // if (!tab)
-    //     return (0);
-	// while (list)
-	// {
-    //     if (ft_compare(list->path, argv[1]) == 1)
-    //     {
-    //         tab[i] = ft_strcp(tab[i], list->path);
-    //         i++;
-    //     }
-	// 	list = list->next;
-	// }
-
-	ft_wild(&argv[1], &argt, &list, &tab);
+    if (ft_has_wildcards(argv[1]) == 1)
+        list = print_dirs (argt, 1);
+    j = ft_lstlen(list, argv[1]);
+    tab = (char **)malloc(sizeof(char *) * (j + 1));
+    if (!tab)
+        return 1;
+	ft_wild(&argv[1], &argt, &tab);
     i = -1;
     while (tab[++i])
         printf("tab[%d] : %s\n", i, tab[i]);

@@ -12,6 +12,29 @@
 
 #include "minishell.h"
 
+static size_t	lcl_ft_ulllen(unsigned long long n)
+{
+	size_t	nb_len;
+
+	nb_len = 0;
+	while (n >= 10)
+	{
+		nb_len++;
+		n /= 10;
+	}
+	return (nb_len + 1);
+}
+
+static void numeric_error(char *const *tab, t_info *info )
+{
+	write(STDERR_FILENO, "exit: ", 6);
+	write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
+	write(STDERR_FILENO, ": numeric argument required\n", 28);
+	info->status = 2;
+	free_info(info);
+	exit(2);
+}
+
 static int	ft_exit_code(char *const *tab, int i, t_info *info)
 {
 	if (tab && tab[0] && tab[1] && tab[2])
@@ -27,14 +50,16 @@ static int	ft_exit_code(char *const *tab, int i, t_info *info)
 		{
 			if (info->is_child == FALSE)
 				write(STDERR_FILENO, "exit\n", 5);
-			write(STDERR_FILENO, "exit: ", 6);
-			write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
-			write(STDERR_FILENO, ": numeric argument required\n", 28);
-			info->status = 2;
-			free_info(info);
-			exit(2);
+			numeric_error(tab, info);
 		}
 	}
+	if (tab[1][0] == '+' || tab[1][0] == '-')
+	{
+		if (ft_strlen(tab[1]) < 2 || ft_strlen(tab[1]) > lcl_ft_ulllen(ULLONG_MAX))
+			numeric_error(tab, info);
+	}
+	else if (ft_strlen(tab[1]) >= lcl_ft_ulllen(ULLONG_MAX))
+		numeric_error(tab, info);
 	return (0);
 }
 
@@ -60,6 +85,5 @@ int	ft_exit(char **tab, t_info *info)
 	free_info(info);
 	if (info->is_child == FALSE)
 		write(STDERR_FILENO, "exit\n", 5);
-	exit(info->status);
-	return (0);
+	return(exit(info->status), 0);
 }
