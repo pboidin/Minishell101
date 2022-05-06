@@ -65,6 +65,9 @@ SRCS = main.c \
 	   srcs/utils/char_tab_utils.c \
 	   srcs/utils/throw_error.c \
 	   srcs/utils/get_next_line.c \
+	   srcs/utils/wild.c \
+	   srcs/utils/wild1.c \
+	   srcs/utils/wild2.c \
 	   srcs/utils/get_next_line_utils.c \
 	   srcs/builtins/echo.c \
 	   srcs/builtins/pwd.c \

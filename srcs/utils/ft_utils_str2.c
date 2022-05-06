@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/13 11:00:50 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/13 11:01:52 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/02 15:45:10 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,24 @@ void	ft_putstr_fd(char *s, int fd)
 		s++;
 	}
 	return ;
+}
+
+char	*ft_strcp(char *dst, const char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] && src[i] != '\0')
+		i++;
+	dst = malloc(sizeof(char) * (i + 1));
+	if (!dst)
+		return (NULL);
+	i = 0;
+	while (src[i] && src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
 }

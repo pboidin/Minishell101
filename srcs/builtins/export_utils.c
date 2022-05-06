@@ -52,7 +52,7 @@ int	ft_error_export(char *new_env)
 		|| (new_env[0] >= 'a' && new_env[0] <= 'z')
 		|| new_env[0] == '_')
 	{
-		while (new_env[++i] != '=')
+		while (new_env[++i] && new_env[i] != '=')
 		{
 			if (ft_isalnum(new_env[i]) == 0
 				&& new_env[i] != '_' && new_env[i] != '=')
@@ -68,38 +68,76 @@ int	ft_error_export(char *new_env)
 	return (1);
 }
 
-void	ft_add_env(char *const *new_env, int i, t_info *info)
+void	ft_add_env(char *const *new_env, int i, t_info *info, char *tmp[2]) //return "{export}="
 {
 	if (ft_error_export(new_env[i]) == 0)
 		ft_lstadd_back(&info->env,
-			ft_lstnew((void *)ft_strdup(new_env[i])));
+			ft_lstnew_export(tmp));
 }
 
-void	ft_export_var(char **new_env, char *env, char *env2, t_info *info)
+int	export_lcl_to_env(t_var *lcl_var, t_info *info)
+{
+	char	*tmp[2];
+	t_var	*prev;
+	t_var	*next;
+
+	tmp[0] = lcl_var->name;
+	tmp[1] = lcl_var->value;
+	next = lcl_var->next;
+	if (info->local_var == lcl_var)
+	{
+		free(lcl_var);
+		info->local_var = next;
+	}
+	else
+	{
+		prev = info->local_var;
+		while (prev->next != lcl_var)
+			prev = prev->next;
+		free(lcl_var);
+		prev->next = next;
+	}
+	ft_lstadd_back(&info->env, ft_lstnew_export(tmp));
+	return (0);
+}
+
+void	ft_export_var(char **new_env, t_info *info)
 {
 	int		i;
-	char	*tmp;
+	char	*tmp[2];
+	t_env	*target;
+	t_var	*lcl_var;
 
 	i = 0;
 	while (new_env[++i])
 	{
-		tmp = ft_substr(new_env[i], 0, ft_lenvar(new_env[i]));
-		env = ft_genv(tmp, info->env);
-		if (!env)
+		if (is_assignation(new_env[i]))
 		{
-			if (new_env[i][ft_lenvar(new_env[i])] != '=')
-			{
-				env2 = ft_strjoin(new_env[i], "=");
-				free(new_env[i]);
-				new_env[i] = env2;
-			}
-			ft_add_env(new_env, i, info);
-			free(tmp);
+			tmp[0] = get_var_name(new_env[i], info);
+			tmp[1] = get_var_val(new_env[i], info, tmp);			
+			target = find_env_var(info, tmp[0]);
+			if (!target)
+				ft_add_env(new_env, i, info, tmp);
+			else
+				update_env_var(tmp, target);
+			info->status = 0;
 		}
+		else if (ft_error_export(new_env[i]))
+			info->status = 1;
 		else
 		{
-			free(env);
-			ft_update_var(tmp, new_env[i], info);
+			tmp[0] = get_var_name(new_env[i], info);
+			lcl_var = find_lcl_var(info, tmp[0]);
+			if (!lcl_var)
+			{
+				free(tmp[0]);
+				info->status = 0;
+			}
+			else
+			{
+				free(tmp[0]);
+				info->status = export_lcl_to_env(lcl_var, info);
+			}
 		}
 	}
 }

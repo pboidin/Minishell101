@@ -21,3 +21,16 @@ int	ft_lenvar(const char *s)
 		i++;
 	return (i);
 }
+
+t_env	*ft_lstnew_export(char *tmp[2])
+{
+	t_env	*newlst;
+
+	newlst = (t_env *)malloc(sizeof(t_env));
+	if (!newlst)
+		return (free(tmp[0]), free(tmp[1]), NULL);
+	newlst->name = tmp[0];
+	newlst->value = tmp[1];
+	newlst->next = NULL;
+	return (newlst);
+}	

@@ -14,9 +14,11 @@
 # define MINISHELL_H
 # define _GNU_SOURCE
 # include <stdio.h>
+# include <dirent.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdint.h>
+# include <string.h>
 # include <stddef.h>
 # include <sys/uio.h>
 # include <stdbool.h>
@@ -96,6 +98,11 @@ typedef struct s_pid
 	pid_t			pid;
 	struct s_pid	*next;
 }	t_pid;
+
+typedef struct s_wild {
+	char			*path;
+	struct s_wild	*next;
+}	t_wild;
 
 typedef struct s_var
 {
@@ -235,6 +242,19 @@ int		ft_cd(char **dir, t_info *info);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *str, int fd);
 
+/* WILDCARDS */
+
+char    *ft_delete_wild(char *dst, const char *src);
+char    *ft_strcpy(char *dst, const char *src);
+char 	*ft_strcat(char *dest, char *src);
+int		ft_has_wildcards(char *str);
+int		ft_lstlen(t_wild *list, char *str);
+int		ft_strchr_wild(char *str, char c);
+t_wild	*ft_lstlast_wild(t_wild *list);
+t_wild	*ft_lstnew_wild(void *content);
+t_wild	*print_dirs(const char *path, int recursive);
+int		ft_compare(char *s1, char *s2);
+
 void	ft_execute(t_info *info, t_cmd *cmd);
 char	**ft_split(char const *s, char c);
 int		ft_env_loc(t_env *head);
@@ -269,9 +289,12 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlen(const char *s);
 
 t_env	*ft_lstnew(void *data);
+t_env	*ft_lstnew_export(char *tmp[2]);
+char	*get_var_val(char *str, t_info *info, char *var[2]);
+char	*get_var_name(char *str, t_info *info);
 
 void	ft_env_set(t_env *env);
-void	ft_export_var(char **new_env, char *env, char *env2, t_info *info);
+void	ft_export_var(char **new_env, t_info *info);
 void	ft_lstclear(t_env **lst, void (*del)(void *));
 void	ft_lstadd_back(t_env **lst, t_env *new);
 void	ft_lstdelone(t_env *lst, void (*del)(void*));
@@ -279,6 +302,8 @@ void	ft_upd_env(t_env *env);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);
+int		ft_wild_one(int argc, char **argv);
+void	ft_wild_two(char **argv, char **argt, char ***tab);
 
 int		get_next_line(int fd, char **line);
 char	*internal_get_str(int fd, char *remainer, int start_index, int *nl_pos);
