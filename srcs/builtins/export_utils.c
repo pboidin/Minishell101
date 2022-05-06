@@ -75,7 +75,7 @@ void	ft_add_env(char *const *new_env, int i, t_info *info, char *tmp[2]) //retur
 			ft_lstnew_export(tmp));
 }
 
-int	export_lcl_to_env(t_var *lcl_var, t_info *info)
+void	export_lcl_to_env(t_var *lcl_var, t_info *info)
 {
 	char	*tmp[2];
 	t_var	*prev;
@@ -98,7 +98,6 @@ int	export_lcl_to_env(t_var *lcl_var, t_info *info)
 		prev->next = next;
 	}
 	ft_lstadd_back(&info->env, ft_lstnew_export(tmp));
-	return (0);
 }
 
 void	ft_export_var(char **new_env, t_info *info)
@@ -109,6 +108,7 @@ void	ft_export_var(char **new_env, t_info *info)
 	t_var	*lcl_var;
 
 	i = 0;
+	info->status = 0;
 	while (new_env[++i])
 	{
 		if (is_assignation(new_env[i]))
@@ -129,14 +129,11 @@ void	ft_export_var(char **new_env, t_info *info)
 			tmp[0] = get_var_name(new_env[i], info);
 			lcl_var = find_lcl_var(info, tmp[0]);
 			if (!lcl_var)
-			{
 				free(tmp[0]);
-				info->status = 0;
-			}
 			else
 			{
 				free(tmp[0]);
-				info->status = export_lcl_to_env(lcl_var, info);
+				export_lcl_to_env(lcl_var, info);
 			}
 		}
 	}
