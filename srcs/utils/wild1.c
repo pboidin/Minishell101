@@ -12,14 +12,14 @@
 
 #include "minishell.h"
 
-int	ft_lstlen(t_wild *list, char *str)
+int	ft_lstlen(t_wild *list, t_block *str)
 {
 	int	i;
 
 	i = 0;
 	while (list)
 	{
-		if (ft_compare(list->path, str) == 1)
+		if (ft_compare(list->path, str, 0, 0) == 1)
 			i++;
 		list = list->next;
 	}
@@ -50,31 +50,59 @@ t_wild	*ft_lstnew_wild(void *content)
 	return (new_el);
 }
 
-int	ft_has_wildcards(char *str)
-{
-	if (ft_strchr_wild(str, '\'') == 1 || ft_strchr_wild(str, '\"') == 1)
-		return (0);
-	if (ft_strchr_wild(str, '*'))
-		return (1);
-	return (0);
-}
-
-char	*ft_delete_wild(char *dst, const char *src)
+int	ft_has_wildcards(t_block *block)
 {
 	int	i;
 
 	i = 0;
-	while (src[i] != '*' && src[i] != '\0')
+	while (block[i].str)
+	{
+		if (block[i].dbl_qu != 0 && block[i].spl_qu != 0)
+		{
+			if (ft_strchr_wild(block[i].str, '*'))
+				return (1);
+		}
 		i++;
-	dst = malloc(sizeof(char) * (i + 1));
+	}
+	return (0);
+}
+
+char	*ft_delete_wild(t_block *src)
+{
+	int		i;
+	int		j;
+	int		k;
+	char	*dst;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	while (src[i].str)
+	{
+		j = 0;
+		while (src[i].str[j] != '*' && src[i].str[j] != '\0'))
+		{
+			k++;
+			j++;
+		}
+		i++;
+	}
+	dst = malloc(sizeof(char) * (k + 1));
 	if (!dst)
 		return (NULL);
 	i = 0;
-	while (src[i] != '*' && src[i] != '\0')
+	k = 0;
+	while (src[i].str)
 	{
-		dst[i] = src[i];
+		j = 0;
+		while (src[i].str[j] != '*' && src[i].str[j] != '\0'))
+		{
+			dest[k] = src[i].str[j];
+			k++;
+			j++;
+		}
 		i++;
 	}
-	dst[i] = '\0';
+	dst[k] = '\0';
 	return (dst);
 }

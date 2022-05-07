@@ -12,18 +12,23 @@
 
 #include "minishell.h"
 
-int	ft_compare(char *s1, char *s2)
+int	ft_compare(char *s1, t_block *s2, int i, int j)
 {
-	if (!*s1 && !*s2)
+	while (!s2[i].str[j] && s2[i + 1].str)
+	{
+		i++;
+		j = 0;
+	}
+	if (!*s1 && !s2[i].str[j])
 		return (1);
-	else if (*s1 == *s2 && *s1 != '*')
-		return (ft_compare(s1 + 1, s2 + 1));
-	else if (*s1 == '*' && *s2 == '*')
-		return (ft_compare(s1 + 1, s2));
-	else if (*s2 == '*' && !*s1)
-		return (ft_compare(s1, s2 + 1));
-	else if (*s2 == '*' && *s2 && *s1)
-		return (ft_compare(s1, s2 + 1) || ft_compare(s1 + 1, s2));
+	else if (*s1 == s2[i].str[j] && *s1 != '*')
+		return (ft_compare(s1 + 1, s2, i, (j + 1)));
+	else if (*s1 == '*' && s2[i].str[j] == '*')
+		return (ft_compare(s1 + 1, s2, i, j));
+	else if (s2[i].str[j] && !*s1)
+		return (ft_compare(s1, s2, i, (j + 1)));
+	else if (s2[i].str[j] == '*' && s2[i].str[j] && *s1)
+		return (ft_compare(s1, s2, i, (j + 1)) || ft_compare(s1 + 1, s2, i, j));
 	else
 		return (0);
 }
@@ -75,7 +80,7 @@ int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
 	return (0);
 }
 
-t_wild	*print_dirs(const char *path, int recursive)
+t_wild	*print_dirs(char *path, int recursive)
 {
 	t_wild		*tmp;
 	struct dirent	*de;
@@ -104,7 +109,7 @@ t_wild	*print_dirs(const char *path, int recursive)
 	return (tmp);
 }
 
-int	wild_one(int argc, char **argv)
+int	wild_one(int argc, char **argv, t_block *block)
 {
 	char	*argt;
 	char	**tab;
@@ -118,15 +123,29 @@ int	wild_one(int argc, char **argv)
 	argt = NULL;
 	if (argc != 2)
 		return (0);
-	if (ft_strchr_wild(argv[1], '/'))
-		argt = ft_delete_wild(argt, argv[1]);
-	if (ft_has_wildcards(argv[1]) == 1)
-		list = print_dirs (argt, 1);
-	j = ft_lstlen(list, argv[1]);
+	if (!ft_has_wildcards(block))
+		return (1);
+	while (block[i].str)
+	{
+		if (ft_strchr_wild(block[i].str, '/'))
+		{
+			argt = ft_delete_wild(block);
+			break ;
+		}
+		i++;
+	}
+	if (!argt)
+	{
+		argt = (char *)malloc(sizeof(char) * PATH_MAX);
+		if (!argt || getcwd(argt, PATH_MAX) == NULL)
+			return (free(argt), 1);
+	}
+	list = print_dirs (argt, 1);
+	j = ft_lstlen(list, block);
 	tab = (char **)malloc(sizeof(char *) * (j + 1));
 	if (!tab)
 		return (1);
-	ft_wild_two(&argv[1], &argt, &tab);
+	ft_wild_two(block, argt, &tab, &list);
 	i = -1;
 	while (tab[++i])
 		printf("tab[%d] : %s\n", i, tab[i]);

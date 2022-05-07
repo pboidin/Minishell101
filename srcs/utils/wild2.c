@@ -18,18 +18,14 @@ char *ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-void	ft_wild_two(char **argv, char **argt, char ***tab)
+void	ft_wild_two(t_block *src, char *argt, char ***tab, t_wild *list)
 {
-    t_wild  *list;
 	int     i;
 
 	i = 0;
-    list = NULL;
-	if (ft_has_wildcards(*argv) == 1)
-       list = print_dirs (*argt, 1);
 	while (list)
 	{
-        if (ft_compare(list->path, *argv) == 1)
+        if (ft_compare(list->path, src, 0, 0) == 1)
         {
         	(*tab)[i] = ft_strcpy((*tab)[i], list->path);
         	i++;
