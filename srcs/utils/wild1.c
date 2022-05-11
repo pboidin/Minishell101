@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:58:43 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/02 16:02:21 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/11 18:31:32 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	ft_has_wildcards(t_block *block)
 	i = 0;
 	while (block[i].str)
 	{
-		if (block[i].dbl_qu != 0 && block[i].spl_qu != 0)
+		if (block[i].dbl_qu == 0 && block[i].spl_qu == 0)
 		{
 			if (ft_strchr_wild(block[i].str, '*'))
 				return (1);
@@ -67,42 +67,122 @@ int	ft_has_wildcards(t_block *block)
 	return (0);
 }
 
-char	*ft_delete_wild(t_block *src)
+char	*ft_delete_wild(t_block *src, int *depth)
 {
 	int		i;
 	int		j;
 	int		k;
+	int		tmp;
 	char	*dst;
 
 	i = 0;
 	j = 0;
-	k = 0;
+	*depth = 0;
 	while (src[i].str)
 	{
 		j = 0;
-		while (src[i].str[j] != '*' && src[i].str[j] != '\0'))
+		while (!(src[i].str[j] == '*' && src[i].dbl_qu == 0
+				&& src[i].spl_qu == 0) && src[i].str[j] != '\0')
 		{
-			k++;
+			if (src[i].str[j] == '/')
+				*depth += 1;
+			j++;
+		}
+		if (src[i].str[j] == '*')
+			break;
+		i++;
+	}
+	if (*depth == 0)
+	{
+		dst = ft_calloc(2, sizeof(char));
+		if (!dst)
+			return (NULL);
+		dst[0] = '.';
+	}
+	else
+	{
+		tmp = 0;
+		k = 0;
+		i = 0;
+		while (tmp != *depth)
+		{
+			j = 0;
+			while (src[i].str[j] != '\0')
+			{
+				k++;
+				if (src[i].str[j] == '/')
+				{
+					tmp++;
+					if (tmp == *depth)
+						break ;
+				}
+				j++;
+			}
+			i++;
+		}
+		if (k == 1)
+		{
+			dst = ft_calloc(2, sizeof(char));
+			if (!dst)
+				return (NULL);
+			dst[0] = '/';
+			j++;
+			i--;
+		}
+		else
+		{
+			dst = ft_calloc((k), sizeof(char));
+			if (!dst)
+				return (NULL);
+			tmp = 0;
+			i = 0;
+			while (src[i].str)
+			{
+				j = 0;
+				while (src[i].str[j])
+				{
+					dst[tmp] = src[i].str[j];
+					tmp++;
+					j++;
+					if (tmp == (k - 1))
+						break ;
+				}
+				if (tmp == (k - 1))
+					break ;
+				i++;
+			}
+			if (src[i].str[j] == '/')
+				j++;
+			else
+			{
+				i++;
+				while (src[i].str[0] != '/')
+					i++;
+				j = 1;
+			}
+		}
+	}
+	if (*depth == 0)
+		*depth = 1;
+	else
+		*depth = 0;
+	while (src[i].str[j])
+	{
+		if (src[i].str[j] == '/')
+			*depth += 1;
+		j++;
+	}
+	i++;
+	while (src[i].str)
+	{
+		j = 0;
+		while (src[i].str[j])
+		{
+			if (src[i].str[j] == '/')
+				*depth += 1;
 			j++;
 		}
 		i++;
 	}
-	dst = malloc(sizeof(char) * (k + 1));
-	if (!dst)
-		return (NULL);
-	i = 0;
-	k = 0;
-	while (src[i].str)
-	{
-		j = 0;
-		while (src[i].str[j] != '*' && src[i].str[j] != '\0'))
-		{
-			dest[k] = src[i].str[j];
-			k++;
-			j++;
-		}
-		i++;
-	}
-	dst[k] = '\0';
 	return (dst);
 }

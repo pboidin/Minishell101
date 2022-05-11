@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 19:27:33 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/15 12:59:01 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/11 16:38:40 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,5 +132,7 @@ t_block	**add_args_word(char *str, t_info *info, int expand)
 		}
 		i[1] += 1;
 	}
+	if (expand == 1)
+		words_tab = replace_wild_cards(words_tab);
 	return (words_tab);
 }

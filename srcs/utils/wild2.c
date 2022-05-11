@@ -18,7 +18,7 @@ char *ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-void	ft_wild_two(t_block *src, char *argt, char ***tab, t_wild *list)
+void	ft_wild_two(t_block *src, char ***tab, t_wild *list)
 {
 	int     i;
 

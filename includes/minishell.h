@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/20 17:24:34 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/11 18:09:28 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,7 @@ void	update_lcl_var(char *var[2], t_var *target);
 t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
 int		get_final_cmd(t_cmd *cmd, t_info *info);
 int		export_expansion(t_info *info, t_cmd *cmd);
+t_block	**replace_wild_cards(t_block **words_tab);
 
 /* BUILT-IN */
 
@@ -244,16 +245,16 @@ void	ft_putendl_fd(char *str, int fd);
 
 /* WILDCARDS */
 
-char    *ft_delete_wild(char *dst, const char *src);
+char    *ft_delete_wild(t_block *src, int *depth);
 char    *ft_strcpy(char *dst, const char *src);
 char 	*ft_strcat(char *dest, char *src);
-int		ft_has_wildcards(char *str);
-int		ft_lstlen(t_wild *list, char *str);
+int		ft_has_wildcards(t_block *block);
+int		ft_lstlen(t_wild *list, t_block *str);
 int		ft_strchr_wild(char *str, char c);
 t_wild	*ft_lstlast_wild(t_wild *list);
 t_wild	*ft_lstnew_wild(void *content);
-t_wild	*print_dirs(const char *path, int recursive);
-int		ft_compare(char *s1, char *s2);
+t_wild	*print_dirs(char *path, int depth[2]);
+int		ft_compare(char *s1, t_block *s2, int i, int j);
 
 void	ft_execute(t_info *info, t_cmd *cmd);
 char	**ft_split(char const *s, char c);
@@ -302,8 +303,8 @@ void	ft_upd_env(t_env *env);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);
-int		ft_wild_one(int argc, char **argv);
-void	ft_wild_two(char **argv, char **argt, char ***tab);
+char	**wild_one(t_block *block);
+void	ft_wild_two(t_block *src, char ***tab, t_wild *list);
 
 int		get_next_line(int fd, char **line);
 char	*internal_get_str(int fd, char *remainer, int start_index, int *nl_pos);

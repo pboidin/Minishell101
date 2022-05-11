@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/02 15:57:54 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/11 18:39:47 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ DIR	*open_dir(const char *path, size_t *path_len)
 }
 
 int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
-		char *full_name, int recursive)
+		char *full_name, int depth[2])
 {
 	struct stat	fstat;
 	t_wild		*last;
@@ -69,24 +69,23 @@ int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
 			last = ft_lstlast_wild(*tmp);
 			last->next = new;
 		}
-		if (recursive)
-		{
-			last = ft_lstlast_wild(*tmp);
-			last->next = print_dirs(full_name, 1);
-		}
+		depth[0] += 1;
+		last = ft_lstlast_wild(*tmp);
+		if (depth[0] <= depth[1])
+			last->next = print_dirs(full_name, depth);
 	}
 	else
 		free(full_name);
 	return (0);
 }
 
-t_wild	*print_dirs(char *path, int recursive)
+t_wild	*print_dirs(char *path, int depth[2])
 {
-	t_wild		*tmp;
+	t_wild			*tmp;
 	struct dirent	*de;
-	DIR			*dr;
-	size_t		path_len;
-	char		*full_name;
+	DIR				*dr;
+	size_t			path_len;
+	char			*full_name;
 
 	dr = open_dir(path, &path_len);
 	if (!dr)
@@ -102,45 +101,61 @@ t_wild	*print_dirs(char *path, int recursive)
 		if (full_name[path_len - 1] != '/')
 			ft_strcat(full_name, "/");
 		ft_strcat(full_name, de->d_name);
-		if (ft_recur_sa_mere(de, &tmp, full_name, recursive))
+		if (ft_recur_sa_mere(de, &tmp, full_name, depth))
 			return (closedir(dr), NULL);
+		de = readdir(dr);
 	}
 	closedir(dr);
 	return (tmp);
 }
 
-int	wild_one(int argc, char **argv, t_block *block)
+t_block	*mask(t_block *block)
+{
+	t_block			*ret;
+	unsigned int	i;
+	unsigned int	j;
+
+
+	ret = NULL;
+	i = 0;
+	while (block[i].str[0] == '\0')
+		i++;
+
+}
+
+char	**wild_one(t_block *block)
 {
 	char	*argt;
-	char	**tab;
+	int		depth[2];
+//	char	**tab;
 	t_wild	*list;
-	int		i;
-	int		j;
+	t_block	*mask;
+//	int		i;
+//	int		j;
 
-	i = 0;
-	tab = NULL;
-	list = NULL;
-	argt = NULL;
-	if (argc != 2)
-		return (0);
-	if (!ft_has_wildcards(block))
-		return (1);
-	while (block[i].str)
+//	i = 0;
+//	tab = NULL;
+//	list = NULL;
+//	argt = NULL;
+	if (!block || !block[0].str || !ft_has_wildcards(block))
+		return (NULL);
+	else
 	{
-		if (ft_strchr_wild(block[i].str, '/'))
-		{
-			argt = ft_delete_wild(block);
-			break ;
-		}
-		i++;
+		printf("Has wildcard\n");
 	}
-	if (!argt)
+	argt = ft_delete_wild(block, &depth[1]);
+	printf("Folder to open: %s, found depth: %d\n", argt, depth[1]);
+	depth[0] = 0;
+	list = print_dirs(argt, depth);
+	mask = build_mask(block);
+	while (list)
 	{
-		argt = (char *)malloc(sizeof(char) * PATH_MAX);
-		if (!argt || getcwd(argt, PATH_MAX) == NULL)
-			return (free(argt), 1);
+		printf("candidate: %s\n", list->path);
+		list = list->next;
 	}
-	list = print_dirs (argt, 1);
+	return (NULL);
+	/*
+
 	j = ft_lstlen(list, block);
 	tab = (char **)malloc(sizeof(char *) * (j + 1));
 	if (!tab)
@@ -149,5 +164,5 @@ int	wild_one(int argc, char **argv, t_block *block)
 	i = -1;
 	while (tab[++i])
 		printf("tab[%d] : %s\n", i, tab[i]);
-	return (0);
+	return (0);*/
 }
