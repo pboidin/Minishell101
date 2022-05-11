@@ -1,0 +1,12 @@
+a.out
+includes
+main.c
+main.o
+Makefile
+minishell
+README.md
+sr*
+srcs
+test
+to_fix.txt
+wild2.c

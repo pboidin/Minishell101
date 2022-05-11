@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:58:43 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/11 18:31:32 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/11 20:24:40 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,9 +162,9 @@ char	*ft_delete_wild(t_block *src, int *depth)
 			}
 		}
 	}
-	if (*depth == 0)
-		*depth = 1;
-	else
+//	if (*depth == 0)
+//		*depth = 1;
+//	else
 		*depth = 0;
 	while (src[i].str[j])
 	{

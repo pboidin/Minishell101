@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/11 18:39:47 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/11 20:31:02 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,34 @@ int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
 		&& !(stat(full_name, &fstat) < 0) && (S_ISDIR(fstat.st_mode)
 			|| S_ISREG(fstat.st_mode)))
 	{
-		new = ft_lstnew_wild(full_name);
-		if (!new)
-			return (free(full_name), 1);
-		if (!(*tmp))
-			*tmp = new;
+		if (depth[0] == depth[1])
+		{
+			new = ft_lstnew_wild(full_name);
+			if (!new)
+				return (free(full_name), 1);
+			if (!(*tmp))
+				*tmp = new;
+			else
+			{
+				last = ft_lstlast_wild(*tmp);
+				last->next = new;
+			}
+		}
 		else
 		{
-			last = ft_lstlast_wild(*tmp);
-			last->next = new;
+			depth[0] += 1;
+			if (depth[0] <= depth[1])
+			{
+				if (!(*tmp))
+					*tmp = print_dirs(full_name, depth);
+				else
+				{
+					last = ft_lstlast_wild(*tmp);
+					last->next = print_dirs(full_name, depth);
+				}
+			}
+			depth[0] -= 1;
 		}
-		depth[0] += 1;
-		last = ft_lstlast_wild(*tmp);
-		if (depth[0] <= depth[1])
-			last->next = print_dirs(full_name, depth);
 	}
 	else
 		free(full_name);
@@ -108,7 +122,7 @@ t_wild	*print_dirs(char *path, int depth[2])
 	closedir(dr);
 	return (tmp);
 }
-
+/*
 t_block	*mask(t_block *block)
 {
 	t_block			*ret;
@@ -122,14 +136,14 @@ t_block	*mask(t_block *block)
 		i++;
 
 }
-
+*/
 char	**wild_one(t_block *block)
 {
 	char	*argt;
 	int		depth[2];
 //	char	**tab;
 	t_wild	*list;
-	t_block	*mask;
+//	t_block	*mask;
 //	int		i;
 //	int		j;
 
@@ -147,7 +161,9 @@ char	**wild_one(t_block *block)
 	printf("Folder to open: %s, found depth: %d\n", argt, depth[1]);
 	depth[0] = 0;
 	list = print_dirs(argt, depth);
-	mask = build_mask(block);
+	if (!list)
+		return (free(argt), NULL);
+//	mask = build_mask(block);
 	while (list)
 	{
 		printf("candidate: %s\n", list->path);
