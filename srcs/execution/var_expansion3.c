@@ -81,12 +81,32 @@ char	**replace_var(t_block *words, size_t i, t_info *info)
 
 t_block	**replace_wild_cards(t_block **words_tab)
 {
+	t_block			**ret;
+	t_block			**tmp;
 	unsigned int	i;
+	unsigned int	j;
 
 	i = 0;
 	while (words_tab[i])
 	{
-		wild_one(words_tab[i]);
+		ret = wild_one(words_tab[i]);
+		if (ret)
+		{
+			free_t_block(words_tab[i]);
+			words_tab[i] = NULL;
+			tmp = ft_calloc((t_block_tab_size(&words_tab[i + 1]) + 1), sizeof(t_block *));
+			j = i + 1;
+			i = 0;
+			while (words_tab[j])
+			{
+				tmp[i] = words_tab[j];
+				i++;
+				j++;
+			}
+			words_tab = add_block_to_tab(words_tab, ret);
+			i = t_block_tab_size(words_tab) - 1;
+			words_tab = add_block_to_tab(words_tab, tmp);
+		}
 		i++;
 	}
 	return (words_tab);

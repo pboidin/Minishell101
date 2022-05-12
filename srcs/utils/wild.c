@@ -12,26 +12,96 @@
 
 #include "minishell.h"
 
-int	ft_compare(char *s1, t_block *s2, int i, int j)
+int	ft_compare(t_block *mask, char *path)
 {
-	while (!s2[i].str[j] && s2[i + 1].str)
-	{
-		i++;
-		j = 0;
-	}
-	if (!*s1 && !s2[i].str[j])
-		return (1);
-	else if (*s1 == s2[i].str[j] && *s1 != '*')
-		return (ft_compare(s1 + 1, s2, i, (j + 1)));
-	else if (*s1 == '*' && s2[i].str[j] == '*')
-		return (ft_compare(s1 + 1, s2, i, j));
-	else if (s2[i].str[j] && !*s1)
-		return (ft_compare(s1, s2, i, (j + 1)));
-	else if (s2[i].str[j] == '*' && s2[i].str[j] && *s1)
-		return (ft_compare(s1, s2, i, (j + 1)) || ft_compare(s1 + 1, s2, i, j));
-	else
+	int	i;
+
+	if (!path || (path[0] == '.' && mask[0].str[0] != '.'))
 		return (0);
+	if (!mask[0].dbl_qu)
+	{
+		if (ft_strcmp(path, mask[0].str))
+			return (0);
+		else
+			return (1);
+	}
+	if (!mask[0].var)
+	{
+		if (strncmp(path, mask[0].str, ft_strlen(mask[0].str)))
+			return (0);
+		else
+		{
+			i = 1;
+			path = &path[ft_strlen(mask[0].str)];
+		}
+	}
+	else
+		i = 0;
+	while (mask[i + 1].str)
+	{
+		if (!mask[i].var)
+		{
+			path = ft_strstr(path, mask[i].str);
+			if (!path)
+				return (0);
+			path = &path[ft_strlen(mask[i].str)];
+		}
+		i++;
+	}
+	if (mask[i].var)
+		return (1);
+	else if (ft_strlen(path) >= ft_strlen(mask[i].str)
+			&& !ft_strcmp(mask[i].str, &path[ft_strlen(path) - ft_strlen(mask[i].str)]))
+		return (1);
+	return (0);
 }
+
+int	end_wilderness(t_block **mask)
+{
+	if (!mask[1] || (mask[1][0].str[0] == '\0' && !mask[2]))
+		return (1);
+	return (0);
+}
+
+int	final_match(char *name, char *full_path, t_block **mask)
+{
+	struct stat	fstat;
+
+	if (!ft_compare(mask[0], name))
+		return (0);
+	if (mask[1])
+	{
+		if (!(stat(full_path, &fstat) < 0) && S_ISDIR(fstat.st_mode))
+			return (1);
+		else
+			return (0);
+	}
+	return (1);
+}
+
+t_wild	*add_to_list(t_wild *list, char *path, t_block **mask)
+{
+	t_wild	*last;
+	t_wild	*new_block;
+
+	if (!path)
+		return (NULL);
+	if (mask[1])
+	{
+		path = ft_strcat_mal(path, "/");
+		if (!path)
+			return (free(path), NULL);
+	}
+	new_block = ft_lstnew_wild(path);
+	if (!new_block)
+		return (free(path), NULL);
+	if (!list)
+		return (new_block);
+	last = ft_lstlast_wild(list);
+	last->next = new_block;
+	return (list);
+}
+
 
 DIR	*open_dir(const char *path, size_t *path_len)
 {
@@ -49,51 +119,34 @@ DIR	*open_dir(const char *path, size_t *path_len)
 }
 
 int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
-		char *full_name, int depth[2])
+		char *full_name, t_block **mask)
 {
-	struct stat	fstat;
 	t_wild		*last;
-	t_wild		*new;
 
-	if (!((ft_strcmp(de->d_name, ".") == 0) || (ft_strcmp(de->d_name, "..") == 0))
-		&& !(stat(full_name, &fstat) < 0) && (S_ISDIR(fstat.st_mode)
-			|| S_ISREG(fstat.st_mode)))
+	if (end_wilderness(mask))
 	{
-		if (depth[0] == depth[1])
+		if (final_match(de->d_name, full_name, mask))
 		{
-			new = ft_lstnew_wild(full_name);
-			if (!new)
-				return (free(full_name), 1);
-			if (!(*tmp))
-				*tmp = new;
-			else
-			{
-				last = ft_lstlast_wild(*tmp);
-				last->next = new;
-			}
-		}
-		else
-		{
-			depth[0] += 1;
-			if (depth[0] <= depth[1])
-			{
-				if (!(*tmp))
-					*tmp = print_dirs(full_name, depth);
-				else
-				{
-					last = ft_lstlast_wild(*tmp);
-					last->next = print_dirs(full_name, depth);
-				}
-			}
-			depth[0] -= 1;
+			*tmp = add_to_list(*tmp, full_name, mask);
 		}
 	}
 	else
-		free(full_name);
+	{
+		if (ft_compare(mask[0], de->d_name))
+		{
+			if (!*tmp)
+				*tmp = print_dirs(full_name, &mask[1]);
+			else
+			{
+				last = ft_lstlast_wild(*tmp);
+				last->next = print_dirs(full_name, &mask[1]);
+			}
+		}
+	}
 	return (0);
 }
 
-t_wild	*print_dirs(char *path, int depth[2])
+t_wild	*print_dirs(char *path, t_block **mask)
 {
 	t_wild			*tmp;
 	struct dirent	*de;
@@ -108,15 +161,19 @@ t_wild	*print_dirs(char *path, int depth[2])
 	de = readdir(dr);
 	while (de != NULL)
 	{
-		full_name = (char *)calloc((_POSIX_PATH_MAX + 1), sizeof(char));
-		if ((path_len + strlen(de->d_name) + 1) > _POSIX_PATH_MAX)
-			continue ;
-		ft_strcpy(full_name, path);
-		if (full_name[path_len - 1] != '/')
-			ft_strcat(full_name, "/");
-		ft_strcat(full_name, de->d_name);
-		if (ft_recur_sa_mere(de, &tmp, full_name, depth))
-			return (closedir(dr), NULL);
+		if (ft_compare(mask[0], de->d_name))
+		{
+			full_name = (char *)calloc((_POSIX_PATH_MAX + 1), sizeof(char));
+			if ((path_len + strlen(de->d_name) + 1) <= _POSIX_PATH_MAX)
+			{
+				ft_strcpy(full_name, path);
+				if (full_name[path_len - 1] != '/')
+					ft_strcat(full_name, "/");
+				ft_strcat(full_name, de->d_name);
+				if (ft_recur_sa_mere(de, &tmp, full_name, mask))
+					return (closedir(dr), free(full_name), NULL);
+			}
+		}
 		de = readdir(dr);
 	}
 	closedir(dr);
@@ -157,7 +214,6 @@ t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
 	int		j;
 	int		wild;
 
-	printf("Wildcard\n");
 	spl = NULL;
 	i = 0;
 	j = 0;
@@ -320,80 +376,93 @@ void	delete_empty(t_block *block)
 	}
 }
 
-char	**wild_one(t_block *block)
-{
-//	char	*argt;
-//	int		depth[2];
-//	char	**tab;
-//	t_wild	*list;
-	t_block	**mask;
-	int		i;
-	int		j;
 
-//	i = 0;
-//	tab = NULL;
-//	list = NULL;
-//	argt = NULL;
+t_wild	*wild_start(t_block **mask)
+{
+	t_wild			*list;
+	t_wild			*last;
+	size_t			path_len;
+	DIR				*cur_dir;
+	struct dirent	*de;
+
+
+	cur_dir = open_dir(".", &path_len);
+	if (!cur_dir)
+		return (NULL);
+	list = NULL;
+	de = readdir(cur_dir);
+	while (de)
+	{
+		if (ft_strlen(de->d_name) > _POSIX_PATH_MAX)
+			continue ;
+		if (end_wilderness(mask))
+		{
+			if (final_match(de->d_name, de->d_name, mask))
+			{
+				list = add_to_list(list, ft_strdup(de->d_name), mask);
+			}
+		}
+		else
+		{
+			if (ft_compare(mask[0], de->d_name))
+			{
+				if (!list)
+					list = print_dirs(de->d_name, &mask[1]);
+				else
+				{
+					last = ft_lstlast_wild(list);
+					last->next = print_dirs(de->d_name, &mask[1]);
+				}
+			}
+		}
+		de = readdir(cur_dir);
+	}
+	closedir(cur_dir);
+	return (list);
+}
+
+t_block	**t_wild_to_t_block_tab(t_wild *list)
+{
+	size_t	i;
+	t_wild	*current;
+	t_wild	*next;
+	t_block	**ret;
+
+	ret = ft_calloc((ft_lstlen(list) + 1), sizeof(t_block *));
+	if (!ret)
+		return (NULL);
+	current = list;
+	i = 0;
+	while (current)
+	{
+		ret[i] = ft_calloc(2, sizeof(t_block));
+		ret[i][0].str = current->path;
+		next = current->next;
+		free(current);
+		current = next;
+		i++;
+	}
+	return (ret);
+}
+
+t_block	**wild_one(t_block *block)
+{
+	t_wild	*list;
+	t_block	**mask;
+
 	if (!block || !block[0].str || !ft_has_wildcards(block))
 		return (NULL);
-	else
-		printf("Has wildcard\n");
-	i = 0;
-	printf("Before mending\n");
-	while (block[i].str)
-	{
-		printf("%s\n", block[i].str);
-		i++;
-	}
 	delete_empty(block);
-	i = 0;
-	printf("After mending\n");
-	while (block[i].str)
-	{
-		printf("%s\n", block[i].str);
-		i++;
-	}
 	mask = build_mask(block);
 	if (!mask)
 		return (NULL);
-	i = 0;
-	printf("After splitting on folders\n");
-	while (mask[i])
-	{
-		j = 0;
-		while (mask[i][j].str)
-		{
-			if (mask[i][j].var)
-				printf(" wildcard ");
-			else
-				printf(" %s ", mask[i][j].str);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-	printf("-----------------\n");
-/*	argt = ft_delete_wild(block, &depth[1]);
-	printf("Folder to open: %s, found depth: %d\n", argt, depth[1]);
-	depth[0] = 0;
-	list = print_dirs(argt, depth);
+	if (mask[0][0].dbl_qu)
+		list = wild_start(mask);
+	else
+		list = print_dirs(mask[0][0].str, &mask[1]);
+	free_t_block_tab(mask);
 	if (!list)
-		return (free(argt), NULL);
-	while (list)
-	{
-		printf("candidate: %s\n", list->path);
-		list = list->next;
-	}*/
-	return (NULL);
-	/*
-
-	j = ft_lstlen(list, block);
-	tab = (char **)malloc(sizeof(char *) * (j + 1));
-	if (!tab)
-		return (1);
-	ft_wild_two(block, argt, &tab, &list);
-	i = -1;
-	while (tab[++i])
-		printf("tab[%d] : %s\n", i, tab[i]);
-	return (0);*/
+		return (NULL);
+	mask = t_wild_to_t_block_tab(list);
+	return (mask);
 }

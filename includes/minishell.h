@@ -223,6 +223,7 @@ int		get_final_cmd(t_cmd *cmd, t_info *info);
 int		export_expansion(t_info *info, t_cmd *cmd);
 t_block	**replace_wild_cards(t_block **words_tab);
 void	move_upward_t_block_str(t_block *block, int i);
+char	*ft_strstr(const char *haystack, const char *needle);
 
 int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab, t_cmd *cmd);
@@ -247,12 +248,12 @@ char	*ft_delete_wild(t_block *src, int *depth);
 char	*ft_strcpy(char *dst, const char *src);
 char	*ft_strcat(char *dest, char *src);
 int		ft_has_wildcards(t_block *block);
-int		ft_lstlen(t_wild *list, t_block *str);
+int		ft_lstlen(t_wild *list);
 int		ft_strchr_wild(char *str, char c);
 t_wild	*ft_lstlast_wild(t_wild *list);
 t_wild	*ft_lstnew_wild(void *content);
-t_wild	*print_dirs(char *path, int depth[2]);
-int		ft_compare(char *s1, t_block *s2, int i, int j);
+t_wild	*print_dirs(char *path, t_block **mask);
+int		ft_compare(t_block *mask, char *path);
 
 void	ft_execute(t_info *info, t_cmd *cmd);
 char	**ft_split(char const *s, char c);
@@ -301,7 +302,7 @@ void	ft_upd_env(t_env *env);
 void	*ft_memcpy(void *dst, const void *src, size_t memSize);
 void	*ft_memset(void *target, int char_to_set, size_t n);
 void	*ft_realloc(void *ptr, size_t memSize);
-char	**wild_one(t_block *block);
+t_block	**wild_one(t_block *block);
 void	ft_wild_two(t_block *src, char ***tab, t_wild *list);
 
 int		get_next_line(int fd, char **line);

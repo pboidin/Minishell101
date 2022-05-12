@@ -46,6 +46,7 @@ SRCS = main.c \
 	   srcs/execution/export_expansion.c \
 	   srcs/execution/get_final_cmd.c \
 	   srcs/utils/env.c \
+	   srcs/utils/ft_strstr.c \
 	   srcs/utils/lcl_var.c \
 	   srcs/utils/create_tmp.c \
 	   srcs/utils/move_upward.c \

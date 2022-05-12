@@ -12,15 +12,14 @@
 
 #include "minishell.h"
 
-int	ft_lstlen(t_wild *list, t_block *str)
+int	ft_lstlen(t_wild *list)
 {
 	int	i;
 
 	i = 0;
 	while (list)
 	{
-		if (ft_compare(list->path, str, 0, 0) == 1)
-			i++;
+		i++;
 		list = list->next;
 	}
 	return (i);
@@ -67,6 +66,7 @@ int	ft_has_wildcards(t_block *block)
 	return (0);
 }
 
+/*
 char	*ft_delete_wild(t_block *src, int *depth)
 {
 	int		i;
@@ -185,4 +185,4 @@ char	*ft_delete_wild(t_block *src, int *depth)
 		i++;
 	}
 	return (dst);
-}
+}*/

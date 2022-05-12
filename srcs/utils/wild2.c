@@ -17,7 +17,7 @@ char *ft_strcat(char *dest, char *src)
 	dest[i + j] = '\0';
 	return (dest);
 }
-
+/*
 void	ft_wild_two(t_block *src, char ***tab, t_wild *list)
 {
 	int     i;
@@ -33,4 +33,4 @@ void	ft_wild_two(t_block *src, char ***tab, t_wild *list)
 		list = list->next;
 	}
     (*tab)[i] = NULL;
-}
+}*/
