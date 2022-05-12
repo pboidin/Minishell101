@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int unset_env(char *const *unset, int i, t_info *info)
+static int	unset_env(char *const *unset, int i, t_info *info)
 {
 	t_env	*tmp_env;
 	t_env	*current_env;
@@ -40,7 +40,7 @@ void	unset_lcl(char *const *unset, int i, t_info *info)
 {
 	t_var	*tmp_lcl;
 	t_var	*current_lcl;
-	
+
 	current_lcl = info->local_var;
 	if (current_lcl && ft_strcmp(unset[i], info->local_var->name) == 0)
 	{

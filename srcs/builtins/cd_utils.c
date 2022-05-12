@@ -21,7 +21,6 @@ int	ft_go_to_home(t_info *info)
 	head = info->env;
 	if (!home || chdir(home) == -1)
 	{
-		ft_print_err_cd(home);
 		free(home);
 		return (0);
 	}

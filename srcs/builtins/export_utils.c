@@ -68,7 +68,7 @@ int	ft_error_export(char *new_env)
 	return (1);
 }
 
-void	ft_add_env(char *const *new_env, int i, t_info *info, char *tmp[2]) //return "{export}="
+void	ft_add_env(char *const *new_env, int i, t_info *info, char *tmp[2])
 {
 	if (ft_error_export(new_env[i]) == 0)
 		ft_lstadd_back(&info->env,
@@ -114,7 +114,7 @@ void	ft_export_var(char **new_env, t_info *info)
 		if (is_assignation(new_env[i]))
 		{
 			tmp[0] = get_var_name(new_env[i], info);
-			tmp[1] = get_var_val(new_env[i], info, tmp);			
+			tmp[1] = get_var_val(new_env[i], info, tmp);
 			target = find_env_var(info, tmp[0]);
 			if (!target)
 				ft_add_env(new_env, i, info, tmp);

@@ -27,6 +27,7 @@ static size_t	lcl_ft_ulllen(unsigned long long n)
 
 static void	numeric_error(char *const *tab, t_info *info )
 {
+	write(STDERR_FILENO, "exit\n", 5);
 	write(STDERR_FILENO, "exit: ", 6);
 	write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
 	write(STDERR_FILENO, ": numeric argument required\n", 28);
@@ -37,6 +38,14 @@ static void	numeric_error(char *const *tab, t_info *info )
 
 static int	ft_exit_code(char *const *tab, int i, t_info *info)
 {
+	if (tab[1] && (tab[1][0] == '+' || tab[1][0] == '-'))
+	{
+		if (ft_strlen(tab[1]) < 2
+			|| ft_strlen(tab[1]) > lcl_ft_ulllen(ULLONG_MAX))
+			numeric_error(tab, info);
+	}
+	else if (tab[1] && ft_strlen(tab[1]) >= lcl_ft_ulllen(ULLONG_MAX))
+		numeric_error(tab, info);
 	if (tab && tab[0] && tab[1] && tab[2])
 	{
 		if (info->is_child == FALSE)
@@ -53,14 +62,6 @@ static int	ft_exit_code(char *const *tab, int i, t_info *info)
 			numeric_error(tab, info);
 		}
 	}
-	if (tab[1] && (tab[1][0] == '+' || tab[1][0] == '-'))
-	{
-		if (ft_strlen(tab[1]) < 2
-			|| ft_strlen(tab[1]) > lcl_ft_ulllen(ULLONG_MAX))
-			numeric_error(tab, info);
-	}
-	else if (tab[1] && ft_strlen(tab[1]) >= lcl_ft_ulllen(ULLONG_MAX))
-		numeric_error(tab, info);
 	return (0);
 }
 

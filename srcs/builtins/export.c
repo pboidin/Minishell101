@@ -103,37 +103,11 @@ static void	ft_lst_sort(t_info *info)
 	ft_lst_printer(env);
 }
 
-/* -- To Delete -- */
-	// static void	ft_print(t_info *info)
-	// {
-	// 	char	*values;
-	// 	char	*t_name;
-	// 	int		fd;
-	// 	t_env	*env;
-
-	// 	fd = 1;
-	// 	env = info->env;
-	// 	while (env)
-	// 	{
-	// 		values = (char *)env->value;
-	// 		t_name = (char *)env->name;
-	// 		if (values && t_name)
-	// 		{
-	// 			write(fd, env->name, ft_strlen((char *)env->name));
-	// 			write(fd, "=", 1);
-	// 			write(fd, env->value, ft_strlen((char *)env->value));
-	// 			write(fd, "\n", 1);
-	// 		}
-	// 		env = env->next;
-	// 	}
-	// }
-
 int	ft_export(char **new_env, t_info *info)
 {
 	if (!new_env)
 		ft_lst_sort(info);
 	else
 		ft_export_var(new_env, info);
-	// ft_print(info);
 	return (0);
 }

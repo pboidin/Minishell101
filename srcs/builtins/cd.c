@@ -21,12 +21,10 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	aux = ft_substr(dir, 1, ft_strlen(dir) - 1);
 	home = ft_genv("HOME", info->env);
 	if (!home)
-	{
-		free(aux);
-		return (1);
-	}
+		return (free(aux), 1);
 	aux = ft_realloc(aux, ft_strlen(dir) + ft_strlen(home) + 1);
 	tmp = ft_strjoin(home, aux);
+	printf("%s\n", tmp);
 	if (chdir(tmp) == -1)
 	{
 		ft_print_err_cd(tmp);
@@ -54,7 +52,6 @@ void	ft_upd_env(t_env *env)
 		return ;
 	}
 	free(env->value);
-	printf("Path %s\n", path);
 	env->value = path;
 }
 
@@ -89,6 +86,8 @@ int	ft_ch_dir(char **dir, t_info *info)
 	char	*pwd;
 
 	pwd = NULL;
+	if (dir[2])
+		return (write(STDERR_FILENO, "cd: too many arguments\n", 23), 1);
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
 		return (ft_go_to_oldpwd(info->env));
 	ft_set_old(info->env, pwd);

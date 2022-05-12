@@ -223,7 +223,6 @@ int		get_final_cmd(t_cmd *cmd, t_info *info);
 int		export_expansion(t_info *info, t_cmd *cmd);
 t_block	**replace_wild_cards(t_block **words_tab);
 void	move_upward_t_block_str(t_block *block, int i);
-/* BUILT-IN */
 
 int		ft_ch_dir(char **dir, t_info *info);
 int		ft_echo(char **tab, t_cmd *cmd);
@@ -244,11 +243,9 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *str, int fd);
 char	*ft_strcat_mal(char *str1, char *str2);
 
-/* WILDCARDS */
-
-char    *ft_delete_wild(t_block *src, int *depth);
-char    *ft_strcpy(char *dst, const char *src);
-char 	*ft_strcat(char *dest, char *src);
+char	*ft_delete_wild(t_block *src, int *depth);
+char	*ft_strcpy(char *dst, const char *src);
+char	*ft_strcat(char *dest, char *src);
 int		ft_has_wildcards(t_block *block);
 int		ft_lstlen(t_wild *list, t_block *str);
 int		ft_strchr_wild(char *str, char c);

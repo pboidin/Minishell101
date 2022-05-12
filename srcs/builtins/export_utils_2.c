@@ -33,4 +33,4 @@ t_env	*ft_lstnew_export(char *tmp[2])
 	newlst->value = tmp[1];
 	newlst->next = NULL;
 	return (newlst);
-}	
+}
