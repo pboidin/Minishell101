@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/12 12:51:58 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/12 14:59:43 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,80 @@ t_wild	*print_dirs(char *path, int depth[2])
 	return (tmp);
 }
 
+t_block	*add_str_t_block(t_block *spl, char *str, int i, char wild)
+{
+	int		current;
+	int		size;
+	char	tmp;
+	t_block	*new_block;
+
+	size = 0;
+	while (spl && spl[0].str && spl[size].str)
+		size++;
+	new_block = ft_calloc((size + 2), sizeof(t_block));
+	if (!new_block)
+		return (NULL);
+	current = -1;
+	while (++current < size)
+		new_block[current] = spl[current];
+	tmp = str[i];
+	str[i] = '\0';
+	new_block[current].str = ft_strdup(str);
+	if (!new_block[current].str)
+		return (free_t_block(new_block), free(spl), NULL);
+	str[i] = tmp;
+	if (wild)
+		new_block[current].var = 1;
+	return (free(spl), new_block);
+}
+
+t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
+{
+	t_block	*spl;
+	int		i;
+	int		j;
+	int		wild;
+
+	printf("Wildcard\n");
+	spl = NULL;
+	i = 0;
+	j = 0;
+	wild = 0;
+	while (new_block[0][0].str[i])
+	{
+		if (new_block[0][0].str[i] == '*' && block[s[0]].dbl_qu == 0 && block[s[0]].spl_qu == 0)
+		{
+			spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
+			if (!spl)
+				return (free_t_block_tab(new_block), NULL);
+			wild = 1;
+			j = i;
+		}
+		else if (wild)
+		{
+			spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
+			if (!spl)
+				return (free_t_block_tab(new_block), NULL);
+			wild = 0;
+			j = i;
+		}
+		i++;
+		s[1] += 1;
+		if (block[s[0]].str[s[1]] == '\0')
+		{
+			s[0] += 1;
+			s[1] = 0;
+		}
+	}
+	spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
+	if (!spl)
+		return (free_t_block_tab(new_block), NULL);
+	if (spl[0].str[0] == '\0')
+		move_upward_t_block_str(spl, 0);
+	spl[0].dbl_qu = -1;
+	return (free(new_block[0][0].str), free(new_block[0]), spl);
+}
+
 t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block)
 {
 	t_block	**new_block;
@@ -155,6 +229,8 @@ t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block)
 		block[e[0]].str[e[1]] = tmp;
 		if (!new_block[0][0].str)
 			return (free_t_block_tab(new_block), NULL);
+		if (wild)
+			new_block[0] = split_on_wild(new_block, block, s);
 		return (new_block);
 	}
 	new_block[0][0].str = ft_strdup(&block[s[0]].str[s[1]]);
@@ -174,6 +250,8 @@ t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block)
 	block[e[0]].str[e[1]] = tmp;
 	if (!new_block[0][0].str)
 		return (free_t_block_tab(new_block), NULL);
+	if (wild)
+		new_block[0] = split_on_wild(new_block, block, s);
 	return (new_block);
 }
 
@@ -197,7 +275,7 @@ t_block	**build_mask(t_block *block)
 		e[1] = 0;
 		while (block[e[0]].str[e[1]])
 		{
-			if (block[e[0]].str[e[1]] == '*' && block[e[1]].dbl_qu == 0 && block[e[1]].spl_qu == 0)
+			if (block[e[0]].str[e[1]] == '*' && block[e[0]].dbl_qu == 0 && block[e[0]].spl_qu == 0)
 				wild = 1;
 			if (block[e[0]].str[e[1]] == '/')
 			{
@@ -250,7 +328,7 @@ char	**wild_one(t_block *block)
 //	t_wild	*list;
 	t_block	**mask;
 	int		i;
-//	int		j;
+	int		j;
 
 //	i = 0;
 //	tab = NULL;
@@ -282,7 +360,16 @@ char	**wild_one(t_block *block)
 	printf("After splitting on folders\n");
 	while (mask[i])
 	{
-		printf("%s\n", mask[i][0].str);
+		j = 0;
+		while (mask[i][j].str)
+		{
+			if (mask[i][j].var)
+				printf(" wildcard ");
+			else
+				printf(" %s ", mask[i][j].str);
+			j++;
+		}
+		printf("\n");
 		i++;
 	}
 	printf("-----------------\n");
