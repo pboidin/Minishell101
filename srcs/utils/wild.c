@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/11 20:31:02 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/12 12:51:58 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,29 +122,134 @@ t_wild	*print_dirs(char *path, int depth[2])
 	closedir(dr);
 	return (tmp);
 }
-/*
-t_block	*mask(t_block *block)
+
+t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block)
 {
-	t_block			*ret;
-	unsigned int	i;
-	unsigned int	j;
+	t_block	**new_block;
+	char	tmp;
+	int		c[2];
+
+	(void)wild;
+	new_block = ft_calloc(2, sizeof(t_block *));
+	if (!new_block)
+		return (NULL);
+	if (e[0] == 0 && e[1] == 0)
+	{
+		new_block[0] = ft_calloc(2, sizeof(t_block));
+		if (!new_block[0])
+			return (free(new_block), NULL);
+		new_block[0][0].str = ft_calloc(2, sizeof(char));
+		if (!new_block[0][0].str)
+			return (free_t_block_tab(new_block), NULL);
+		new_block[0][0].str[0] = '/';
+		return (new_block);
+	}
+	new_block[0] = ft_calloc(2, sizeof(t_block));
+	if (!new_block[0])
+		return (free(new_block), NULL);
+	if (s[0] == e[0])
+	{
+		tmp = block[e[0]].str[e[1]];
+		block[e[0]].str[e[1]] = '\0';
+		new_block[0][0].str = ft_strdup(&block[s[0]].str[s[1]]);
+		block[e[0]].str[e[1]] = tmp;
+		if (!new_block[0][0].str)
+			return (free_t_block_tab(new_block), NULL);
+		return (new_block);
+	}
+	new_block[0][0].str = ft_strdup(&block[s[0]].str[s[1]]);
+	if (!new_block[0][0].str)
+		return (free_t_block_tab(new_block), NULL);
+	c[0] = s[0] + 1;
+	while (c[0] != e[0])
+	{
+		new_block[0][0].str = ft_strcat_mal(new_block[0][0].str, block[c[0]].str);
+		if (!new_block[0][0].str)
+			return (free_t_block_tab(new_block), NULL);
+		c[0] += 1;
+	}
+	tmp = block[e[0]].str[e[1]];
+	block[e[0]].str[e[1]] = '\0';
+	new_block[0][0].str = ft_strcat_mal(new_block[0][0].str, block[c[0]].str);
+	block[e[0]].str[e[1]] = tmp;
+	if (!new_block[0][0].str)
+		return (free_t_block_tab(new_block), NULL);
+	return (new_block);
+}
+
+t_block	**build_mask(t_block *block)
+{
+	t_block	**ret;
+	t_block	**tmp;
+	int		s[2];
+	int		e[2];
+	char	wild;
 
 
 	ret = NULL;
-	i = 0;
-	while (block[i].str[0] == '\0')
-		i++;
-
+	s[0] = 0;
+	s[1] = 0;
+	e[0] = 0;
+	e[1] = 0;
+	wild = 0;
+	while (block[e[0]].str)
+	{
+		e[1] = 0;
+		while (block[e[0]].str[e[1]])
+		{
+			if (block[e[0]].str[e[1]] == '*' && block[e[1]].dbl_qu == 0 && block[e[1]].spl_qu == 0)
+				wild = 1;
+			if (block[e[0]].str[e[1]] == '/')
+			{
+				tmp = add_to_mask(s, e, wild, block);
+				if (!tmp)
+					return (free_t_block_tab(ret), NULL);
+				ret = add_block_to_tab(ret, tmp);
+				if (!ret)
+					return (NULL);
+				s[0] = e[0];
+				s[1] = e[1] + 1;
+				wild = 0;
+			}
+			e[1] += 1;
+		}
+		e[0] += 1;
+	}
+	e[0] -= 1;
+	e[1] = ft_strlen(block[e[0]].str);
+	tmp = add_to_mask(s, e, wild, block);
+	if (!tmp)
+		return (free_t_block_tab(ret), NULL);
+	ret = add_block_to_tab(ret, tmp);
+	if (!ret)
+		return (NULL);
+	return (ret);
 }
-*/
+
+void	delete_empty(t_block *block)
+{
+	int	i;
+
+	i = 0;
+	while (block[i].str)
+	{
+		if (block[i].str[0] == '\0')
+		{
+			move_upward_t_block_str(block, i);
+			i--;
+		}
+		i++;
+	}
+}
+
 char	**wild_one(t_block *block)
 {
-	char	*argt;
-	int		depth[2];
+//	char	*argt;
+//	int		depth[2];
 //	char	**tab;
-	t_wild	*list;
-//	t_block	*mask;
-//	int		i;
+//	t_wild	*list;
+	t_block	**mask;
+	int		i;
 //	int		j;
 
 //	i = 0;
@@ -154,21 +259,44 @@ char	**wild_one(t_block *block)
 	if (!block || !block[0].str || !ft_has_wildcards(block))
 		return (NULL);
 	else
-	{
 		printf("Has wildcard\n");
+	i = 0;
+	printf("Before mending\n");
+	while (block[i].str)
+	{
+		printf("%s\n", block[i].str);
+		i++;
 	}
-	argt = ft_delete_wild(block, &depth[1]);
+	delete_empty(block);
+	i = 0;
+	printf("After mending\n");
+	while (block[i].str)
+	{
+		printf("%s\n", block[i].str);
+		i++;
+	}
+	mask = build_mask(block);
+	if (!mask)
+		return (NULL);
+	i = 0;
+	printf("After splitting on folders\n");
+	while (mask[i])
+	{
+		printf("%s\n", mask[i][0].str);
+		i++;
+	}
+	printf("-----------------\n");
+/*	argt = ft_delete_wild(block, &depth[1]);
 	printf("Folder to open: %s, found depth: %d\n", argt, depth[1]);
 	depth[0] = 0;
 	list = print_dirs(argt, depth);
 	if (!list)
 		return (free(argt), NULL);
-//	mask = build_mask(block);
 	while (list)
 	{
 		printf("candidate: %s\n", list->path);
 		list = list->next;
-	}
+	}*/
 	return (NULL);
 	/*
 

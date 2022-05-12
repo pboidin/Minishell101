@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/04/20 17:24:01 by bdetune          ###   ########.fr        #
+#    Updated: 2022/05/12 12:44:05 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRCS = main.c \
 	   srcs/parsing/parse_logical.c \
 	   srcs/utils/ft_utils_str.c \
 	   srcs/utils/ft_utils_str2.c \
+	   srcs/utils/ft_utils_str3.c \
 	   srcs/utils/args.c \
 	   srcs/parsing/parse_fork.c \
 	   srcs/parsing/parse_cmd.c \

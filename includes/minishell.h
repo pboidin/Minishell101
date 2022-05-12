@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/11 18:09:28 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/12 12:43:43 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
 int		get_final_cmd(t_cmd *cmd, t_info *info);
 int		export_expansion(t_info *info, t_cmd *cmd);
 t_block	**replace_wild_cards(t_block **words_tab);
-
+void	move_upward_t_block_str(t_block *block, int i);
 /* BUILT-IN */
 
 int		ft_ch_dir(char **dir, t_info *info);
@@ -242,6 +242,7 @@ void	ft_modify_env(char *name, char *value, t_env *env);
 int		ft_cd(char **dir, t_info *info);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *str, int fd);
+char	*ft_strcat_mal(char *str1, char *str2);
 
 /* WILDCARDS */
 
