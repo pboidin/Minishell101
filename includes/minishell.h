@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/13 15:25:21 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 17:18:00 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,6 +246,8 @@ size_t	t_block_tab_size(t_block **tab);
 
 t_block	**add_args_word(char *str, t_info *info, int expand);
 t_block	**add_block_to_tab(t_block **old_tab, t_block **to_add);
+t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block);
+t_block	**build_mask(t_block *block);
 t_block	**create_t_tab(char *str);
 t_block	**replace_wild_cards(t_block **words_tab);
 t_block	**wild_one(t_block *block);

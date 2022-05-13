@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/05/13 15:18:45 by bdetune          ###   ########.fr        #
+#    Updated: 2022/05/13 17:36:20 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,7 +84,8 @@ SRCS = main.c \
 		srcs/utils/wild.c \
 		srcs/utils/wild1.c \
 		srcs/utils/wild2.c \
-		srcs/utils/wild3.c
+		srcs/utils/wild3.c \
+		srcs/utils/wild_mask.c
 
 OBJS := ${SRCS:.c=.o}
 

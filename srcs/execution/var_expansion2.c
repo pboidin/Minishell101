@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 19:27:33 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/12 15:14:42 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 17:04:25 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*add_t_block_str(char *str, size_t *index)
 		while (str[i] && !(str[i] == '$' || str[i] == 39 || str[i] == '"'))
 			i++;
 	}
-	word = (char *)ft_calloc((i - *index + 1), sizeof(char));
+	word = (char *)ft_calloc((i - *index + 2), sizeof(char));
 	if (!word)
 		return (NULL);
 	j = 0;
