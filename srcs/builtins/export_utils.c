@@ -12,29 +12,6 @@
 
 #include "minishell.h"
 
-void	ft_update_var(char *var, char *name_var, t_info *info)
-{
-	char	*content;
-	char	*tmp;
-	t_env	*env;
-
-	env = info->env;
-	tmp = ft_strjoin(name_var, "=");
-	free(name_var);
-	content = ft_substr(var, ft_lenvar(var) + 1,
-			ft_strlen(var) - ft_strlen(tmp));
-	while (env != NULL)
-	{
-		if (ft_strncmp(tmp, (char *)env->value, ft_strlen(tmp)) == 0)
-			break ;
-		env = env->next;
-	}
-	free(env->value);
-	env->value = ft_strjoin(tmp, content);
-	free(tmp);
-	free(content);
-}
-
 static void	ft_print_err_export(const char *new_env)
 {
 	write(STDERR_FILENO, "export: ", 8);
@@ -66,13 +43,6 @@ int	ft_error_export(char *new_env)
 	else
 		ft_print_err_export(new_env);
 	return (1);
-}
-
-void	ft_add_env(char *const *new_env, int i, t_info *info, char *tmp[2])
-{
-	if (ft_error_export(new_env[i]) == 0)
-		ft_lstadd_back(&info->env,
-			ft_lstnew_export(tmp));
 }
 
 void	export_lcl_to_env(t_var *lcl_var, t_info *info)
@@ -143,19 +113,5 @@ void	ft_export_var(char **new_env, t_info *info)
 			info->status = 1;
 		else
 			ft_suite_export(new_env, info, tmp, i);
-		// {
-		// 	tmp[0] = get_var_name(new_env[i], info);
-		// 	lcl_var = find_lcl_var(info, tmp[0]);
-		// 	if (!lcl_var)
-		// 	{
-		// 		tmp[1] = NULL;
-		// 		ft_add_env(new_env, i, info, tmp);
-		// 	}
-		// 	else
-		// 	{
-		// 		free(tmp[0]);
-		// 		export_lcl_to_env(lcl_var, info);
-		// 	}
-		// }
 	}
 }

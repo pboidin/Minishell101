@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-/*
-static char	**ft_lst_to_str(t_info *info)
-{
-	char	**env;
-	int		i;
-	t_env	*env2;
-
-	i = 0;
-	env = malloc(sizeof(char *) * (ft_lstsize(info->env) + 1));
-	if (!env)
-		return (NULL);
-	env2 = info->env;
-	while (env2)
-	{
-		env[i++] = ft_strdup(env2->name);
-		env2 = env2->next;
-	}
-	env[i] = NULL;
-	return (env);
-}*/
-
 static void	ft_swap_str(int i, int j, char **env, char *tmp)
 {
 	if (ft_lenvar(env[j]) > ft_lenvar(env[i]))
