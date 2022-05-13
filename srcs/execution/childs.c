@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 22:25:03 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/19 12:21:45 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 23:35:53 by piboidin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	pipe_parent(t_cmd *cmd, size_t i, int fd[3])
 	}
 	else
 	{
+		close(fd[2]);
 		close(fd[1]);
 		return (fd[0]);
 	}
