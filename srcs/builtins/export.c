@@ -6,12 +6,13 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:21 by piboidin          #+#    #+#             */
-/*   Updated: 2022/03/31 14:47:23 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/13 16:27:40 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*
 static char	**ft_lst_to_str(t_info *info)
 {
 	char	**env;
@@ -30,7 +31,7 @@ static char	**ft_lst_to_str(t_info *info)
 	}
 	env[i] = NULL;
 	return (env);
-}
+}*/
 
 static void	ft_swap_str(int i, int j, char **env, char *tmp)
 {
@@ -66,6 +67,7 @@ static void	ft_lst_printer(char **env)
 	i = -1;
 	while (env[++i])
 	{
+		write(STDOUT_FILENO, "declare -x ", 11);
 		j = -1;
 		while (env[i][++j] != '\0')
 		{
@@ -73,11 +75,12 @@ static void	ft_lst_printer(char **env)
 			if (env[i][j] == '=')
 				break ;
 		}
-		write(STDOUT_FILENO, "\"", 1);
-		while (env[i][++j] != '\0')
-			write(STDOUT_FILENO, &env[i][j], 1);
-		if (env[i][j] == '\0')
+		if (env[i][j] != '\0')
+		{
 			write(STDOUT_FILENO, "\"", 1);
+			write(STDOUT_FILENO, &env[i][j], ft_strlen(&env[i][j]));
+			write(STDOUT_FILENO, "\"", 1);
+		}
 		write(1, "\n", 1);
 		free(env[i]);
 	}
@@ -93,7 +96,7 @@ static void	ft_lst_sort(t_info *info)
 
 	tmp = NULL;
 	i = -1;
-	env = ft_lst_to_str(info);
+	env = join_env(info);
 	while (env[++i])
 	{
 		j = -1;
@@ -105,7 +108,7 @@ static void	ft_lst_sort(t_info *info)
 
 int	ft_export(char **new_env, t_info *info)
 {
-	if (!new_env)
+	if (!new_env[1])
 		ft_lst_sort(info);
 	else
 		ft_export_var(new_env, info);
