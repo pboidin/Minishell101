@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:45:58 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:52:22 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/13 20:44:55 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,23 @@ static int	ft_go_to_dir(const char *dir, t_info *info)
 	char	*aux;
 	char	*home;
 
-	aux = ft_substr(dir, 1, ft_strlen(dir) - 1);
+	aux = ft_strdup(&dir[1]);
 	home = ft_genv("HOME", info->env);
-	if (!home)
+	if (!aux || !home)
 		return (free(aux), 1);
-	aux = ft_realloc(aux, ft_strlen(dir) + ft_strlen(home) + 1);
 	tmp = ft_strjoin(home, aux);
-	printf("%s\n", tmp);
+	free(aux);
+	free(home);
+	if (!tmp)
+		return (1);
+	if (!tmp[0])
+		return (free(tmp), 0);
 	if (chdir(tmp) == -1)
 	{
 		ft_print_err_cd(tmp);
-		free(home);
-		free(aux);
 		free(tmp);
 		return (1);
 	}
-	free(home);
-	free(aux);
 	free(tmp);
 	return (0);
 }
@@ -104,7 +104,7 @@ int	ft_ch_dir(char **dir, t_info *info)
 	if (!dir[1] || (!ft_strncmp(dir[1], "~\0", 2)
 			|| !ft_strncmp(dir[1], "~/", 2)))
 	{
-		if (!dir[1] || !ft_strncmp(dir[1], "~\0", 2))
+		if (!dir[1])
 		{
 			if (ft_ret_home(info) == 1)
 				return (1);
