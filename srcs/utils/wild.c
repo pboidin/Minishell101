@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/13 17:41:37 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 18:50:46 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
 	i = 0;
 	j = 0;
 	wild = 0;
+	if (block[s[0]].str[s[1]] == '\0')
+	{
+		s[0] += 1;
+		s[1] = 0;
+	}
 	while (new_block[0][0].str[i])
 	{
 		if (new_block[0][0].str[i] == '*' && block[s[0]].dbl_qu == 0
@@ -102,74 +107,6 @@ t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
 		move_upward_t_block_str(spl, 0);
 	spl[0].dbl_qu = -1;
 	return (free(new_block[0][0].str), free(new_block[0]), spl);
-}
-
-void	root_wild(t_block ***new_block)
-{
-	new_block[0][0] = ft_calloc(2, sizeof(t_block));
-	if (!new_block[0][0])
-	{
-		g_signal = 1;
-		free(new_block[0]);
-		new_block[0] = NULL;
-	}
-	new_block[0][0][0].str = ft_calloc(2, sizeof(char));
-	if (!new_block[0][0][0].str)
-	{
-		g_signal = 1;
-		free_t_block_tab(*new_block);
-		new_block[0] = NULL;
-	}
-	new_block[0][0][0].str[0] = '/';
-}
-
-t_block	**add_to_mask(int s[2], int e[2], char wild, t_block *block)
-{
-	t_block	**new_block;
-	char	tmp;
-	int		c[2];
-
-	(void)wild;
-	new_block = ft_calloc(2, sizeof(t_block *));
-	if (!new_block)
-		return (NULL);
-	if (e[0] == 0 && e[1] == 0)
-		return (root_wild(&new_block), new_block);
-	new_block[0] = ft_calloc(2, sizeof(t_block));
-	if (!new_block[0])
-		return (free(new_block), NULL);
-	if (s[0] == e[0])
-	{
-		tmp = block[e[0]].str[e[1]];
-		block[e[0]].str[e[1]] = '\0';
-		new_block[0][0].str = ft_strdup(&block[s[0]].str[s[1]]);
-		block[e[0]].str[e[1]] = tmp;
-		if (!new_block[0][0].str)
-			return (free_t_block_tab(new_block), NULL);
-		if (wild)
-			new_block[0] = split_on_wild(new_block, block, s);
-		return (new_block);
-	}
-	new_block[0][0].str = ft_strdup(&block[s[0]].str[s[1]]);
-	if (!new_block[0][0].str)
-		return (free_t_block_tab(new_block), NULL);
-	c[0] = s[0] + 1;
-	while (c[0] != e[0])
-	{
-		new_block[0][0].str = ft_strcat_mal(new_block[0][0].str, block[c[0]].str);
-		if (!new_block[0][0].str)
-			return (free_t_block_tab(new_block), NULL);
-		c[0] += 1;
-	}
-	tmp = block[e[0]].str[e[1]];
-	block[e[0]].str[e[1]] = '\0';
-	new_block[0][0].str = ft_strcat_mal(new_block[0][0].str, block[c[0]].str);
-	if (!new_block[0][0].str)
-		return (free_t_block_tab(new_block), NULL);
-	block[e[0]].str[e[1]] = tmp;
-	if (wild)
-		new_block[0] = split_on_wild(new_block, block, s);
-	return (new_block);
 }
 
 t_wild	*get_lcl_files(t_block **mask, DIR *cur_dir)
