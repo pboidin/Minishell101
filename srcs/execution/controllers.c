@@ -59,50 +59,6 @@ static void	pipe_controller(t_info *info, t_cmd *cmd)
 	get_exit_status(info);
 }
 
-/*
-char	**replace_var(t_block *words, size_t i, t_info *info)
-{
-	char	**var_val;
-	char	*var_found;
-
-	if (ft_strlen(words[i].str) == 1 || words[i].str[1] == '?')
-	{
-		var_val = (char **)ft_calloc(2, sizeof(char *));
-		if (!var_val)
-			return (NULL);
-		if (words[i].str[1] == '?')
-			var_val[0] = ft_itoa(info->status);
-		else if (words[i + 1].str && (words[i + 1].str[0] == '"'
-				|| words[i + 1].str[0] == 39))
-			var_val[0] = (char *)ft_calloc(1, sizeof(char));
-		else
-			var_val[0] = ft_strdup(words[i].str);
-		if (!var_val[0])
-			return (free(var_val), NULL);
-	}
-	else
-	{
-		var_found = find_var(words[i].str, info);
-		if (!var_found)
-			return (NULL);
-		if (!ft_strlen(var_found))
-		{
-			var_val = (char **)ft_calloc(2, sizeof(char *));
-			if (!var_val)
-				return (free(var_found), NULL);
-			var_val[0] = var_found;
-		}
-		else
-		{
-			var_val = ft_split_charset(var_found, "\t\n\r\v\f ");
-			free(var_found);
-			if (!var_val)
-				return (NULL);
-		}
-	}
-	return (var_val);
-}*/
-
 void	fork_controller(t_info *info, t_cmd *cmd)
 {
 	int	ret;
