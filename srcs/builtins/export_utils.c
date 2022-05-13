@@ -100,12 +100,26 @@ void	export_lcl_to_env(t_var *lcl_var, t_info *info)
 	ft_lstadd_back(&info->env, ft_lstnew_export(tmp));
 }
 
+void	ft_suite_export(char *new_env, t_info *info, char *tmp[2])
+{
+	t_var	*lcl_var;
+
+	tmp[0] = get_var_name(new_env, info);
+	lcl_var = find_lcl_var(info, tmp[0]);
+	if (!lcl_var)
+		free(tmp[0]);
+	else
+	{
+		free(tmp[0]);
+		export_lcl_to_env(lcl_var, info);
+	}
+}
+
 void	ft_export_var(char **new_env, t_info *info)
 {
 	int		i;
 	char	*tmp[2];
 	t_env	*target;
-	t_var	*lcl_var;
 
 	i = 0;
 	info->status = 0;
@@ -125,16 +139,17 @@ void	ft_export_var(char **new_env, t_info *info)
 		else if (ft_error_export(new_env[i]))
 			info->status = 1;
 		else
-		{
-			tmp[0] = get_var_name(new_env[i], info);
-			lcl_var = find_lcl_var(info, tmp[0]);
-			if (!lcl_var)
-				free(tmp[0]);
-			else
-			{
-				free(tmp[0]);
-				export_lcl_to_env(lcl_var, info);
-			}
-		}
+			ft_suite_export(new_env[i], info, tmp);
+		// {
+		// 	tmp[0] = get_var_name(new_env[i], info);
+		// 	lcl_var = find_lcl_var(info, tmp[0]);
+		// 	if (!lcl_var)
+		// 		free(tmp[0]);
+		// 	else
+		// 	{
+		// 		free(tmp[0]);
+		// 		export_lcl_to_env(lcl_var, info);
+		// 	}
+		// }
 	}
 }

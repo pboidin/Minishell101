@@ -171,6 +171,7 @@ char	**t_block_tab_to_char_tab(t_block **tab);
 
 int		add_pid(t_info *info, int pid);
 int		add_redirect(char *str, t_cmd *cmd, int redirect);
+int		array_len(char **dir);
 int		clean_previous_args(t_cmd *cmd, int *i);
 int		create_info(t_info *info, char **envp, char *name);
 int		expand_var(t_info *info, t_block ***words_tab, size_t i[2], int expand);

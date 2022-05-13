@@ -25,7 +25,7 @@ static char	**ft_lst_to_str(t_info *info)
 	env2 = info->env;
 	while (env2)
 	{
-		env[i++] = ft_strdup(env2->value);
+		env[i++] = ft_strdup(env2->name);
 		env2 = env2->next;
 	}
 	env[i] = NULL;
@@ -105,7 +105,7 @@ static void	ft_lst_sort(t_info *info)
 
 int	ft_export(char **new_env, t_info *info)
 {
-	if (!new_env)
+	if (array_len(new_env) == 1)
 		ft_lst_sort(info);
 	else
 		ft_export_var(new_env, info);
