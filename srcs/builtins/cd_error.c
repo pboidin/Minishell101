@@ -33,6 +33,6 @@ int	ft_print_err_cd(const char *dir)
 int	ft_ret_home(t_info *info)
 {
 	if (ft_go_to_home(info) == 1)
-		return (1);
+		return (ft_print_err_cd(NULL));
 	return (0);
 }

@@ -16,13 +16,13 @@ int	ft_go_to_home(t_info *info)
 {
 	char	*home;
 	t_env	*head;
-
+	
 	home = ft_genv("HOME", info->env);
 	head = info->env;
-	if (!home || chdir(home) == -1)
+	if (home == NULL)
 	{
 		free(home);
-		return (0);
+		return (1);
 	}
 	ft_env_loc(head);
 	free(home);
