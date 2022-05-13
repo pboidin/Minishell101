@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:46:39 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:48:58 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/13 20:06:22 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	ft_go_to_home(t_info *info)
 {
 	char	*home;
 	t_env	*head;
-	
+
 	home = ft_genv("HOME", info->env);
 	head = info->env;
 	if (home == NULL)

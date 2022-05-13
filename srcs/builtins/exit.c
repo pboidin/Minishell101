@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:12 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/02 16:04:42 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/13 20:12:47 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static size_t	lcl_ft_ulllen(unsigned long long n)
 
 static void	numeric_error(char *const *tab, t_info *info )
 {
-	write(STDERR_FILENO, "exit\n", 5);
+	if (info->is_child == FALSE)
+		write(STDERR_FILENO, "exit\n", 5);
 	write(STDERR_FILENO, "exit: ", 6);
 	write(STDERR_FILENO, tab[1], ft_strlen(tab[1]));
 	write(STDERR_FILENO, ": numeric argument required\n", 28);
@@ -46,21 +47,17 @@ static int	ft_exit_code(char *const *tab, int i, t_info *info)
 	}
 	else if (tab[1] && ft_strlen(tab[1]) >= lcl_ft_ulllen(ULLONG_MAX))
 		numeric_error(tab, info);
+	while (tab[1] && tab[1][i])
+	{
+		if (!ft_isdigit(tab[1][i++]))
+			numeric_error(tab, info);
+	}
 	if (tab && tab[0] && tab[1] && tab[2])
 	{
 		if (info->is_child == FALSE)
 			write(STDERR_FILENO, "exit\n", 5);
 		write(STDERR_FILENO, "exit: too many arguments\n", 25);
 		return (1);
-	}
-	while (tab[1] && tab[1][i])
-	{
-		if (!ft_isdigit(tab[1][i++]))
-		{
-			if (info->is_child == FALSE)
-				write(STDERR_FILENO, "exit\n", 5);
-			numeric_error(tab, info);
-		}
 	}
 	return (0);
 }
