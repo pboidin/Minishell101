@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/12 12:43:43 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 14:52:13 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,10 @@ int		add_pid(t_info *info, int pid);
 int		add_redirect(char *str, t_cmd *cmd, int redirect);
 int		clean_previous_args(t_cmd *cmd, int *i);
 int		create_info(t_info *info, char **envp, char *name);
+int		end_wilderness(t_block **mask);
 int		expand_var(t_info *info, t_block ***words_tab, size_t i[2], int expand);
 int		export_expansion(t_info *info, t_cmd *cmd);
+int		final_match(char *name, char *full_path, t_block **mask);
 int		fork_cmd(t_cmd *cmd);
 int		ft_abs(int nb);
 int		ft_atoi(const char *str);
@@ -251,6 +253,7 @@ t_env	*ft_lstnew_export(char *tmp[2]);
 
 t_var	*find_lcl_var(t_info *info, char *var_name);
 
+t_wild	*add_to_list(t_wild *list, char *path, t_block **mask);
 t_wild	*ft_lstlast_wild(t_wild *list);
 t_wild	*ft_lstnew_wild(void *content);
 t_wild	*print_dirs(char *path, t_block **mask);
@@ -258,6 +261,7 @@ t_wild	*print_dirs(char *path, t_block **mask);
 void	add_lcl_var(t_info *info, char *var[2]);
 void	ambiguous_redirect(char *str);
 void	child_signal(int signal);
+void	delete_empty(t_block *block);
 void	execution_error(t_info *info, t_cmd *cmd, int exit_code, int absolute);
 void	fork_child(t_info *info, t_cmd *cmd);
 void	free_char_tab(char **tab);
@@ -268,6 +272,7 @@ void	free_pid(t_info *info);
 void	free_running_processes(t_info *info);
 void	free_t_block(t_block *block);
 void	free_t_block_tab(t_block **block_tab);
+void	free_t_wild(t_wild *list);
 void	free_var(t_info *info);
 void	ft_blti(t_info *info, t_cmd *cmd);
 void	ft_bzero(void *s, size_t n);

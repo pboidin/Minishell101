@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:58:43 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/11 20:24:40 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 14:48:50 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,123 +66,31 @@ int	ft_has_wildcards(t_block *block)
 	return (0);
 }
 
-/*
-char	*ft_delete_wild(t_block *src, int *depth)
+t_wild	*add_to_list(t_wild *list, char *path, t_block **mask)
 {
-	int		i;
-	int		j;
-	int		k;
-	int		tmp;
-	char	*dst;
+	t_wild	*last;
+	t_wild	*new_block;
 
-	i = 0;
-	j = 0;
-	*depth = 0;
-	while (src[i].str)
+	if (!path)
+		return (free_t_wild(list), NULL);
+	if (mask[1])
 	{
-		j = 0;
-		while (!(src[i].str[j] == '*' && src[i].dbl_qu == 0
-				&& src[i].spl_qu == 0) && src[i].str[j] != '\0')
+		path = ft_strcat_mal(path, "/");
+		if (!path)
 		{
-			if (src[i].str[j] == '/')
-				*depth += 1;
-			j++;
-		}
-		if (src[i].str[j] == '*')
-			break;
-		i++;
-	}
-	if (*depth == 0)
-	{
-		dst = ft_calloc(2, sizeof(char));
-		if (!dst)
-			return (NULL);
-		dst[0] = '.';
-	}
-	else
-	{
-		tmp = 0;
-		k = 0;
-		i = 0;
-		while (tmp != *depth)
-		{
-			j = 0;
-			while (src[i].str[j] != '\0')
-			{
-				k++;
-				if (src[i].str[j] == '/')
-				{
-					tmp++;
-					if (tmp == *depth)
-						break ;
-				}
-				j++;
-			}
-			i++;
-		}
-		if (k == 1)
-		{
-			dst = ft_calloc(2, sizeof(char));
-			if (!dst)
-				return (NULL);
-			dst[0] = '/';
-			j++;
-			i--;
-		}
-		else
-		{
-			dst = ft_calloc((k), sizeof(char));
-			if (!dst)
-				return (NULL);
-			tmp = 0;
-			i = 0;
-			while (src[i].str)
-			{
-				j = 0;
-				while (src[i].str[j])
-				{
-					dst[tmp] = src[i].str[j];
-					tmp++;
-					j++;
-					if (tmp == (k - 1))
-						break ;
-				}
-				if (tmp == (k - 1))
-					break ;
-				i++;
-			}
-			if (src[i].str[j] == '/')
-				j++;
-			else
-			{
-				i++;
-				while (src[i].str[0] != '/')
-					i++;
-				j = 1;
-			}
+			g_signal = 1;
+			return (perror("malloc error"), free_t_wild(list), NULL);
 		}
 	}
-//	if (*depth == 0)
-//		*depth = 1;
-//	else
-		*depth = 0;
-	while (src[i].str[j])
+	new_block = ft_lstnew_wild(path);
+	if (!new_block)
 	{
-		if (src[i].str[j] == '/')
-			*depth += 1;
-		j++;
+		g_signal = 1;
+		return (perror("malloc error"), free(path), free_t_wild(list), NULL);
 	}
-	i++;
-	while (src[i].str)
-	{
-		j = 0;
-		while (src[i].str[j])
-		{
-			if (src[i].str[j] == '/')
-				*depth += 1;
-			j++;
-		}
-		i++;
-	}
-	return (dst);
-}*/
+	if (!list)
+		return (new_block);
+	last = ft_lstlast_wild(list);
+	last->next = new_block;
+	return (list);
+}
