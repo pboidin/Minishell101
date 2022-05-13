@@ -78,7 +78,7 @@ static void	ft_lst_printer(char **env)
 		if (env[i][j] != '\0')
 		{
 			write(STDOUT_FILENO, "\"", 1);
-			write(STDOUT_FILENO, &env[i][j], ft_strlen(&env[i][j]));
+			write(STDOUT_FILENO, &env[i][j] + 1, ft_strlen(&env[i][j] + 1));
 			write(STDOUT_FILENO, "\"", 1);
 		}
 		write(1, "\n", 1);
