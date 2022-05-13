@@ -6,7 +6,7 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/13 18:50:46 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 19:45:36 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,56 +57,71 @@ t_block	*add_str_t_block(t_block *spl, char *str, int i, char wild)
 	return (free(spl), new_block);
 }
 
-t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
+void	init_split(t_block **spl, int i[3])
 {
-	t_block	*spl;
-	int		i;
-	int		j;
-	int		wild;
+	*spl = NULL;
+	i[0] = 0;
+	i[1] = 0;
+	i[2] = 0;
+}
 
-	spl = NULL;
-	i = 0;
-	j = 0;
-	wild = 0;
+void	jump_block(t_block *block, int s[2])
+{
 	if (block[s[0]].str[s[1]] == '\0')
 	{
 		s[0] += 1;
 		s[1] = 0;
 	}
-	while (new_block[0][0].str[i])
-	{
-		if (new_block[0][0].str[i] == '*' && block[s[0]].dbl_qu == 0
-			&& block[s[0]].spl_qu == 0)
-		{
-			spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
-			if (!spl)
-				return (free_t_block_tab(new_block), NULL);
-			wild = 1;
-			j = i;
-		}
-		else if (wild)
-		{
-			spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
-			if (!spl)
-				return (free_t_block_tab(new_block), NULL);
-			wild = 0;
-			j = i;
-		}
-		i++;
-		s[1] += 1;
-		if (block[s[0]].str[s[1]] == '\0')
-		{
-			s[0] += 1;
-			s[1] = 0;
-		}
-	}
-	spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
+}
+
+int	update_wild_block(t_block **spl, t_block **new_block, int i[3], int val)
+{
+	*spl = add_str_t_block(*spl, &new_block[0][0].str[i[1]], \
+		(i[0] - i[1]), i[2]);
 	if (!spl)
-		return (free_t_block_tab(new_block), NULL);
+	{
+		g_signal = 1;
+		return (free_t_block_tab(new_block), 1);
+	}
+	i[2] = val;
+	i[1] = i[0];
+	return (0);
+}
+
+void	last_chck(t_block *spl)
+{
 	if (spl[0].str[0] == '\0')
 		move_upward_t_block_str(spl, 0);
 	spl[0].dbl_qu = -1;
-	return (free(new_block[0][0].str), free(new_block[0]), spl);
+}
+
+t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
+{
+	t_block	*spl;
+	int		i[3];
+
+	init_split(&spl, i);
+	jump_block(block, s);
+	while (new_block[0][0].str[i[0]])
+	{
+		if (new_block[0][0].str[i[0]] == '*' && block[s[0]].dbl_qu == 0
+			&& block[s[0]].spl_qu == 0)
+		{
+			if (update_wild_block(&spl, new_block, i, 1))
+				return (NULL);
+		}
+		else if (i[2])
+		{
+			if (update_wild_block(&spl, new_block, i, 0))
+				return (NULL);
+		}
+		i[0] += 1;
+		s[1] += 1;
+		jump_block(block, s);
+	}
+	if (update_wild_block(&spl, new_block, i, 0))
+		return (NULL);
+	return (last_chck(spl), free(new_block[0][0].str), free(new_block[0]), spl);
 }
 
 t_wild	*get_lcl_files(t_block **mask, DIR *cur_dir)
