@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/15 12:20:07 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/11 16:41:29 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 12:51:30 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,33 @@ char	**replace_var(t_block *words, size_t i, t_info *info)
 	return (var_val);
 }
 
+t_block	**cpy_t_block_tab(t_block **src)
+{
+	unsigned int	i;
+	t_block			**ret;
+
+	if (!src)
+		return (NULL);
+	ret = ft_calloc((t_block_tab_size(src) + 1), sizeof(t_block *));
+	if (!ret)
+	{
+		g_signal = 1;
+		return (perror("malloc error"), NULL);
+	}
+	i = 0;
+	while (src[i])
+	{
+		ret[i] = src[i];
+		i++;
+	}
+	return (ret);
+}
+
 t_block	**replace_wild_cards(t_block **words_tab)
 {
 	t_block			**ret;
 	t_block			**tmp;
 	unsigned int	i;
-	unsigned int	j;
 
 	i = 0;
 	while (words_tab[i])
@@ -92,17 +113,12 @@ t_block	**replace_wild_cards(t_block **words_tab)
 		ret = wild_one(words_tab[i]);
 		if (ret)
 		{
+			tmp = cpy_t_block_tab(&words_tab[i + 1]);
+			if (!tmp)
+				return (free_t_block_tab(words_tab), free_t_block_tab(ret), \
+						NULL);
 			free_t_block(words_tab[i]);
 			words_tab[i] = NULL;
-			tmp = ft_calloc((t_block_tab_size(&words_tab[i + 1]) + 1), sizeof(t_block *));
-			j = i + 1;
-			i = 0;
-			while (words_tab[j])
-			{
-				tmp[i] = words_tab[j];
-				i++;
-				j++;
-			}
 			words_tab = add_block_to_tab(words_tab, ret);
 			i = t_block_tab_size(words_tab) - 1;
 			words_tab = add_block_to_tab(words_tab, tmp);
