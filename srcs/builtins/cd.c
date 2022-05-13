@@ -81,12 +81,22 @@ static int	ft_go_to_oldpwd(t_env *env)
 	return (0);
 }
 
+int	array_len(char **dir)
+{
+	int	i;
+
+	i = 0;
+	while (dir[i])
+		i++;
+	return (i);
+}
+
 int	ft_ch_dir(char **dir, t_info *info)
 {
 	char	*pwd;
 
 	pwd = NULL;
-	if (dir[2])
+	if (array_len(dir) > 2)
 		return (write(STDERR_FILENO, "cd: too many arguments\n", 23), 1);
 	if (dir[1] && ft_strncmp(dir[1], "-", 1) == 0)
 		return (ft_go_to_oldpwd(info->env));

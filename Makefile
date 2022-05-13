@@ -6,7 +6,7 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/05/13 12:30:09 by bdetune          ###   ########.fr        #
+#    Updated: 2022/05/13 14:18:24 by piboidin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,7 +90,7 @@ OBJS := ${SRCS:.c=.o}
 NAME = minishell
 INCL:= includes/minishell.h
 CC= gcc
-CFLAGS= -Wall -Werror -Wextra
+CFLAGS= -Wall -Werror -Wextra -g3
 
 ${NAME}:	${INCL} ${OBJS}
 		${CC} $(CFLAGS) -o ${NAME} ${OBJS} -lreadline
