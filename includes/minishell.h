@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 13:51:46 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/13 14:52:13 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 15:25:21 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ char	*ft_strndup(const char *Str, size_t n, t_bool free_str);
 char	*ft_strstr(const char *haystack, const char *needle);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_trim(char *cmd);
+char	*get_full_path(char *path, char *new_file, size_t path_len);
 char	*get_var_name(char *str, t_info *info);
 char	*get_var_val(char *str, t_info *info, char *var[2]);
 char	*internal_get_line(char *remainer, int *nl_pos);
@@ -168,6 +169,8 @@ char	**ft_split_charset(char const *s, char *set);
 char	**join_env(t_info *info);
 char	**replace_var(t_block *words, size_t i, t_info *info);
 char	**t_block_tab_to_char_tab(t_block **tab);
+
+DIR		*open_dir(const char *path, size_t *path_len);
 
 int		add_pid(t_info *info, int pid);
 int		add_redirect(char *str, t_cmd *cmd, int redirect);
