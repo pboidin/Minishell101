@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/14 19:27:33 by bdetune           #+#    #+#             */
-/*   Updated: 2022/05/13 17:04:25 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 18:19:40 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	remove_qu(t_block *tab, size_t i)
 	char	*word;
 
 	len = ft_strlen(tab[i].str);
-	word = (char *)ft_calloc((len - 1), sizeof(char));
+	word = (char *)ft_calloc((len), sizeof(char));
 	if (!word)
 		return (1);
 	j = 0;
