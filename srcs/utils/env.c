@@ -6,7 +6,7 @@
 /*   By: bdetune <bdetune@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 14:23:01 by bdetune           #+#    #+#             */
-/*   Updated: 2022/04/20 11:11:30 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 16:26:48 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ static char	*join_env_var(t_env *env)
 		line[size] = env->name[size];
 		size++;
 	}
-	line[size] = '=';
+	if (env->value)
+		line[size] = '=';
 	size++;
 	i = 0;
 	while (env->value && env->value[i])

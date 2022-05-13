@@ -6,178 +6,28 @@
 /*   By: piboidin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 15:12:31 by piboidin          #+#    #+#             */
-/*   Updated: 2022/05/12 14:59:43 by bdetune          ###   ########.fr       */
+/*   Updated: 2022/05/13 15:50:22 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_compare(t_block *mask, char *path)
+char	*get_full_path(char *path, char *new_file, size_t path_len)
 {
-	int	i;
+	char	*full_name;
 
-	if (!path || (path[0] == '.' && mask[0].str[0] != '.'))
-		return (0);
-	if (!mask[0].dbl_qu)
+	full_name = (char *)ft_calloc((_POSIX_PATH_MAX + 1), sizeof(char));
+	if (!full_name)
 	{
-		if (ft_strcmp(path, mask[0].str))
-			return (0);
-		else
-			return (1);
-	}
-	if (!mask[0].var)
-	{
-		if (strncmp(path, mask[0].str, ft_strlen(mask[0].str)))
-			return (0);
-		else
-		{
-			i = 1;
-			path = &path[ft_strlen(mask[0].str)];
-		}
-	}
-	else
-		i = 0;
-	while (mask[i + 1].str)
-	{
-		if (!mask[i].var)
-		{
-			path = ft_strstr(path, mask[i].str);
-			if (!path)
-				return (0);
-			path = &path[ft_strlen(mask[i].str)];
-		}
-		i++;
-	}
-	if (mask[i].var)
-		return (1);
-	else if (ft_strlen(path) >= ft_strlen(mask[i].str)
-			&& !ft_strcmp(mask[i].str, &path[ft_strlen(path) - ft_strlen(mask[i].str)]))
-		return (1);
-	return (0);
-}
-
-int	end_wilderness(t_block **mask)
-{
-	if (!mask[1] || (mask[1][0].str[0] == '\0' && !mask[2]))
-		return (1);
-	return (0);
-}
-
-int	final_match(char *name, char *full_path, t_block **mask)
-{
-	struct stat	fstat;
-
-	if (!ft_compare(mask[0], name))
-		return (0);
-	if (mask[1])
-	{
-		if (!(stat(full_path, &fstat) < 0) && S_ISDIR(fstat.st_mode))
-			return (1);
-		else
-			return (0);
-	}
-	return (1);
-}
-
-t_wild	*add_to_list(t_wild *list, char *path, t_block **mask)
-{
-	t_wild	*last;
-	t_wild	*new_block;
-
-	if (!path)
+		g_signal = 1;
+		perror("malloc error");
 		return (NULL);
-	if (mask[1])
-	{
-		path = ft_strcat_mal(path, "/");
-		if (!path)
-			return (free(path), NULL);
 	}
-	new_block = ft_lstnew_wild(path);
-	if (!new_block)
-		return (free(path), NULL);
-	if (!list)
-		return (new_block);
-	last = ft_lstlast_wild(list);
-	last->next = new_block;
-	return (list);
-}
-
-
-DIR	*open_dir(const char *path, size_t *path_len)
-{
-	DIR		*dr;
-
-	if (!path)
-		return (NULL);
-	*path_len = strlen(path);
-	if (!path || !*path_len || (*path_len > _POSIX_PATH_MAX))
-		return (NULL);
-	dr = opendir(path);
-	if (dr == NULL)
-		return (NULL);
-	return (dr);
-}
-
-int	ft_recur_sa_mere(struct dirent *de, t_wild **tmp,
-		char *full_name, t_block **mask)
-{
-	t_wild		*last;
-
-	if (end_wilderness(mask))
-	{
-		if (final_match(de->d_name, full_name, mask))
-		{
-			*tmp = add_to_list(*tmp, full_name, mask);
-		}
-	}
-	else
-	{
-		if (ft_compare(mask[0], de->d_name))
-		{
-			if (!*tmp)
-				*tmp = print_dirs(full_name, &mask[1]);
-			else
-			{
-				last = ft_lstlast_wild(*tmp);
-				last->next = print_dirs(full_name, &mask[1]);
-			}
-		}
-	}
-	return (0);
-}
-
-t_wild	*print_dirs(char *path, t_block **mask)
-{
-	t_wild			*tmp;
-	struct dirent	*de;
-	DIR				*dr;
-	size_t			path_len;
-	char			*full_name;
-
-	dr = open_dir(path, &path_len);
-	if (!dr)
-		return (NULL);
-	tmp = NULL;
-	de = readdir(dr);
-	while (de != NULL)
-	{
-		if (ft_compare(mask[0], de->d_name))
-		{
-			full_name = (char *)calloc((_POSIX_PATH_MAX + 1), sizeof(char));
-			if ((path_len + strlen(de->d_name) + 1) <= _POSIX_PATH_MAX)
-			{
-				ft_strcpy(full_name, path);
-				if (full_name[path_len - 1] != '/')
-					ft_strcat(full_name, "/");
-				ft_strcat(full_name, de->d_name);
-				if (ft_recur_sa_mere(de, &tmp, full_name, mask))
-					return (closedir(dr), free(full_name), NULL);
-			}
-		}
-		de = readdir(dr);
-	}
-	closedir(dr);
-	return (tmp);
+	ft_strcpy(full_name, path);
+	if (full_name[path_len - 1] != '/')
+		ft_strcat(full_name, "/");
+	ft_strcat(full_name, new_file);
+	return (full_name);
 }
 
 t_block	*add_str_t_block(t_block *spl, char *str, int i, char wild)
@@ -220,7 +70,8 @@ t_block	*split_on_wild(t_block **new_block, t_block *block, int s[2])
 	wild = 0;
 	while (new_block[0][0].str[i])
 	{
-		if (new_block[0][0].str[i] == '*' && block[s[0]].dbl_qu == 0 && block[s[0]].spl_qu == 0)
+		if (new_block[0][0].str[i] == '*' && block[s[0]].dbl_qu == 0
+			&& block[s[0]].spl_qu == 0)
 		{
 			spl = add_str_t_block(spl, &new_block[0][0].str[j], (i - j), wild);
 			if (!spl)
@@ -360,65 +211,53 @@ t_block	**build_mask(t_block *block)
 	return (ret);
 }
 
-void	delete_empty(t_block *block)
+t_wild	*get_lcl_files(t_block **mask, DIR *cur_dir)
 {
-	int	i;
+	t_wild			*list;
+	struct dirent	*de;
 
-	i = 0;
-	while (block[i].str)
+	list = NULL;
+	de = readdir(cur_dir);
+	while (de)
 	{
-		if (block[i].str[0] == '\0')
+		if (final_match(de->d_name, de->d_name, mask))
 		{
-			move_upward_t_block_str(block, i);
-			i--;
+			list = add_to_list(list, ft_strdup(de->d_name), mask);
+			if (!list)
+				return (closedir(cur_dir), NULL);
 		}
-		i++;
+		de = readdir(cur_dir);
 	}
+	return (closedir(cur_dir), list);
 }
-
 
 t_wild	*wild_start(t_block **mask)
 {
 	t_wild			*list;
-	t_wild			*last;
 	size_t			path_len;
 	DIR				*cur_dir;
 	struct dirent	*de;
-
 
 	cur_dir = open_dir(".", &path_len);
 	if (!cur_dir)
 		return (NULL);
 	list = NULL;
+	if (end_wilderness(mask))
+		return (get_lcl_files(mask, cur_dir));
 	de = readdir(cur_dir);
 	while (de)
 	{
-		if (ft_strlen(de->d_name) > _POSIX_PATH_MAX)
-			continue ;
-		if (end_wilderness(mask))
+		if (ft_compare(mask[0], de->d_name))
 		{
-			if (final_match(de->d_name, de->d_name, mask))
-			{
-				list = add_to_list(list, ft_strdup(de->d_name), mask);
-			}
-		}
-		else
-		{
-			if (ft_compare(mask[0], de->d_name))
-			{
-				if (!list)
-					list = print_dirs(de->d_name, &mask[1]);
-				else
-				{
-					last = ft_lstlast_wild(list);
-					last->next = print_dirs(de->d_name, &mask[1]);
-				}
-			}
+			if (!list)
+				list = print_dirs(de->d_name, &mask[1]);
+			else
+				(ft_lstlast_wild(list))->next = \
+					print_dirs(de->d_name, &mask[1]);
 		}
 		de = readdir(cur_dir);
 	}
-	closedir(cur_dir);
-	return (list);
+	return (closedir(cur_dir), list);
 }
 
 t_block	**t_wild_to_t_block_tab(t_wild *list)
@@ -436,6 +275,11 @@ t_block	**t_wild_to_t_block_tab(t_wild *list)
 	while (current)
 	{
 		ret[i] = ft_calloc(2, sizeof(t_block));
+		if (!ret[i])
+		{
+			g_signal = 1;
+			return (free_t_block_tab(ret), NULL);
+		}
 		ret[i][0].str = current->path;
 		next = current->next;
 		free(current);

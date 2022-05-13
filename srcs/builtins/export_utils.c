@@ -6,7 +6,7 @@
 /*   By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 14:47:37 by piboidin          #+#    #+#             */
-/*   Updated: 2022/04/10 19:20:07 by piboidin         ###   ########.fr       */
+/*   Updated: 2022/05/13 16:24:16 by bdetune          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,17 +139,19 @@ void	ft_export_var(char **new_env, t_info *info)
 		else if (ft_error_export(new_env[i]))
 			info->status = 1;
 		else
-			ft_suite_export(new_env[i], info, tmp);
-		// {
-		// 	tmp[0] = get_var_name(new_env[i], info);
-		// 	lcl_var = find_lcl_var(info, tmp[0]);
-		// 	if (!lcl_var)
-		// 		free(tmp[0]);
-		// 	else
-		// 	{
-		// 		free(tmp[0]);
-		// 		export_lcl_to_env(lcl_var, info);
-		// 	}
-		// }
+		{
+			tmp[0] = get_var_name(new_env[i], info);
+			lcl_var = find_lcl_var(info, tmp[0]);
+			if (!lcl_var)
+			{
+				tmp[1] = NULL;
+				ft_add_env(new_env, i, info, tmp);
+			}
+			else
+			{
+				free(tmp[0]);
+				export_lcl_to_env(lcl_var, info);
+			}
+		}
 	}
 }
