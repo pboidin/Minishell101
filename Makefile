@@ -6,12 +6,12 @@
 #    By: piboidin <piboidin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/24 13:02:16 by bdetune           #+#    #+#              #
-#    Updated: 2022/05/12 12:44:05 by bdetune          ###   ########.fr        #
+#    Updated: 2022/05/13 12:30:09 by bdetune          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #	Names
-NAME		= minishell
+NAME = minishell
 
 SRCS = main.c \
 		srcs/builtins/cd_error.c \
@@ -37,7 +37,7 @@ SRCS = main.c \
 		srcs/execution/get_final_cmd.c \
 		srcs/execution/inline_expansion.c \
 		srcs/execution/pid.c \
-		srcs/execution/redirections.c \	
+		srcs/execution/redirections.c \
 		srcs/execution/split_tab_var.c \
 		srcs/execution/var_expansion.c \
 		srcs/execution/var_expansion2.c \
